@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "console": "ts-node -r tsconfig-paths/register src/core/consoles/console.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -47,6 +48,7 @@
     "ioredis": "^5.2.1",
     "kafkajs": "^2.1.0",
     "mysql2": "^2.3.3",
+    "nestjs-console": "^7.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
