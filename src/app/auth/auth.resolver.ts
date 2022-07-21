@@ -1,15 +1,14 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsePipes } from '@nestjs/common';
 import * as yup from 'yup';
+import { map, Observable } from 'rxjs';
 import { YupValidationPipe } from '../../common/pipes/yup-validation.pipe';
 import { UserService } from '../user/user.service';
+import { UserEntity } from '../user/user.entity';
 import { ErrorResponse } from './shared/errorResponse';
 import { SignupInput } from './input/signup.input';
 import { LoginInput } from './input/login.input';
 import { AuthService } from './auth.service';
-import { UserEntity } from '../user/user.entity';
-import { log } from 'util';
-import { map, Observable } from 'rxjs';
 import { LoginResponse } from './shared/loginResponse';
 
 const signupInputSchema = yup.object().shape({
@@ -53,14 +52,14 @@ export class AuthResolver {
   @Mutation(() => LoginResponse || String, {
     nullable: true,
   })
-  async signIn(
+  signIn(
     @Args('loginInput') loginInput: LoginInput,
-  ): Promise<Observable<{ token: string }> | string> {
+  ): Observable<{ token: string }> | string {
     try {
       const u = new UserEntity();
       u.email = loginInput.email;
       u.password = loginInput.password;
-      return await this.authService
+      return this.authService
         .login(u)
         .pipe(map((jwt: string) => ({ token: jwt })));
     } catch (e) {

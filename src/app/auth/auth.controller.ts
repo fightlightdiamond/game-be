@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { UserEntity } from '../user/user.entity';
+import { SETTING } from '../user/user.const';
 import { AuthService } from './auth.service';
 import { JwtGuard } from './guards/jwt.guard';
-import { SETTING } from '../user/user.const';
 import { RegisterReqDto } from './dto/register.req.dto';
 
 @Controller('auth')

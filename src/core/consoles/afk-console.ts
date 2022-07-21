@@ -12,8 +12,7 @@ export class AfkConsole {
   }
 
   @Command({ command: 'g-hero' })
-  async gHero() {
+  gHero() {
     const a = new Hero();
-    // const h = new HeroesEntity();
   }
 }

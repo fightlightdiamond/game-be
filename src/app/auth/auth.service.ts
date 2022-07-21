@@ -3,12 +3,12 @@ import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../user/user.entity';
 import { UserInterface } from '../user/user.interface';
-import { AuthTokenService } from './auth-token/auth-token.service';
-import { ConfigService } from '@nestjs/config';
 import JwtConfig from '../../config/jwt.config';
+import { AuthTokenService } from './auth-token/auth-token.service';
 import { RegisterReqDto } from './dto/register.req.dto';
 
 /**

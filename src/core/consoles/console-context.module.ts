@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConsoleModule } from 'nestjs-console';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
-import { AfkConsole } from './afk-console';
 import { queueConfigAsync } from '../../config/queue.config';
+import { AfkConsole } from './afk-console';
 
 @Module({
   imports: [

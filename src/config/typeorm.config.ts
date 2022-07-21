@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 export default class TypeormConfig {
   static getOrmConfig(config: ConfigService): TypeOrmModuleOptions {
-    console.log(config.get<string>('DB_USERNAME'))
+    console.log(config.get<string>('DB_USERNAME'));
     return {
       type: 'mysql',
       host: config.get<string>('DB_HOST'),
