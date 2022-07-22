@@ -1,101 +1,140 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IHero, probability } from './interfaces/hero.interface';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Turn } from '../war/turn';
+import { IHero } from './interfaces/hero.interface';
 
 @ObjectType()
 @Entity('heroes')
-export class HeroesEntity implements IHero {
+export class HeroesEntity extends BaseEntity implements IHero {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   acc: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   atk: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   atk_healing: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   cc: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   crit_dmg: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   crit_rate: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   def: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   dodge: number;
 
   @Field()
-  @Column()
-  effect_resistance: string;
+  @Column({
+    default: 0,
+  })
+  effect_resistance: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: '',
+  })
   element: string;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   hp: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: '',
+  })
   name: string;
 
   @Field()
-  @Column()
+  @Column({
+    default: '',
+  })
   position: string;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   spd: number;
 
   @Field()
-  @Column()
-  status: string;
+  @Column({
+    default: 0,
+  })
+  status: number;
 
   @Field()
-  @Column()
+  @Column({
+    default: 0,
+  })
   take_dmg_healing: number;
 
-  attack(targetHero: IHero, skill?): any {
-    const ratio = probability();
-    const log = {
-      ratio,
-      skill,
-      crit: false,
-      dame: 0,
-    };
+  @Field()
+  @Column({
+    type: 'text',
+    default: '',
+  })
+  story: string;
 
-    if (ratio > this.crit_rate) {
-      log.dame = this.atk - targetHero.def;
-    } else {
-      log.crit = true;
-      console.log('Crit', this.name);
-      log.dame = Math.floor((this.atk * this.crit_dmg) / 100) - targetHero.def;
+  @Field()
+  @Column({
+    type: 'text',
+    default: '',
+  })
+  guide: string;
+
+  attack(away: IHero): any {
+    const [home2, away2]: IHero[] = Turn.turn(this, away);
+    // this = home2;
+    away = away2;
+    if (away2.current_hp < 0) {
+      console.log(this.name, 'WIN');
+      return [home2, away2];
     }
-
-    targetHero.hp -= log.dame;
-
-    return {
-      i: this,
-      you: targetHero,
-      log,
-    };
+    // 2
+    const [away3, home3] = Turn.turn(away2, home2);
+    // this = home3;
+    away = away3;
+    if (home3.current_hp < 0) {
+      console.log(away.name, 'WIN');
+    }
+    return [home3, away3];
   }
 }

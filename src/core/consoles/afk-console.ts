@@ -1,5 +1,6 @@
 import { Command, Console } from 'nestjs-console';
-import { Hero, War } from '../../app/hero/interfaces/hero.interface';
+import { Hero } from '../../app/hero/interfaces/hero.interface';
+import { War } from '../../app/war/war';
 
 @Console()
 export class AfkConsole {
@@ -9,10 +10,5 @@ export class AfkConsole {
     const b = new Hero();
     const w = new War(a, b);
     await w.execute();
-  }
-
-  @Command({ command: 'g-hero' })
-  gHero() {
-    const a = new Hero();
   }
 }

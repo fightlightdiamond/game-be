@@ -1,3 +1,5 @@
+import { Turn } from '../../war/turn';
+
 export interface IHero {
   name: string;
   //Base stats
@@ -5,8 +7,6 @@ export interface IHero {
   atk: number;
   def: number;
   spd: number;
-  // action
-  attack: (targetEntity: IHero, skill) => void;
   // Special stats
   crit_rate?: number;
   crit_dmg?: number;
@@ -18,8 +18,28 @@ export interface IHero {
   acc?: number;
   // L3
   cc?: number;
-  effect_resistance?: string;
-  status?: string;
+  //Base stats
+  current_hp?: number;
+  current_atk?: number;
+  current_def?: number;
+  current_spd?: number;
+  // Special stats
+  current_crit_rate?: number;
+  current_crit_dmg?: number;
+  // L1
+  current_atk_healing?: number;
+  current_take_dmg_healing?: number;
+  // L2
+  current_dodge?: number;
+  current_acc?: number;
+  // L3
+  current_cc?: number;
+  intrinsic_status?: number;
+  // action
+  attack: (targetEntity: IHero) => IHero[];
+  // intrinsic_skill: (targetEntity: IHero) => void;
+  effect_resistance?: number;
+  status?: number;
   element?: string;
   position?: string;
 }
@@ -33,9 +53,9 @@ export interface ISkill {
 }
 
 export const stats = {
-  HP: 8000,
-  atk: 1200,
-  def: 300,
+  HP: 10000,
+  atk: 1000,
+  def: 200,
   spd: 100,
   crit_rate: 20,
   crit_dmg: 180,
@@ -73,6 +93,20 @@ export function critRateRandom() {
 export function probability() {
   return Math.floor(Math.random() * 101);
 }
+const herosName = [
+  'Fenrir',
+  'Jormungandr',
+  'Hell',
+  'Darklord',
+  'Valkyrie',
+  'Poseidon',
+  'Hera',
+  'Chiron',
+];
+
+export function getRandomHeroName() {
+  return herosName[Math.floor(Math.random() * herosName.length)];
+}
 
 export class Hero implements IHero {
   atk: number;
@@ -82,96 +116,56 @@ export class Hero implements IHero {
   spd: number;
   crit_rate?: number;
   crit_dmg?: number;
+  current_atk: number;
+  current_def: number;
+  current_hp: number;
+  current_spd: number;
+  current_crit_rate?: number;
+  current_crit_dmg?: number;
+  current_atk_healing?: number;
+  current_take_dmg_healing?: number;
+  status?: number;
+  intrinsic_status: number;
+  effect_resistance: number;
   constructor() {
     this.atk = atkRandom();
+    this.current_atk = this.atk;
     this.def = defRandom();
+    this.current_def = this.def;
     this.hp = HPRandom();
+    this.current_hp = this.hp;
     this.spd = spdRandom();
-    this.name = (Math.random() + 1).toString(36).substring(7);
+    this.current_spd = this.spd;
+    this.name = getRandomHeroName();
     this.crit_dmg = critDmgRandom();
+    this.current_crit_dmg = this.crit_dmg;
     this.crit_rate = critRateRandom();
+    this.current_crit_rate = this.crit_rate;
+    this.intrinsic_status = 0;
+    this.effect_resistance = 0;
   }
 
-  attack(targetEntity: IHero, skill): void {
-    console.log({ skill });
-  }
-
-  info() {
-    return JSON.parse(JSON.stringify(this));
-  }
-}
-
-export class War {
-  a: IHero;
-  b: IHero;
-  round = 1;
-  constructor(a: IHero, b: IHero) {
-    this.a = a;
-    this.b = b;
-  }
-
-  async timeoutPromise() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('time out');
-      }, 20000);
-    });
-  }
-
-  info() {
-    console.log(this.a);
-    console.log(this.b);
-    console.log('Who Win?');
-  }
-
-  async execute() {
-    this.info();
-    await this.timeoutPromise();
-
-    while (this.a.hp > 0 && this.b.hp > 0) {
-      if (this.a.spd > this.b.spd) {
-        this.atk(this.b, this.a);
-      } else {
-        this.atk(this.a, this.b);
-      }
+  attack(away: IHero): IHero[] {
+    const [home2, away2]: IHero[] = Turn.turn(this, away);
+    // this = home2;
+    away = away2;
+    if (away2.current_hp < 0) {
+      console.log(this.name, 'WIN');
+      return [home2, away2];
     }
-    console.log('End War');
+    // 2
+    const [away3, home3] = Turn.turn(away2, home2);
+    // this = home3;
+    away = away3;
+    if (home3.current_hp < 0) {
+      console.log(away.name, 'WIN');
+    }
+    return [home3, away3];
   }
 
-  atk(a: IHero, b: IHero) {
-    console.log('Round: ------------> ', this.round++);
-    // First atk
-    const aProbability = probability();
-    if (aProbability > a.crit_rate) {
-      a.hp -= b.atk - a.def;
-    } else {
-      console.log('Crit', b.name);
-      a.hp -= Math.floor((b.atk * b.crit_dmg) / 100) - a.def;
-    }
-
-    console.log(a.name, a.hp);
-    if (a.hp < 0) {
-      this.a = a;
-      this.b = b;
-      console.log(this.b.name, 'WIN');
-      return;
-    }
-    // Second atk
-    const bProbability = probability();
-    if (bProbability > b.crit_rate) {
-      b.hp -= a.atk - b.def;
-    } else {
-      console.log('Crit', a.name);
-      b.hp -= Math.floor((a.atk * a.crit_dmg) / 100) - b.def;
-    }
-
-    console.log(b.name, b.hp);
-    this.a = a;
-    this.b = b;
-    if (b.hp < 0) {
-      this.a = a;
-      this.b = b;
-      console.log(this.a.name, 'WIN');
+  setHome(home: IHero) {
+    for (const [key, value] of Object.entries(home)) {
+      this[key] = value();
     }
   }
 }
