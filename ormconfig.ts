@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 // require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
@@ -9,7 +8,7 @@ module.exports = {
   password: process.env.DB_PASSWORD || '',
   type: process.env.DB_CONNECTION || 'mysql',
   database: process.env.DB_DATABASE || '',
-  entities: ['**/*.entity{ .ts,.js}'],
+  entities: ['src/app/**/*.entity{.ts,.js}'],
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
   migrations: ['src/migrations/*.js'],
   factories: ['src/migrations/factories/*.factory{.ts,.js}'],

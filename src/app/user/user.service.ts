@@ -141,12 +141,12 @@ export class UserService {
   /**
    * Update User Image By Id
    * @param id
-   * @param imagePath
+   * @param avatar
    */
-  updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
+  updateUserImageById(id: number, avatar: string): Observable<UpdateResult> {
     const user: UserEntity = new UserEntity();
     user.id = id;
-    user.imagePath = imagePath;
+    user.avatar = avatar;
     return from(this.userRepository.update(id, user));
   }
 
@@ -157,7 +157,7 @@ export class UserService {
   findImageNameByUserid(id: number): Observable<string> {
     return from(this.userRepository.findOne({ where: { id } })).pipe(
       map((user) => {
-        return user.imagePath;
+        return user.avatar;
       }),
     );
   }

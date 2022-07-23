@@ -7,6 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeormConfigAsync } from './config/typeorm.config';
@@ -26,6 +27,9 @@ import { GqlAuthGuard } from './app/auth/guards/gql-auth.guard';
 import { AuthController } from './app/auth/auth.controller';
 import { LocalStrategy } from './app/auth/guards/local.strategy';
 import { AuthResolver } from './app/auth/auth.resolver';
+import { HeroSchema } from './app/hero/hero.schema';
+import { HeroesEntity } from './app/hero/heroes.entity';
+import { UserEntity } from './app/user/user.entity';
 
 @Module({
   imports: [
@@ -62,6 +66,7 @@ import { AuthResolver } from './app/auth/auth.resolver';
       UserRepository,
       AuthTokenRepository,
     ]),
+    TypeOrmModule.forFeature([HeroesEntity, UserEntity, HeroSchema]),
   ],
   controllers: [AppController, AuthController],
   providers: [
@@ -81,4 +86,6 @@ import { AuthResolver } from './app/auth/auth.resolver';
     AuthResolver,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

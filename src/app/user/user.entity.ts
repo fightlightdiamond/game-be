@@ -21,7 +21,7 @@ import AddressEntity from './address/address.entity';
 export class UserEntity extends BaseEntity implements UserInterface {
   @Field()
   @PrimaryGeneratedColumn({
-    comment: 'The quiz unique identifier',
+    comment: 'The user unique identifier',
   })
   id: number;
 
@@ -67,7 +67,7 @@ export class UserEntity extends BaseEntity implements UserInterface {
     type: 'varchar',
     nullable: true,
   })
-  imagePath: string;
+  avatar: string;
 
   @Field()
   @Column({

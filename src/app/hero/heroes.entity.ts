@@ -20,7 +20,19 @@ export class HeroesEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
+  current_acc: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   atk: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
+  current_atk: number;
 
   @Field()
   @Column({
@@ -32,7 +44,19 @@ export class HeroesEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
+  current_atk_healing: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   cc: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
+  current_cc: number;
 
   @Field()
   @Column({
@@ -44,7 +68,19 @@ export class HeroesEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
+  current_crit_dmg: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   crit_rate: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
+  current_crit_rate: number;
 
   @Field()
   @Column({
@@ -56,13 +92,31 @@ export class HeroesEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
+  current_def: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   dodge: number;
 
   @Field()
   @Column({
     default: 0,
   })
+  current_dodge: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   effect_resistance: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
+  intrinsic_status: number;
 
   @Field()
   @Column({
@@ -75,6 +129,12 @@ export class HeroesEntity extends BaseEntity implements IHero {
     default: 0,
   })
   hp: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
+  current_hp: number;
 
   @Field()
   @Column({
@@ -98,6 +158,12 @@ export class HeroesEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
+  current_spd: number;
+
+  @Field()
+  @Column({
+    default: 0,
+  })
   status: number;
 
   @Field()
@@ -108,15 +174,19 @@ export class HeroesEntity extends BaseEntity implements IHero {
 
   @Field()
   @Column({
+    default: 0,
+  })
+  current_take_dmg_healing: number;
+
+  @Field()
+  @Column({
     type: 'text',
-    default: '',
   })
   story: string;
 
   @Field()
   @Column({
     type: 'text',
-    default: '',
   })
   guide: string;
 

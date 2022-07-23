@@ -17,6 +17,7 @@ export default class TypeormConfig {
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true',
       logging: true,
+      autoLoadEntities: true,
       extra: {
         connectionLimit: 50,
       },
