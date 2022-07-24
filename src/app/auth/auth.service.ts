@@ -10,6 +10,7 @@ import { UserInterface } from '../user/user.interface';
 import JwtConfig from '../../config/jwt.config';
 import { AuthTokenService } from './auth-token/auth-token.service';
 import { RegisterReqDto } from './dto/register.req.dto';
+import { LoginReqDto } from './dto/login.req.dto';
 
 /**
  * Auth Service
@@ -38,7 +39,7 @@ export class AuthService {
    * Login
    * @param user
    */
-  login(user: UserEntity): Observable<string> {
+  login(user: LoginReqDto): Observable<string> {
     const { email, password } = user;
     return this.validateUser(email, password).pipe(
       switchMap((user: UserEntity) => {

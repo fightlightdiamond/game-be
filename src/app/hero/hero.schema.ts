@@ -1,9 +1,9 @@
 import { EntitySchema } from 'typeorm';
-import { HeroesEntity } from './heroes.entity';
+import { HeroEntity } from './hero.entity';
 
-export const HeroSchema = new EntitySchema<HeroesEntity>({
+export const HeroSchema = new EntitySchema<HeroEntity>({
   name: 'Hero',
-  target: HeroesEntity,
+  target: HeroEntity,
   columns: {
     id: {
       type: Number,

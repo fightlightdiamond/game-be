@@ -12,6 +12,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Exclude, Expose } from 'class-transformer';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 import { RoleEnum } from '../auth/role.enum';
 import { UserInterface } from './user.interface';
 import AddressEntity from './address/address.entity';
@@ -39,6 +40,10 @@ export class UserEntity extends BaseEntity implements UserInterface {
   })
   lastName: string;
 
+  @ApiProperty({
+    description: 'The address email',
+    example: 'hero@bet-gamex.com',
+  })
   @Field()
   @Column({
     type: 'varchar',
@@ -47,6 +52,7 @@ export class UserEntity extends BaseEntity implements UserInterface {
   })
   email: string;
 
+  @ApiProperty({})
   @Field()
   @Column({
     type: 'varchar',

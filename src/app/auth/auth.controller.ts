@@ -9,12 +9,21 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserEntity } from '../user/user.entity';
 import { SETTING } from '../user/user.const';
 import { AuthService } from './auth.service';
 import { JwtGuard } from './guards/jwt.guard';
 import { RegisterReqDto } from './dto/register.req.dto';
+import { LoginReqDto } from './dto/login.req.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -23,6 +32,12 @@ export class AuthController {
    * @param registerBody
    */
   @Post('/register')
+  @ApiCreatedResponse({
+    description: 'Created user object as response',
+  })
+  @ApiBadRequestResponse({
+    description: 'User cannot register. Try again!',
+  })
   @UsePipes(ValidationPipe)
   async doUserRegistration(
     @Body(SETTING.VALIDATION_PIPE)
@@ -32,7 +47,9 @@ export class AuthController {
   }
 
   @Post('login')
-  login(@Body() user: UserEntity): Observable<{ token: string }> {
+  @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ status: 200, description: 'Login successfully.' })
+  login(@Body() user: LoginReqDto): Observable<{ token: string }> {
     return this.authService
       .login(user)
       .pipe(map((jwt: string) => ({ token: jwt })));

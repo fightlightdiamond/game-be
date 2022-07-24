@@ -8,7 +8,7 @@ import {
 } from '@nestjs/microservices';
 
 @Controller('heroes')
-export class HeroesController implements OnModuleInit {
+export class HeroController implements OnModuleInit {
   @Client({
     transport: Transport.KAFKA,
     options: {

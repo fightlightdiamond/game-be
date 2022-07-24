@@ -28,7 +28,7 @@ import { AuthController } from './app/auth/auth.controller';
 import { LocalStrategy } from './app/auth/guards/local.strategy';
 import { AuthResolver } from './app/auth/auth.resolver';
 import { HeroSchema } from './app/hero/hero.schema';
-import { HeroesEntity } from './app/hero/heroes.entity';
+import { HeroEntity } from './app/hero/hero.entity';
 import { UserEntity } from './app/user/user.entity';
 
 @Module({
@@ -66,7 +66,7 @@ import { UserEntity } from './app/user/user.entity';
       UserRepository,
       AuthTokenRepository,
     ]),
-    TypeOrmModule.forFeature([HeroesEntity, UserEntity, HeroSchema]),
+    TypeOrmModule.forFeature([HeroEntity, UserEntity, HeroSchema]),
   ],
   controllers: [AppController, AuthController],
   providers: [

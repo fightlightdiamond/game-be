@@ -5,7 +5,7 @@ import { IHero } from './interfaces/hero.interface';
 
 @ObjectType()
 @Entity('heroes')
-export class HeroesEntity extends BaseEntity implements IHero {
+export class HeroEntity extends BaseEntity implements IHero {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
