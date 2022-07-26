@@ -1,13 +1,12 @@
-import { IHero } from '../hero/interfaces/hero.interface';
-
 // const VINH_CUU_STATUS = -2;
 // const DISABLE_STATUS = -1;
 // const ENABLE_STATUS = 0;
 
-export class Skill {
-  static Hell(home: IHero, away: IHero) {
+import { IHeroLog } from '../hero/hero.log';
+
+export class SkillService {
+  static Hell(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
-      away.effect_resistance = 0;
       return [home, away];
     }
     const ratioHp = away.current_hp / away.hp;
@@ -28,7 +27,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Spinx(home: IHero, away: IHero) {
+  static Spinx(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       return [home, away];
@@ -43,7 +42,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Valkyrie(home: IHero, away: IHero) {
+  static Valkyrie(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       return [home, away];
@@ -53,11 +52,13 @@ export class Skill {
     } else {
       home.intrinsic_status = -1;
     }
-    away.current_hp -= 0.02 * home.intrinsic_status * away.hp;
+    const dmg = 0.02 * home.intrinsic_status * away.hp;
+    away.current_hp -= dmg;
+
     return [home, away];
   }
 
-  static Hera(home: IHero, away: IHero) {
+  static Hera(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       return [home, away];
@@ -102,7 +103,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Darklord(home: IHero, away: IHero) {
+  static Darklord(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       return [home, away];
@@ -125,7 +126,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Poseidon(home: IHero, away: IHero) {
+  static Poseidon(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       return [home, away];
@@ -141,7 +142,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Fenrir(home: IHero, away: IHero) {
+  static Fenrir(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     console.log(
       '-----------------Fenrir-------------------',
       home.name,
@@ -170,7 +171,7 @@ export class Skill {
     return [home, away];
   }
 
-  static Chiron(home: IHero, away: IHero) {
+  static Chiron(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance) {
       away.effect_resistance = 0;
       return [home, away];
@@ -184,20 +185,15 @@ export class Skill {
       }
       home.current_atk *= 1.15;
     }
-
     return [home, away];
   }
 
-  static Jormungandr(home: IHero, away: IHero) {
-    console.log(
-      '-----------------Jormungandr-------------------',
-      home.name,
-      away.name,
-    );
+  static Phoenix(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+    console.log('------------------------------------', home.name, away.name);
     if (away.effect_resistance || home.intrinsic_status === -1) {
       away.effect_resistance = 0;
       console.log(
-        '---------------Jormungandr D---------------------',
+        '--------------- D---------------------',
         away.effect_resistance,
         home.intrinsic_status,
       );
@@ -212,7 +208,7 @@ export class Skill {
       home.intrinsic_status = -1;
 
       console.log(
-        '-----------------Jormungandr A-------------------',
+        '----------------- A-------------------',
         home.name,
         home.current_hp,
         ratioHp,

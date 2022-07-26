@@ -1,6 +1,5 @@
 1. Hero: create hero: 
    - Spinx: Nếu nhỏ hơn 50% HP, tăng hút máu 30%, crit 20%,
-   
    Chiron: 25% kháng nội tại, tăng 15% dame mỗi lượt khi còn dưới 60% HP,
    Hell: Đối thủ chết luôn nếu nhỏ hơn 30% HP, 35% nếu bản thân nhỏ hơn 50%HP
    Valkyrie: mỗi turn đốt 2% máu cộng dồn tối đa 5 lần

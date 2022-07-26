@@ -1,4 +1,4 @@
-import { Turn } from '../../war/turn';
+// import { TurnService } from '../../turn/turn.service';
 
 export interface IHero {
   name: string;
@@ -36,12 +36,13 @@ export interface IHero {
   current_cc?: number;
   intrinsic_status?: number;
   // action
-  attack: (targetEntity: IHero) => IHero[];
+  // attack: (targetEntity: IHero) => IHero[];
   // intrinsic_skill: (targetEntity: IHero) => void;
   effect_resistance?: number;
   status?: number;
   element?: string;
   position?: string;
+  img?: string;
 }
 
 export interface ISkill {
@@ -95,7 +96,7 @@ export function probability() {
 }
 const herosName = [
   'Fenrir',
-  'Jormungandr',
+  'Phoenix',
   'Hell',
   'Darklord',
   'Valkyrie',
@@ -145,27 +146,21 @@ export class Hero implements IHero {
     this.effect_resistance = 0;
   }
 
-  attack(away: IHero): IHero[] {
-    const [home2, away2]: IHero[] = Turn.turn(this, away);
-    // this = home2;
-    away = away2;
-    if (away2.current_hp < 0) {
-      console.log(this.name, 'WIN');
-      return [home2, away2];
-    }
-    // 2
-    const [away3, home3] = Turn.turn(away2, home2);
-    // this = home3;
-    away = away3;
-    if (home3.current_hp < 0) {
-      console.log(away.name, 'WIN');
-    }
-    return [home3, away3];
-  }
-
-  setHome(home: IHero) {
-    for (const [key, value] of Object.entries(home)) {
-      this[key] = value();
-    }
-  }
+  // attack(away: IHero): IHero[] {
+  //   const [home2, away2]: IHero[] = TurnService.turn(this, away);
+  //   // this = home2;
+  //   away = away2;
+  //   if (away2.current_hp < 0) {
+  //     console.log(this.name, 'WIN');
+  //     return [home2, away2];
+  //   }
+  //   // 2
+  //   const [away3, home3] = TurnService.turn(away2, home2);
+  //   // this = home3;
+  //   away = away3;
+  //   if (home3.current_hp < 0) {
+  //     console.log(away.name, 'WIN');
+  //   }
+  //   return [home3, away3];
+  // }
 }

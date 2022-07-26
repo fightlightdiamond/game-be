@@ -1,6 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Turn } from '../war/turn';
 import { IHero } from './interfaces/hero.interface';
 
 @ObjectType()
@@ -189,22 +188,4 @@ export class HeroEntity extends BaseEntity implements IHero {
     type: 'text',
   })
   guide: string;
-
-  attack(away: IHero): any {
-    const [home2, away2]: IHero[] = Turn.turn(this, away);
-    // this = home2;
-    away = away2;
-    if (away2.current_hp < 0) {
-      console.log(this.name, 'WIN');
-      return [home2, away2];
-    }
-    // 2
-    const [away3, home3] = Turn.turn(away2, home2);
-    // this = home3;
-    away = away3;
-    if (home3.current_hp < 0) {
-      console.log(away.name, 'WIN');
-    }
-    return [home3, away3];
-  }
 }

@@ -1,0 +1,117 @@
+version: "3"
+
+networks:
+  betn:
+    driver: bridge
+
+services:
+  mysql:
+    image: "mysql:latest"
+    hostname: mysql
+    restart: always
+    networks:
+      - betn
+    environment:
+      - MYSQL_ROOT_PASSWORD=123abc
+      - MYSQL_DATABASE=db_site
+      - MYSQL_USERNAME=siteuser
+      - MYSQL_PASSWORD=sitepass
+    ports:
+      - '3306:3306'
+    cap_add:
+      - SYS_NICE
+#  api:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./
+#    volumes:
+#      - /app/node_modules
+#      - ./:/app
+#    ports:
+#      - '4004:80'
+#    networks:
+#      - betn
+
+#  redis:
+#    image: 'redis:latest'
+#    ports:
+#      - '6379:6379'
+#    networks:
+#      - betn
+
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+#    environment:
+#      - node.name=elasticsearch
+#      - cluster.name=datasearch
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - cluster.initial_master_nodes=elasticsearch
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    networks:
+#      - betn
+#
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:8.1.0
+#    ports:
+#      - "5601:5601"
+#    networks:
+#      - betn
+
+#  rabbitmq:
+#    image: rabbitmq:3-management
+#    container_name: rabbitmq
+#    hostname: rabbitmq
+#    volumes:
+#      - /var/lib/rabbitmq
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    env_file:
+#      - ./env/rabbitmq.env
+
+#  zookeeper:
+#    image: 'bitnami/zookeeper:3.6.2'
+#    container_name: sotadex-zookeeper
+#    ports:
+#      - 2183:2181
+#    environment:
+#      - ALLOW_ANONYMOUS_LOGIN=yes
+#    volumes:
+#      - ./.docker/zookeeper:/var/lib/zookeeper
+#
+#  kafka:
+#    image: 'bitnami/kafka:2.6.0'
+#    container_name: sotadex-kafka
+#    ports:
+#      - 9093:9093
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - ALLOW_PLAINTEXT_LISTENER=yes
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+#      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+#      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+#      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=10485760
+#      - KAFKA_CFG_MESSAGE_MAX_BYTES=10485760
+#    depends_on:
+#      - zookeeper
+#    volumes:
+#      - ./.docker/kafka:/bitnami/kafka
+#
+#  kafdrop:
+#    image: obsidiandynamics/kafdrop
+#    restart: 'no'
+#    ports:
+#      - '9000:9000'
+#    environment:
+#      KAFKA_BROKERCONNECT: 'kafka:9092'
+#      JVM_OPTS: '-Xms160M -Xmx480M -Xss1800K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify'
+#    depends_on:
+#      - 'kafka'

@@ -27,9 +27,10 @@ import { GqlAuthGuard } from './app/auth/guards/gql-auth.guard';
 import { AuthController } from './app/auth/auth.controller';
 import { LocalStrategy } from './app/auth/guards/local.strategy';
 import { AuthResolver } from './app/auth/auth.resolver';
-import { HeroSchema } from './app/hero/hero.schema';
 import { HeroEntity } from './app/hero/hero.entity';
 import { UserEntity } from './app/user/user.entity';
+import { HeroRepository } from './app/hero/hero.repository';
+import { AddressRepository } from './app/user/address/address.repository';
 
 @Module({
   imports: [
@@ -62,11 +63,13 @@ import { UserEntity } from './app/user/user.entity';
       },
     }),
     TypeormModule.forCustomRepository([
+      AddressRepository,
+      AuthTokenRepository,
       UserRepository,
-      UserRepository,
+      HeroRepository,
       AuthTokenRepository,
     ]),
-    TypeOrmModule.forFeature([HeroEntity, UserEntity, HeroSchema]),
+    TypeOrmModule.forFeature([HeroEntity, UserEntity]),
   ],
   controllers: [AppController, AuthController],
   providers: [

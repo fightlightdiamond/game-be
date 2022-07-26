@@ -1,11 +1,6 @@
 import { Repository } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { CustomRepository } from '../../core/typeorm/typeorm.decorator';
 import { HeroEntity } from './hero.entity';
 
-@Injectable()
-export class PollRepository {
-  constructor(
-    @Inject('HERO_REPOSITORY')
-    private repository: Repository<HeroEntity>,
-  ) {}
-}
+@CustomRepository(HeroEntity)
+export class HeroRepository extends Repository<HeroEntity> {}

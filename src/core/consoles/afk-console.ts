@@ -1,6 +1,6 @@
 import { Command, Console } from 'nestjs-console';
 import { Hero } from '../../app/hero/interfaces/hero.interface';
-import { War } from '../../app/war/war';
+import { MatchService } from '../../app/match/match.service';
 
 @Console()
 export class AfkConsole {
@@ -8,7 +8,7 @@ export class AfkConsole {
   async war() {
     const a = new Hero();
     const b = new Hero();
-    const w = new War(a, b);
+    const w = new MatchService(a, b);
     await w.execute();
   }
 }
