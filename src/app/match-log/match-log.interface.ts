@@ -1,8 +1,8 @@
-import { IHeroLog } from '../hero/interfaces/hero.interface';
+import { IHero } from '../hero/interfaces/hero.interface';
 
 export type TMatchLogInterface = TTurnLog[];
 
-export interface IHeroLogLog extends IHeroLog {
+export interface IHeroLog extends IHero {
   atk: number;
   def: number;
   hp: number;
@@ -20,4 +20,4 @@ export interface IHeroLogLog extends IHeroLog {
   take_dmg?: number;
 }
 
-export type TTurnLog = [IHeroLogLog, IHeroLogLog];
+export type TTurnLog = [IHeroLog, IHeroLog];

@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { queueConfigAsync } from '../../config/queue.config';
 import { AfkConsole } from './afk-console';
+import { SocketConsole } from './socket-console';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { AfkConsole } from './afk-console';
       name: 'socket.io',
     }),
   ],
-  providers: [AfkConsole],
+  providers: [AfkConsole, SocketConsole],
   exports: [],
 })
 export class ConsoleContextModule {}
