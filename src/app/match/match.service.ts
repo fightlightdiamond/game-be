@@ -14,7 +14,7 @@ export class MatchService {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve('time out');
-      }, 10000);
+      }, 1000);
     });
   }
 
@@ -27,9 +27,10 @@ export class MatchService {
   /**
    * execute
    */
-  async execute() {
+  async execute(): Promise<IHeroLog[]> {
     this.info();
     await this.timeoutPromise();
+    const logs: IHeroLog[] = [];
 
     while (
       this.home.current_hp > 0 &&
@@ -39,17 +40,50 @@ export class MatchService {
       console.log('Round: ', this.round);
 
       if (this.home.current_spd > this.away.current_spd) {
-        const [i, y] = this.home.attack(this.away);
-        this.home = i;
-        this.away = y;
+        const res = this.home.attack(this.away);
+        if (res.length == 2) {
+          const [i, y] = res;
+          this.home = i;
+          this.away = y;
+          logs.push(this.home);
+          logs.push(this.away);
+        } else {
+          res.forEach((hero, key) => {
+            logs.push(hero);
+            if (key == 2) {
+              this.home = hero;
+            }
+            if (key == 3) {
+              this.away = hero;
+            }
+            if (key == 4) throw Error('fsfs');
+          });
+        }
       } else {
-        const [i, y] = this.away.attack(this.home);
-        this.home = y;
-        this.away = i;
+        const res = this.away.attack(this.home);
+        if (res.length == 2) {
+          const [i, y] = res;
+          this.home = y;
+          this.away = i;
+          logs.push(this.home);
+          logs.push(this.away);
+        } else {
+          res.forEach((hero, key) => {
+            logs.push(hero);
+            if (key == 2) {
+              this.away = hero;
+            }
+            if (key == 3) {
+              this.home = hero;
+            }
+            if (key == 4) throw Error('fsfs');
+          });
+        }
       }
 
       this.round++;
     }
     console.log('End War');
+    return logs;
   }
 }

@@ -31,6 +31,7 @@ import { HeroEntity } from './app/hero/hero.entity';
 import { UserEntity } from './app/user/user.entity';
 import { HeroRepository } from './app/hero/hero.repository';
 import { AddressRepository } from './app/user/address/address.repository';
+import { MatchController } from './app/match/match.controller';
 
 @Module({
   imports: [
@@ -71,7 +72,7 @@ import { AddressRepository } from './app/user/address/address.repository';
     ]),
     TypeOrmModule.forFeature([HeroEntity, UserEntity]),
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, MatchController],
   providers: [
     AppService,
     ConfirmEmailService,

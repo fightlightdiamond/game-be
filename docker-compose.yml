@@ -13,7 +13,7 @@ services:
       - betn
     environment:
       - MYSQL_ROOT_PASSWORD=123abc
-      - MYSQL_DATABASE=db_site
+      - MYSQL_DATABASE=bet_herox
       - MYSQL_USERNAME=siteuser
       - MYSQL_PASSWORD=sitepass
     ports:
