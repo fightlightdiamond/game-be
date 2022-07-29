@@ -50,8 +50,16 @@ import { MatchController } from './app/match/match.controller';
     GraphQLModule.forRoot<ApolloDriverConfig>(GraphqlConfig.getConfig()),
     // Mail
     MailerModule.forRoot({
-      transport:
-        'smtps://phamminhcuong1704bnfrv@gmail.com:vincent1704BN@smtp.gmail.com',
+      transport: {
+        host: 'localhost',
+        port: 1025,
+        ignoreTLS: true,
+        secure: false,
+        auth: {
+          user: process.env.MAILDEV_INCOMING_USER ?? 'MAILDEV_INCOMING_USER',
+          pass: process.env.MAILDEV_INCOMING_PASS ?? 'MAILDEV_INCOMING_PASS',
+        },
+      },
       defaults: {
         from: '"nest-modules" <modules@nestjs.com>',
       },
