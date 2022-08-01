@@ -7,6 +7,10 @@ import { IHeroLog } from '../hero/hero.log';
 export class SkillService {
   static Hell(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       return [home, away];
     }
     const ratioHp = away.current_hp / away.hp;
@@ -15,12 +19,14 @@ export class SkillService {
       (home.current_hp / home.hp <= 0.5 && ratioHp <= 0.35)
     ) {
       console.log(
-        '-----------------Hell A-------------------',
+        'Hell A',
         home.name,
         home.current_hp,
         away.name,
         away.current_hp,
       );
+      home.is_active_skill = true;
+
       away.status = 0;
       away.current_hp = 0;
     }
@@ -29,11 +35,16 @@ export class SkillService {
 
   static Spinx(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
     const ratioHp = home.current_hp / home.hp;
     if (ratioHp <= 0.5) {
+      home.is_active_skill = true;
       home.intrinsic_status = 1;
       home.current_crit_rate += 20;
       home.current_atk_healing += 30;
@@ -44,15 +55,21 @@ export class SkillService {
 
   static Valkyrie(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
     if (home.intrinsic_status < 5) {
+      home.is_active_skill = true;
       home.intrinsic_status += 1;
     } else {
       home.intrinsic_status = -1;
     }
     const dmg = 0.02 * home.intrinsic_status * away.hp;
+    away.take_skill_dmg = dmg;
     away.current_hp -= dmg;
 
     return [home, away];
@@ -60,15 +77,14 @@ export class SkillService {
 
   static Hera(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
+      //Set lại effect tắt skill
       away.effect_resistance = 0;
       return [home, away];
     }
-
-    console.log(
-      '-----------------Hera-------------------',
-      away.intrinsic_status,
-      home.intrinsic_status,
-    );
 
     if (away.intrinsic_status !== 0 && home.intrinsic_status == 0) {
       home.effect_resistance = 1;
@@ -79,6 +95,7 @@ export class SkillService {
         home.hp,
         away.name,
       );
+      home.is_active_skill = true;
       home.intrinsic_status += 1;
       away.current_atk *= 0.7;
     }
@@ -87,6 +104,7 @@ export class SkillService {
     if (ratioHp <= 0.6) {
       const r = Math.floor(Math.random() * 100) + 1;
       if (r <= 60) {
+        home.is_active_skill = true;
         home.effect_resistance = 1;
         home.current_crit_rate += 10;
         console.log(
@@ -105,12 +123,17 @@ export class SkillService {
 
   static Darklord(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
 
     const ratioHp = away.current_hp / away.hp;
     if (ratioHp <= 0.6) {
+      home.is_active_skill = true;
       home.current_atk *= 1.5;
       home.intrinsic_status = -1;
       console.log(
@@ -128,11 +151,17 @@ export class SkillService {
 
   static Poseidon(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
 
     if (home.intrinsic_status < 10) {
+      //Reset lai
+      home.is_active_skill = true;
       home.intrinsic_status += 1;
     } else {
       home.intrinsic_status = -1;
@@ -143,21 +172,21 @@ export class SkillService {
   }
 
   static Fenrir(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
-    console.log(
-      '-----------------Fenrir-------------------',
-      home.name,
-      away.name,
-    );
     if (away.effect_resistance || home.intrinsic_status === -1) {
       console.log(
         '---------------Fenrir D---------------------',
         away.effect_resistance,
         home.intrinsic_status,
       );
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
-
+    //Reset lai
+    home.is_active_skill = true;
     home.current_crit_rate += 5;
     home.current_crit_dmg += 15;
     console.log(
@@ -173,12 +202,18 @@ export class SkillService {
 
   static Chiron(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
     if (away.effect_resistance) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       return [home, away];
     }
 
     const ratioHp = away.current_hp / away.hp;
     if (ratioHp <= 0.6) {
+      //Reset lai
+      home.is_active_skill = true;
       const r = Math.floor(Math.random() * 100) + 1;
       if (r <= 25) {
         home.effect_resistance = 1;
@@ -189,8 +224,11 @@ export class SkillService {
   }
 
   static Phoenix(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
-    console.log('------------------------------------', home.name, away.name);
     if (away.effect_resistance || home.intrinsic_status === -1) {
+      //Reset lai
+      home.is_active_skill = false;
+      away.take_skill_dmg = 0;
+      home.take_skill_dmg = 0;
       away.effect_resistance = 0;
       console.log(
         '--------------- D---------------------',
@@ -202,6 +240,8 @@ export class SkillService {
 
     const ratioHp = home.current_hp / home.hp;
     if (ratioHp <= 0.5) {
+      //Reset lai
+      home.is_active_skill = true;
       home.current_hp = home.hp;
       home.current_def *= 2;
       home.current_spd *= 2;

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { probability } from '../hero/interfaces/hero.interface';
 import { SkillFactory } from '../skill/skill.factory';
 import { IHeroLog } from '../hero/hero.log';
@@ -9,29 +10,32 @@ export class TurnService {
    * @param away
    */
   static turn(home: IHeroLog, away: IHeroLog) {
+    //Reset
+    home.is_active_skill = false;
+    home.take_skill_dmg = 0;
+    home.is_active_skill = false;
+    home.take_dmg = 0;
+
+    away.is_active_skill = false;
+    away.take_dmg = 0;
+    away.is_active_skill = false;
+    away.take_skill_dmg = 0;
+    // Skill
     const [i, y]: [IHeroLog, IHeroLog] = SkillFactory.create(home, away);
-    home = i;
-    away = y;
+    home = _.cloneDeep(i);
+    away = _.cloneDeep(y);
+    // Dame
     const bProbability = probability();
-    const dame = home.current_atk;
-    console.log('DAME: ', dame);
-    away.current_hp -= this.dameForCrit(bProbability, home, dame);
-
-    console.log(
-      'Turn: ------------> ',
-      home.name,
-      home.current_hp,
-      away.name,
-      away.current_hp,
-    );
-    return [home, away];
-  }
-
-  static dameForCrit(probability, home: IHeroLog, dame) {
-    if (probability > home.current_crit_rate) {
-      return dame;
+    let dame = home.current_atk;
+    console.log('Dame', home.name, dame);
+    if (bProbability <= home.current_crit_rate) {
+      dame = (dame * home.current_crit_dmg) / 100;
+      console.log('Crit', home.name, dame);
+      home.is_crit = true;
     }
-    console.log('Crit', home.name, (dame * home.current_crit_dmg) / 100);
-    return (dame * home.current_crit_dmg) / 100;
+    away.take_dmg = dame;
+    console.log('Take dame', away.name, away.take_dmg);
+    away.current_hp -= dame;
+    return [home, away];
   }
 }

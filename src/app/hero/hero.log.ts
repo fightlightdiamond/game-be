@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { TurnService } from '../turn/turn.service';
 import { Hero, IHero } from './interfaces/hero.interface';
 
@@ -17,7 +18,7 @@ export interface IHeroLog extends IHero {
   is_active_skill: boolean;
   take_skill_dmg: number;
   take_dmg: number;
-
+  round: number;
   attack(away: IHeroLog): IHeroLog[];
   setHome(home: IHero): IHeroLog;
 }
@@ -39,16 +40,22 @@ export class HeroLog extends Hero implements IHeroLog {
   take_dmg_healing: number;
   take_skill_dmg: number;
   status: number;
-
+  round: number;
   attack(away: IHeroLog): IHeroLog[] {
     // Turn 1
-    const [home2, away2]: IHeroLog[] = TurnService.turn(this, away);
+    const [home2, away2]: IHeroLog[] = TurnService.turn(
+      _.cloneDeep(this),
+      _.cloneDeep(away),
+    );
     if (away2.current_hp < 0) {
       console.log(this.name, 'WIN');
       return [home2, away2];
     }
     // Turn 2
-    const [away3, home3] = TurnService.turn(away2, home2);
+    const [away3, home3] = TurnService.turn(
+      _.cloneDeep(away2),
+      _.cloneDeep(home2),
+    );
     if (home3.current_hp < 0) {
       console.log(away.name, 'WIN');
       return [home3, away3];

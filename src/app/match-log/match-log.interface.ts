@@ -7,17 +7,17 @@ export interface IHeroLog extends IHero {
   def: number;
   hp: number;
   spd: number;
-  crit_rate?: number;
-  crit_dmg?: number;
+  crit_rate: number;
+  crit_dmg: number;
   atk_healing?: number;
   take_dmg_healing?: number;
   status?: number;
   intrinsic_status: number;
   effect_resistance: number;
-  is_crit?: boolean;
-  is_active_skill?: boolean;
-  take_skill_dmg?: number;
-  take_dmg?: number;
+  is_crit: boolean;
+  is_active_skill: boolean;
+  take_skill_dmg: number;
+  take_dmg: number;
 }
 
 export type TTurnLog = [IHeroLog, IHeroLog];
