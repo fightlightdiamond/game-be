@@ -5,7 +5,7 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import { BaseSchema } from 'yup';
-import { SerializeValidationError } from '../utils/serializeValidationError';
+import { SerializeValidationError } from '../utils/serialize-validation-error';
 
 @Injectable()
 export class YupValidationPipe implements PipeTransform {

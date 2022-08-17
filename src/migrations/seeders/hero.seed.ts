@@ -1,8 +1,11 @@
-import { Factory, Seeder } from 'typeorm-seeding';
-import { HeroEntity } from '../../app/hero/hero.entity';
+import { factory, Seeder } from 'typeorm-seeding';
+import { HeroEntity } from '../entities/hero.entity';
+import { heroesName } from '../../common/utils/hero.util';
 
 export class HeroSeed implements Seeder {
-  public async run(factory: Factory): Promise<void> {
-    await factory(HeroEntity)().createMany(2);
+  public async run(): Promise<void> {
+    heroesName.map((name) => {
+      return factory(HeroEntity)().create({ name });
+    });
   }
 }

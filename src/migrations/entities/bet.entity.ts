@@ -2,29 +2,31 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
-@Entity('matches')
-export class MatchEntity extends BaseEntity {
+@Entity('bets')
+export class BetEntity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field()
   @Column()
-  atk_id: number;
+  user_id: number;
 
   @Field()
   @Column()
-  def_id: number;
+  match_id: number;
 
   @Field()
   @Column()
-  win_id: number;
+  hero_id: number;
 
   @Field()
   @Column()
-  type: number;
+  balance: number;
 
   @Field()
-  @Column('json')
-  content: string;
+  @Column({
+    default: false,
+  })
+  result: boolean;
 }

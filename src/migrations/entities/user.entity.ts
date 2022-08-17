@@ -13,9 +13,9 @@ import * as bcrypt from 'bcrypt';
 import { Exclude, Expose } from 'class-transformer';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { RoleEnum } from '../auth/role.enum';
-import { UserInterface } from './user.interface';
-import AddressEntity from './address/address.entity';
+import { UserInterface } from '../../app/user/user.interface';
+import { RoleEnum } from '../../app/auth/role.enum';
+import AddressEntity from './address.entity';
 
 @ObjectType()
 @Entity('users')

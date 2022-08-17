@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../user.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('addresses')
 class AddressEntity {

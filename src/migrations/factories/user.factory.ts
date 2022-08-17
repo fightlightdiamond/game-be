@@ -1,6 +1,6 @@
 import { define } from 'typeorm-seeding';
 import { randEmail, randFirstName, randLastName } from '@ngneat/falso';
-import { UserEntity } from '../../app/user/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
 define(UserEntity, () => {
   const u = new UserEntity();

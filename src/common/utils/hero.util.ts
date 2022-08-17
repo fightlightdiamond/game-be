@@ -1,60 +1,7 @@
-// import { TurnService } from '../../turn/turn.service';
-
-export interface IHero {
-  name: string;
-  //Base stats
-  hp: number;
-  atk: number;
-  def: number;
-  spd: number;
-  // Special stats
-  crit_rate?: number;
-  crit_dmg?: number;
-  // L1
-  atk_healing?: number;
-  take_dmg_healing?: number;
-  // L2
-  dodge?: number;
-  acc?: number;
-  // L3
-  cc?: number;
-  //Base stats
-  current_hp?: number;
-  current_atk?: number;
-  current_def?: number;
-  current_spd?: number;
-  // Special stats
-  current_crit_rate?: number;
-  current_crit_dmg?: number;
-  // L1
-  current_atk_healing?: number;
-  current_take_dmg_healing?: number;
-  // L2
-  current_dodge?: number;
-  current_acc?: number;
-  // L3
-  current_cc?: number;
-  intrinsic_status?: number;
-  // action
-  // attack: (targetEntity: IHero) => IHero[];
-  // intrinsic_skill: (targetEntity: IHero) => void;
-  effect_resistance?: number;
-  status?: number;
-  element?: string;
-  position?: string;
-  img?: string;
-}
-
-export interface ISkill {
-  name: string;
-  countdown: number;
-  position: string;
-  status: string;
-  NumberOfUses: number;
-}
+import { IHero } from '../../migrations/interfaces/hero.interface';
 
 export const stats = {
-  HP: 10000,
+  hp: 10000,
   atk: 1000,
   def: 200,
   spd: 100,
@@ -67,8 +14,8 @@ export const stats = {
   acc: 100,
 };
 
-export function HPRandom() {
-  return Math.floor((Math.random() * stats.HP) / 10) + stats.HP;
+export function hpRandom() {
+  return Math.floor((Math.random() * stats.hp) / 10) + stats.hp;
 }
 
 export function atkRandom() {
@@ -94,7 +41,8 @@ export function critRateRandom() {
 export function probability() {
   return Math.floor(Math.random() * 101);
 }
-const herosName = [
+
+export const heroesName = [
   'Fenrir',
   'Phoenix',
   'Hell',
@@ -106,7 +54,7 @@ const herosName = [
 ];
 
 export function getRandomHeroName() {
-  return herosName[Math.floor(Math.random() * herosName.length)];
+  return heroesName[Math.floor(Math.random() * heroesName.length)];
 }
 
 export class Hero implements IHero {
@@ -117,31 +65,21 @@ export class Hero implements IHero {
   spd: number;
   crit_rate?: number;
   crit_dmg?: number;
-  current_atk: number;
-  current_def: number;
-  current_hp: number;
-  current_spd: number;
-  current_crit_rate?: number;
-  current_crit_dmg?: number;
-  current_atk_healing?: number;
-  current_take_dmg_healing?: number;
   status?: number;
   intrinsic_status: number;
   effect_resistance: number;
+  dodge: number;
+  acc: number;
+  cc: number;
+
   constructor() {
     this.atk = atkRandom();
-    this.current_atk = this.atk;
     this.def = defRandom();
-    this.current_def = this.def;
-    this.hp = HPRandom();
-    this.current_hp = this.hp;
+    this.hp = hpRandom();
     this.spd = spdRandom();
-    this.current_spd = this.spd;
     this.name = getRandomHeroName();
     this.crit_dmg = critDmgRandom();
-    this.current_crit_dmg = this.crit_dmg;
     this.crit_rate = critRateRandom();
-    this.current_crit_rate = this.crit_rate;
     this.intrinsic_status = 0;
     this.effect_resistance = 0;
   }

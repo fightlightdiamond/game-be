@@ -1,10 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IHero } from './interfaces/hero.interface';
 
 @ObjectType()
 @Entity('heroes')
-export class HeroEntity extends BaseEntity implements IHero {
+export class HeroEntity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,19 +18,7 @@ export class HeroEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
-  current_acc: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
   atk: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
-  current_atk: number;
 
   @Field()
   @Column({
@@ -43,19 +30,7 @@ export class HeroEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
-  current_atk_healing: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
   cc: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
-  current_cc: number;
 
   @Field()
   @Column({
@@ -67,19 +42,7 @@ export class HeroEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
-  current_crit_dmg: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
   crit_rate: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
-  current_crit_rate: number;
 
   @Field()
   @Column({
@@ -91,19 +54,7 @@ export class HeroEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
-  current_def: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
   dodge: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
-  current_dodge: number;
 
   @Field()
   @Column({
@@ -131,12 +82,6 @@ export class HeroEntity extends BaseEntity implements IHero {
 
   @Field()
   @Column({
-    default: 0,
-  })
-  current_hp: number;
-
-  @Field()
-  @Column({
     default: '',
   })
   name: string;
@@ -157,12 +102,6 @@ export class HeroEntity extends BaseEntity implements IHero {
   @Column({
     default: 0,
   })
-  current_spd: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
   status: number;
 
   @Field()
@@ -170,12 +109,6 @@ export class HeroEntity extends BaseEntity implements IHero {
     default: 0,
   })
   take_dmg_healing: number;
-
-  @Field()
-  @Column({
-    default: 0,
-  })
-  current_take_dmg_healing: number;
 
   @Field()
   @Column({

@@ -4,11 +4,11 @@
  * @param away
  * @param log
  */
-import { IHeroLog } from '../hero/hero.log';
+import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { SkillService } from './skill.service';
 
 export class SkillFactory {
-  static create(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static create(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     switch (home.name) {
       case 'Hell':
         return SkillService.Hell(home, away);

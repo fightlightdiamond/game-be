@@ -8,7 +8,7 @@ module.exports = {
   password: process.env.DB_PASSWORD || '',
   type: process.env.DB_CONNECTION || 'mysql',
   database: process.env.DB_DATABASE || '',
-  entities: ['src/app/**/*.entity{.ts,.js}'],
+  entities: ['src/migrations/entities/*.entity{.ts,.js}'],
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
   migrations: ['src/migrations/*.js'],
   factories: ['src/migrations/factories/*.factory{.ts,.js}'],

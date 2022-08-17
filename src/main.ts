@@ -14,6 +14,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Bet game hero X')
     .setDescription('The bet game hero X API description')
     .setVersion('1.0')

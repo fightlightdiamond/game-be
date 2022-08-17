@@ -1,14 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import { Hero } from '../hero/interfaces/hero.interface';
+import { ApiTags } from '@nestjs/swagger';
 import { MatchService } from './match.service';
 
-@Controller('match')
+@ApiTags('match')
+@Controller('matches')
 export class MatchController {
+  constructor(private readonly matchService: MatchService) {}
+
   @Get('')
   async match() {
-    const a = new Hero();
-    const b = new Hero();
-    const w = new MatchService(a, b);
-    return w.execute();
+    return this.matchService.bet();
   }
 }

@@ -11,7 +11,10 @@ export class LoginReqDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The password',
+    example: 'Hero@123-gamex.com',
+  })
   @IsNotEmpty()
   @Length(8, 24)
   @Matches(REGEX.PASSWORD_RULE, {

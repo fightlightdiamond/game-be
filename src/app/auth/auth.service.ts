@@ -5,9 +5,9 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '../user/user.repository';
-import { UserEntity } from '../user/user.entity';
 import { UserInterface } from '../user/user.interface';
 import JwtConfig from '../../config/jwt.config';
+import { UserEntity } from '../../migrations/entities/user.entity';
 import { AuthTokenService } from './auth-token/auth-token.service';
 import { RegisterReqDto } from './dto/register.req.dto';
 import { LoginReqDto } from './dto/login.req.dto';
@@ -45,7 +45,13 @@ export class AuthService {
       switchMap((user: UserEntity) => {
         return from(
           this.jwtService.signAsync(
-            { user },
+            {
+              user: {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+              },
+            },
             {
               secret: JwtConfig.getConfig(this.config).secret,
             },

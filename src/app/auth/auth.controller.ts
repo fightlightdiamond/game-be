@@ -16,8 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserEntity } from '../user/user.entity';
 import { SETTING } from '../user/user.const';
+import { UserEntity } from '../../migrations/entities/user.entity';
 import { AuthService } from './auth.service';
 import { JwtGuard } from './guards/jwt.guard';
 import { RegisterReqDto } from './dto/register.req.dto';
@@ -49,6 +49,7 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'Login successfully.' })
+  @UsePipes(ValidationPipe)
   login(@Body() user: LoginReqDto): Observable<{ token: string }> {
     return this.authService
       .login(user)

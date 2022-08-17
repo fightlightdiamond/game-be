@@ -2,10 +2,10 @@
 // const DISABLE_STATUS = -1;
 // const ENABLE_STATUS = 0;
 
-import { IHeroLog } from '../hero/hero.log';
+import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 
 export class SkillService {
-  static Hell(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Hell(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -16,7 +16,8 @@ export class SkillService {
     const ratioHp = away.current_hp / away.hp;
     if (
       ratioHp <= 0.3 ||
-      (home.current_hp / home.hp <= 0.5 && ratioHp <= 0.35)
+      (home.current_hp / home.hp <= 0.5 && ratioHp <= 0.35) ||
+      (home.current_hp / home.hp <= 0.1 && ratioHp <= 0.4)
     ) {
       console.log(
         'Hell A',
@@ -33,7 +34,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Spinx(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Spinx(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -53,7 +54,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Valkyrie(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Valkyrie(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -75,7 +76,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Hera(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Hera(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -121,7 +122,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Darklord(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Darklord(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -149,7 +150,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Poseidon(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Poseidon(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -171,7 +172,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Fenrir(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Fenrir(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       console.log(
         '---------------Fenrir D---------------------',
@@ -200,7 +201,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Chiron(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Chiron(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance) {
       //Reset lai
       home.is_active_skill = false;
@@ -223,7 +224,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Phoenix(home: IHeroLog, away: IHeroLog): [IHeroLog, IHeroLog] {
+  static Phoenix(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       //Reset lai
       home.is_active_skill = false;
@@ -239,10 +240,10 @@ export class SkillService {
     }
 
     const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.5) {
+    if (ratioHp <= 0.4) {
       //Reset lai
       home.is_active_skill = true;
-      home.current_hp = home.hp;
+      home.current_hp = home.hp * 0.6;
       home.current_def *= 2;
       home.current_spd *= 2;
       home.intrinsic_status = -1;

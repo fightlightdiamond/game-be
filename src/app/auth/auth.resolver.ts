@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { map, Observable } from 'rxjs';
 import { YupValidationPipe } from '../../common/pipes/yup-validation.pipe';
 import { UserService } from '../user/user.service';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../migrations/entities/user.entity';
 import { ErrorResponse } from './shared/errorResponse';
 import { SignupInput } from './input/signup.input';
 import { LoginInput } from './input/login.input';

@@ -27,11 +27,18 @@ import { GqlAuthGuard } from './app/auth/guards/gql-auth.guard';
 import { AuthController } from './app/auth/auth.controller';
 import { LocalStrategy } from './app/auth/guards/local.strategy';
 import { AuthResolver } from './app/auth/auth.resolver';
-import { HeroEntity } from './app/hero/hero.entity';
-import { UserEntity } from './app/user/user.entity';
 import { HeroRepository } from './app/hero/hero.repository';
 import { AddressRepository } from './app/user/address/address.repository';
 import { MatchController } from './app/match/match.controller';
+import { MatchRepository } from './app/match/match.repository';
+import { MatchService } from './app/match/match.service';
+import { HeroEntity } from './migrations/entities/hero.entity';
+import { BetController } from './app/bet/bet.controller';
+import { BetService } from './app/bet/bet.service';
+import { BetRepository } from './app/bet/bet.repository';
+import { UserHeroRepository } from './app/user-hero/user-hero.repository';
+import { UserHeroController } from './app/user-hero/user-hero.controller';
+import { UserHeroService } from './app/user-hero/user-hero.service';
 
 @Module({
   imports: [
@@ -74,13 +81,21 @@ import { MatchController } from './app/match/match.controller';
     TypeormModule.forCustomRepository([
       AddressRepository,
       AuthTokenRepository,
+      BetRepository,
       UserRepository,
       HeroRepository,
-      AuthTokenRepository,
+      MatchRepository,
+      UserHeroRepository,
     ]),
-    TypeOrmModule.forFeature([HeroEntity, UserEntity]),
+    TypeOrmModule.forFeature([HeroEntity]),
   ],
-  controllers: [AppController, AuthController, MatchController],
+  controllers: [
+    AppController,
+    AuthController,
+    BetController,
+    MatchController,
+    UserHeroController,
+  ],
   providers: [
     AppService,
     ConfirmEmailService,
@@ -96,7 +111,12 @@ import { MatchController } from './app/match/match.controller';
     AuthTokenService,
     GqlAuthGuard,
     AuthResolver,
+    MatchService,
+
+    BetService,
+    UserHeroService,
   ],
+  exports: [MatchService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

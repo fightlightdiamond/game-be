@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
-import { probability } from '../hero/interfaces/hero.interface';
 import { SkillFactory } from '../skill/skill.factory';
-import { IHeroLog } from '../hero/hero.log';
+import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
+import { probability } from '../../common/utils/hero.util';
 
 export class TurnService {
   /**
@@ -9,7 +9,7 @@ export class TurnService {
    * @param home
    * @param away
    */
-  static turn(home: IHeroLog, away: IHeroLog) {
+  static turn(home: IMatchLog, away: IMatchLog) {
     //Reset
     home.is_active_skill = false;
     home.take_skill_dmg = 0;
@@ -21,7 +21,7 @@ export class TurnService {
     away.is_active_skill = false;
     away.take_skill_dmg = 0;
     // Skill
-    const [i, y]: [IHeroLog, IHeroLog] = SkillFactory.create(home, away);
+    const [i, y]: [IMatchLog, IMatchLog] = SkillFactory.create(home, away);
     home = _.cloneDeep(i);
     away = _.cloneDeep(y);
     // Dame
@@ -36,6 +36,7 @@ export class TurnService {
     away.take_dmg = dame;
     console.log('Take dame', away.name, away.take_dmg);
     away.current_hp -= dame;
+    console.log('HP', away.name, away.current_hp);
     return [home, away];
   }
 }

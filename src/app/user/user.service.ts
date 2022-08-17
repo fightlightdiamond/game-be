@@ -18,10 +18,10 @@ import { SignupInput } from '../auth/input/signup.input';
 import { ErrorResponse } from '../auth/shared/errorResponse';
 import { LoginInput } from '../auth/input/login.input';
 import { RegisterReqDto } from '../auth/dto/register.req.dto';
+import { UserEntity } from '../../migrations/entities/user.entity';
 import { ConfirmEmailService } from './email/confirm-email.service';
 import { UserInterface } from './user.interface';
 import { UserRepository } from './user.repository';
-import { UserEntity } from './user.entity';
 
 @Injectable()
 /**
