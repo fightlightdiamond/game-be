@@ -11,6 +11,7 @@ import {
 import { map, Observable } from 'rxjs';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOperation,
   ApiResponse,
@@ -59,10 +60,11 @@ export class AuthController {
   @Post('logout')
   public logout(): void {
     // req.logout();
-    // res.redirect('/api/feed');
+    // res.redirect('/');
   }
 
   @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

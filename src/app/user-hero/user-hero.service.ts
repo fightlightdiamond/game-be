@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../../migrations/entities/user.entity';
@@ -20,13 +20,33 @@ export class UserHeroService {
   async updatePoint(
     id: number,
     data: {
-      atk_plus: number;
-      def_plus: number;
-      hp_plus: number;
-      spd_plus: number;
+      atk_point: number;
+      def_point: number;
+      hp_point: number;
+      spd_point: number;
       user_id: number;
     },
   ) {
+    const userHero = await this.userHeroRepository.findOne({
+      where: {
+        id,
+      },
+      select: ['level'],
+    });
+
+    const { atk_point, def_point, hp_point, spd_point } = data;
+
+    if (userHero.level < atk_point + def_point + hp_point + spd_point) {
+      throw new HttpException(
+        {
+          atk_point: 'The total point cannot be greater than the level',
+          def_point: 'The total point cannot be greater than the level',
+          hp_point: 'The total point cannot be greater than the level',
+          spd_point: 'The total point cannot be greater than the level',
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
     return this.userHeroRepository.update(
       { id: id, user_id: data.user_id },
       data,
@@ -48,23 +68,8 @@ export class UserHeroService {
         select: ['id', 'balance'],
         lock: { mode: 'pessimistic_write' },
       });
-      // const user = await this.userRepository.findOne({
-      //   where: {
-      //     id: user_id,
-      //   },
-      //   select: ['id', 'balance'],
-      //   lock: { mode: 'pessimistic_write' },
-      // });
 
       const { balance } = user;
-
-      // const userHero = await this.userHeroRepository.findOne({
-      //   where: {
-      //     id,
-      //     user_id,
-      //   },
-      //   lock: { mode: 'pessimistic_write' },
-      // });
 
       const userHero = await manager.findOne(UserHeroEntity, {
         where: {
@@ -79,46 +84,31 @@ export class UserHeroService {
 
       console.log({ balance, amount });
 
-      if (balance > amount) {
-        // await this.userRepository.update(
-        //   {
-        //     id: user.id,
-        //   },
-        //   {
-        //     balance: balance - amount,
-        //   },
-        // );
-        //
-        // await this.userHeroRepository.update(
-        //   {
-        //     id,
-        //   },
-        //   {
-        //     level: level + 1,
-        //   },
-        // );
-
-        await manager.update(
-          UserEntity,
-          {
-            id: user_id,
-          },
-          {
-            balance: balance - amount,
-          },
+      if (balance < amount) {
+        throw new HttpException(
+          'The amount is not enough to level up',
+          HttpStatus.CONFLICT,
         );
-
-        await manager.update(
-          UserHeroEntity,
-          {
-            id,
-          },
-          { level: level + 1 },
-        );
-        await queryRunner.commitTransaction();
-      } else {
-        throw Error('Khong du tien nang cap');
       }
+
+      await manager.update(
+        UserEntity,
+        {
+          id: user_id,
+        },
+        {
+          balance: balance - amount,
+        },
+      );
+
+      await manager.update(
+        UserHeroEntity,
+        {
+          id,
+        },
+        { level: level + 1 },
+      );
+      await queryRunner.commitTransaction();
     } catch (err) {
       console.log(err);
       // since we have errors lets rollback the changes we made

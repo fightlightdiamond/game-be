@@ -7,23 +7,29 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { BetReqDto } from './dto/bet.req.dto';
-import { BetRepository } from './bet.repository';
+import { BetService } from './bet.service';
 
 @ApiTags('bet')
 @Controller('bets')
 export class BetController {
-  constructor(private readonly betRepository: BetRepository) {}
+  constructor(private readonly betService: BetService) {}
 
   @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Post('')
   @ApiOperation({ summary: 'bet' })
   @ApiResponse({ status: 200, description: 'bet successfully.' })
   @UsePipes(ValidationPipe)
   async bet(@Req() request, @Body() body: BetReqDto) {
     const { user } = request;
-    return this.betRepository.save({ ...body, user_id: user.id });
+    return this.betService.bet({ ...body, user_id: user.id });
   }
 }

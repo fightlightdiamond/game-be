@@ -26,23 +26,23 @@ export class UserHeroEntity extends BaseEntity {
   @Column({
     default: 0,
   })
-  atk_plus: number;
+  atk_point: number;
 
   @Field()
   @Column({
     default: 0,
   })
-  def_plus: number;
+  def_point: number;
 
   @Field()
   @Column({
     default: 0,
   })
-  hp_plus: number;
+  hp_point: number;
 
   @Field()
   @Column({
     default: 0,
   })
-  spd_plus: number;
+  spd_point: number;
 }

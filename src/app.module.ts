@@ -25,7 +25,6 @@ import { RolesGuard } from './app/auth/guards/roles.guard';
 import { AuthTokenService } from './app/auth/auth-token/auth-token.service';
 import { GqlAuthGuard } from './app/auth/guards/gql-auth.guard';
 import { AuthController } from './app/auth/auth.controller';
-import { LocalStrategy } from './app/auth/guards/local.strategy';
 import { AuthResolver } from './app/auth/auth.resolver';
 import { HeroRepository } from './app/hero/hero.repository';
 import { AddressRepository } from './app/user/address/address.repository';
@@ -105,7 +104,7 @@ import { UserHeroService } from './app/user-hero/user-hero.service';
     JwtService,
     AuthService,
     JwtAuthGuard,
-    LocalStrategy,
+    // LocalStrategy,
     JwtGuard,
     RolesGuard,
     AuthTokenService,

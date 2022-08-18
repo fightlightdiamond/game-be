@@ -6,7 +6,7 @@ export const stats = {
   def: 200,
   spd: 100,
   crit_rate: 20,
-  crit_dmg: 180,
+  crit_dmg: 200,
   // L1
   atk_healing: 15,
   take_dmg_healing: 10,

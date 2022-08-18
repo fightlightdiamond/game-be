@@ -26,6 +26,7 @@ export class BetEntity extends BaseEntity {
 
   @Field()
   @Column({
+    type: 'boolean',
     default: false,
   })
   result: boolean;

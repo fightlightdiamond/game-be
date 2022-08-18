@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Req,
@@ -17,6 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
+import { HeroExistsPipe } from '../../common/pipes/hero-exists.pipe';
 import { UserHeroService } from './user-hero.service';
 import { PickHeroReqDto } from './dto/pick-hero.req.dto';
 import { UpdatePointHeroReqDto } from './dto/update-point-hero.req.dto';
@@ -27,8 +29,8 @@ export class UserHeroController {
   constructor(private readonly userHeroService: UserHeroService) {}
 
   @UseGuards(JwtGuard)
-  @Post('')
   @ApiBearerAuth()
+  @Post('')
   @ApiOperation({ summary: 'user-heroes' })
   @ApiResponse({ status: 200, description: 'select heroes successfully.' })
   @UsePipes(ValidationPipe)
@@ -48,7 +50,7 @@ export class UserHeroController {
   @ApiResponse({ status: 200, description: 'update Point successfully.' })
   @UsePipes(ValidationPipe)
   async updatePoint(
-    @Param('id') id,
+    @Param('id', HeroExistsPipe) id,
     @Body() body: UpdatePointHeroReqDto,
     @Req() request,
   ) {
@@ -66,7 +68,7 @@ export class UserHeroController {
   @ApiOperation({ summary: 'update level for user hero' })
   @ApiResponse({ status: 200, description: 'update level hero successfully.' })
   @UsePipes(ValidationPipe)
-  async levelUp(@Param('id') id, @Req() request) {
+  async levelUp(@Param('id', ParseIntPipe) id, @Req() request) {
     const { user } = request;
     return this.userHeroService.levelUp(id, user.id);
   }

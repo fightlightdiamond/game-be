@@ -1,32 +1,36 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePointHeroReqDto {
   @ApiProperty({
-    description: 'The atk_plus id',
+    description: 'The atk_point id',
     example: 1,
   })
   @IsNotEmpty()
-  atk_plus: number;
+  @Min(0)
+  atk_point: number;
 
   @ApiProperty({
-    description: 'The def_plus id',
+    description: 'The def_point id',
     example: 1,
   })
   @IsNotEmpty()
-  def_plus: number;
+  @Min(0)
+  def_point: number;
 
   @ApiProperty({
-    description: 'The hp_plus id',
+    description: 'The hp_point id',
     example: 1,
   })
   @IsNotEmpty()
-  hp_plus: number;
+  @Min(0)
+  hp_point: number;
 
   @ApiProperty({
-    description: 'The spd_plus id',
+    description: 'The spd_point id',
     example: 1,
   })
   @IsNotEmpty()
-  spd_plus: number;
+  @Min(0)
+  spd_point: number;
 }

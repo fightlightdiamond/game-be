@@ -1,5 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { MatchExists } from '../../../common/validators/match-exists.validator';
+import { HeroExists } from '../../../common/validators/hero-exists.validator';
 
 export class BetReqDto {
   @ApiProperty({
@@ -7,6 +9,7 @@ export class BetReqDto {
     example: 1,
   })
   @IsNotEmpty()
+  @MatchExists()
   match_id: number;
 
   @ApiProperty({
@@ -14,6 +17,7 @@ export class BetReqDto {
     example: 1,
   })
   @IsNotEmpty()
+  @HeroExists()
   hero_id: number;
 
   @ApiProperty({
