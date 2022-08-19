@@ -9,7 +9,9 @@ import { MatchRepository } from '../../app/match/match.repository';
 @ValidatorConstraint({ name: 'MatchExists', async: true })
 @Injectable()
 export class MatchExistsRule implements ValidatorConstraintInterface {
-  constructor(private matchRepository: MatchRepository) {}
+  constructor(private matchRepository: MatchRepository) {
+    console.log({ matchRepository });
+  }
 
   async validate(value: number) {
     try {
@@ -17,6 +19,7 @@ export class MatchExistsRule implements ValidatorConstraintInterface {
         id: value,
       });
     } catch (e) {
+      console.log(e);
       return false;
     }
 

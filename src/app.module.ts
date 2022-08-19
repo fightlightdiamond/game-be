@@ -8,6 +8,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeormConfigAsync } from './config/typeorm.config';
@@ -38,12 +39,27 @@ import { BetRepository } from './app/bet/bet.repository';
 import { UserHeroRepository } from './app/user-hero/user-hero.repository';
 import { UserHeroController } from './app/user-hero/user-hero.controller';
 import { UserHeroService } from './app/user-hero/user-hero.service';
+import { RewardCron } from './app/reward/reward.cron';
+import { queueConfigAsync } from './config/queue.config';
+import { MatchEntity } from './migrations/entities/match.entity';
+import { BetEntity } from './migrations/entities/bet.entity';
+import { UserEntity } from './migrations/entities/user.entity';
+import { MatchExistsRule } from './common/rules/match-exists.rule';
+import { HeroExistsRule } from './common/rules/hero-exists.rule';
+import { UserExistsRule } from './common/rules/user-exists.rule';
+import { PreMatchCron } from './app/match/pre-match.cron';
+import { MatchCron } from './app/match/match.cron';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
+    }),
+    //Queue
+    BullModule.forRootAsync(queueConfigAsync),
+    BullModule.registerQueue({
+      name: 'socket.io',
     }),
     // Cache
     CacheModule.register(),
@@ -86,7 +102,7 @@ import { UserHeroService } from './app/user-hero/user-hero.service';
       MatchRepository,
       UserHeroRepository,
     ]),
-    TypeOrmModule.forFeature([HeroEntity]),
+    TypeOrmModule.forFeature([HeroEntity, MatchEntity, BetEntity, UserEntity]),
   ],
   controllers: [
     AppController,
@@ -114,6 +130,16 @@ import { UserHeroService } from './app/user-hero/user-hero.service';
 
     BetService,
     UserHeroService,
+
+    //Cron
+    PreMatchCron,
+    MatchCron,
+    RewardCron,
+
+    //Validate
+    MatchExistsRule,
+    HeroExistsRule,
+    UserExistsRule,
   ],
   exports: [MatchService],
 })

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MatchService } from './match.service';
 
 @ApiTags('match')
@@ -10,5 +10,12 @@ export class MatchController {
   @Get('')
   async match() {
     return this.matchService.bet();
+  }
+
+  @ApiOperation({ summary: 'Match History' })
+  @ApiResponse({ status: 200, description: 'Match History successfully.' })
+  @Get('/history')
+  async histories() {
+    return this.matchService.history();
   }
 }

@@ -137,4 +137,10 @@ export class MatchService {
 
     return logs;
   }
+
+  async history() {
+    return this.matchRepository.findOneByOrFail({
+      id: 1,
+    });
+  }
 }

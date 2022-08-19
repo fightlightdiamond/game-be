@@ -13,3 +13,25 @@
    5 phút 1 lần: 2 phút bet: 3 phút xem trận đấu
    
 4. Tính năng cơ bản khác: login, register, phân quyền ...
+
+
+Boss
+[Destroyer of all]: 10 phút 1 lần random chọn 1 user còn tiền để quyết đấu
+- Tăng 10% dmg
+- Giảm 10% thiệt hại nhận vào
+- Nội tại có thể cấm: Ngẫu nhiên sử dụng 1 skill của các nhân vật
+- Nội tại không bị cấm: Khi máu xuống dưới 15% auto crit: Final attack
+- base start chính là nhân vật quyết đấu
+
+thua -10% tiền
+thắng x2 tiền
+  
+[Thần tài]: 1h/1 lần random chọn 1 user còn tiền x1.1 - x1.5 % tiền
+
+[Trồng cây]: ngày 1 lần
+tốn 1% tiền
+giữ cây trong 10 phút: 1% tiền -> 1 tiếng 6%. Nếu không thu hoạch có thể trồng vĩnh viễn
+[Cướp cây]: đột nhập ngẫu nhiên user hoặc chỉ định xem có ai trồng cây không để cướp
+10 phút/lần. 
+- Nếu có trồng cây: auto bet - thắng lấy 1% tiền đối phương
+- [Kẻ hủy diệt tất cả] nếu nhắm trúng người đang trồng cây thì cũng bị mất cây

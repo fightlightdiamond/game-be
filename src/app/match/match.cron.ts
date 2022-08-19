@@ -10,7 +10,7 @@ import { NameQueueConstant } from '../../common/constants/name-queue.constant';
 import { MatchRepository } from './match.repository';
 
 @Injectable()
-export class MatchService {
+export class MatchCron {
   home: IMatchLog;
   away: IMatchLog;
   round = 1;
@@ -21,27 +21,22 @@ export class MatchService {
     private readonly matchRepository: MatchRepository,
   ) {}
 
-  @Cron('0 */10 * * * *')
+  @Cron('0 3,*/10 * * * *')
   async execute() {
     const match = await this.matchRepository.findOne({
-      where: { status: BetStatusConstant.PENDING },
-      select: ['id', 'hero_info'],
+      where: { status: BetStatusConstant.BETTING },
+      select: ['id', 'turns'],
     });
-
-    if (!match) {
-      console.log('Not found match', match);
-      return;
-    }
 
     await this.matchRepository.update(
       { id: match.id },
       {
-        status: BetStatusConstant.BETTING,
+        status: BetStatusConstant.FIGHTING,
       },
     );
 
     const data: ISocketQueueContract = {
-      event: 'pre-bet',
+      event: 'matching',
       room: 'match',
       data: match,
     };

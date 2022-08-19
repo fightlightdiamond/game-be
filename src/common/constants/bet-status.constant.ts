@@ -1,5 +1,6 @@
 export enum BetStatusConstant {
   PENDING = 0,
   BETTING = 1,
-  END = 2,
+  FIGHTING = 2,
+  END = 3,
 }

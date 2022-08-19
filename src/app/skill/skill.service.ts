@@ -173,6 +173,9 @@ export class SkillService {
   }
 
   static Fenrir(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
+    /**
+     * 1. Cam hieu ung, 2. Hieu sai het
+     */
     if (away.effect_resistance || home.intrinsic_status === -1) {
       console.log(
         '---------------Fenrir D---------------------',

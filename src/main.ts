@@ -6,6 +6,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -30,6 +31,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.listen(3003);
 }
 void bootstrap().then(() => console.log('Server started...'));
