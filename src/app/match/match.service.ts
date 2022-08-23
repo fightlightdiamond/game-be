@@ -5,6 +5,7 @@ import { IHero } from '../../migrations/interfaces/hero.interface';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { MatchEntity } from '../../migrations/entities/match.entity';
 import { HeroRepository } from '../hero/hero.repository';
+import { BetStatusConstant } from '../../common/constants/bet-status.constant';
 import { MatchRepository } from './match.repository';
 
 @Injectable()
@@ -44,27 +45,10 @@ export class MatchService {
     return this;
   }
 
-  async timeoutPromise() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('time out');
-      }, 1000);
-    });
-  }
-
-  info() {
-    console.log(this.home);
-    console.log(this.away);
-    console.log('Who Win?');
-  }
-
   /**
    * execute
    */
-  async execute(): Promise<IMatchLog[]> {
-    this.info();
-    await this.timeoutPromise();
-    // let logs: IMatchLog[] = [_.cloneDeep(this.home), _.cloneDeep(this.away)];
+  async execute(): Promise<MatchEntity> {
     let logs: IMatchLog[] = [];
 
     while (
@@ -119,28 +103,119 @@ export class MatchService {
 
       this.round++;
     }
-    console.log('End War');
 
-    // this.match.turns = JSON.stringify(logs);
+    const dataMatchUpdate = {
+      turn_number: this.round,
+      winner:
+        this.home.current_hp > this.away.current_hp
+          ? this.home.id
+          : this.away.id,
+      loser:
+        this.home.current_hp > this.away.current_hp
+          ? this.away.id
+          : this.home.id,
+      turns: JSON.stringify(logs),
+    };
+
     await this.matchRepository.update(
       {
         id: this.match.id,
       },
       {
-        turn_number: this.round,
-        winner: this.home.current_hp > this.away.current_hp ? 1 : 0,
-        loser: this.home.current_hp > this.away.current_hp ? 0 : 1,
-        turns: JSON.stringify(logs),
+        ...dataMatchUpdate,
       },
     );
-    // await this.match.save();
 
-    return logs;
+    this.match.turn_number = dataMatchUpdate.turn_number;
+    this.match.winner = dataMatchUpdate.winner;
+    this.match.loser = dataMatchUpdate.loser;
+    this.match.turns = dataMatchUpdate.turns;
+
+    return this.match;
+  }
+
+  async find(id: number) {
+    return this.matchRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   async history() {
     return this.matchRepository.findOneByOrFail({
       id: 1,
     });
+  }
+
+  async betting() {
+    const match = await this.matchRepository
+      .createQueryBuilder()
+      .where({
+        status: BetStatusConstant.PENDING,
+      })
+      .orWhere({
+        status: BetStatusConstant.BETTING,
+      })
+      .orWhere({
+        status: BetStatusConstant.FIGHTING,
+      })
+      .getOne();
+
+    if (!match) {
+      return match;
+    }
+
+    switch (match.status) {
+      case BetStatusConstant.PENDING:
+        return {
+          id: match.id,
+          hero_info: match.hero_info,
+          status: match.status,
+        };
+      case BetStatusConstant.BETTING:
+        return {
+          id: match.id,
+          hero_info: match.hero_info,
+          status: match.status,
+        };
+      case BetStatusConstant.FIGHTING:
+        return match;
+    }
+  }
+
+  async statistic(orderBy: string) {
+    const oderByArr: string[] = ['lose_num', 'total', 'percent', 'win_num'];
+    let orderQuery = '';
+    if (oderByArr.includes(orderBy)) {
+      orderQuery = `order by ${orderBy}`;
+    }
+    return this.matchRepository
+      .query(`with win_table as (SELECT count(id) as win, winner FROM bet_herox.matches group by winner order by win),
+ lose_table as (SELECT count(id) as lose, loser FROM bet_herox.matches group by loser order by lose)
+ select id, name, win, lose, (win/lose) as percent, (win + lose) as total 
+ from bet_herox.heroes
+ left join lose_table on heroes.id = lose_table.loser
+ left join win_table on heroes.id = win_table.winner
+   ${orderQuery}`);
+  }
+
+  async statisticOne(id: number, orderBy: string) {
+    const oderByArr: string[] = ['lose_num', 'total', 'percent', 'win_num'];
+    let orderQuery = '';
+
+    if (oderByArr.includes(orderBy)) {
+      orderQuery = `order by ${orderBy}`;
+    }
+
+    const query = ` with win_table as (SELECT  count(id) as lose_num, loser, winner FROM bet_herox.matches where loser = ${id} group by winner),
+ lose_table as (SELECT  count(id) as win_num, loser, winner FROM bet_herox.matches where winner = ${id} group by loser),
+ hero_table as (SELECT id, name from bet_herox.heroes where id != ${id})
+select id, name, win_num, lose_num, (win_num/lose_num) as percent, (win_num + lose_num) as total 
+from hero_table
+ left join lose_table on hero_table.id = lose_table.loser
+ left join win_table on hero_table.id = win_table.winner
+ ${orderQuery}`;
+    return this.matchRepository.query(query);
   }
 }

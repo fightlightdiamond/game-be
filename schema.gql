@@ -9,6 +9,9 @@ type ErrorResponse {
 
 type LoginResponse {
   token: String!
+  balance: Float!
+  email: String!
+  id: Float!
 }
 
 type Query {

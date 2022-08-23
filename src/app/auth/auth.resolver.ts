@@ -10,6 +10,7 @@ import { SignupInput } from './input/signup.input';
 import { LoginInput } from './input/login.input';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './shared/loginResponse';
+import { ILoginResDto } from './dto/login.res.dto';
 
 const signupInputSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -42,7 +43,6 @@ export class AuthResolver {
   ): Promise<ErrorResponse[] | string> {
     try {
       const res = await this.userService.login(loginInput);
-      console.log({ res });
       return res;
     } catch (e) {
       return 'error';
@@ -59,9 +59,7 @@ export class AuthResolver {
       const u = new UserEntity();
       u.email = loginInput.email;
       u.password = loginInput.password;
-      return this.authService
-        .login(u)
-        .pipe(map((jwt: string) => ({ token: jwt })));
+      return this.authService.login(u).pipe(map((res: ILoginResDto) => res));
     } catch (e) {
       return 'error';
     }

@@ -21,7 +21,7 @@ export class MatchCron {
     private readonly matchRepository: MatchRepository,
   ) {}
 
-  @Cron('0 3,*/10 * * * *')
+  // @Cron('0 3,*/10 * * * *')
   async execute() {
     const match = await this.matchRepository.findOne({
       where: { status: BetStatusConstant.BETTING },
@@ -42,7 +42,5 @@ export class MatchCron {
     };
 
     await this.queue.add(NameQueueConstant.ROOM_QUEUE, data);
-
-    console.log('betting', match);
   }
 }

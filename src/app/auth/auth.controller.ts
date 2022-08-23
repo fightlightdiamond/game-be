@@ -23,6 +23,7 @@ import { AuthService } from './auth.service';
 import { JwtGuard } from './guards/jwt.guard';
 import { RegisterReqDto } from './dto/register.req.dto';
 import { LoginReqDto } from './dto/login.req.dto';
+import { ILoginResDto } from './dto/login.res.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -47,20 +48,17 @@ export class AuthController {
     return this.authService.register(registerBody);
   }
 
-  @Post('login')
+  @Post('sign-in')
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'Login successfully.' })
   @UsePipes(ValidationPipe)
-  login(@Body() user: LoginReqDto): Observable<{ token: string }> {
-    return this.authService
-      .login(user)
-      .pipe(map((jwt: string) => ({ token: jwt })));
+  login(@Body() user: LoginReqDto): Observable<ILoginResDto> {
+    return this.authService.login(user).pipe(map((res: ILoginResDto) => res));
   }
 
   @Post('logout')
   public logout(): void {
     // req.logout();
-    // res.redirect('/');
   }
 
   @UseGuards(JwtGuard)

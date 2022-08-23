@@ -20,7 +20,7 @@ export class RewardCron {
   /**
    * TODO: chưa test
    */
-  @Cron('0 8,*/10 * * * *')
+  // @Cron('0 8,*/10 * * * *')
   async endMatch() {
     const match = await this.matchRepository.findOne({
       where: {

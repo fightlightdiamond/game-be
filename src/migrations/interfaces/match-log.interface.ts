@@ -1,6 +1,7 @@
 import { IHero } from './hero.interface';
 
 export interface IMatchLog {
+  id?: number;
   name: string;
   effect_resistance: number;
   intrinsic_status: number;

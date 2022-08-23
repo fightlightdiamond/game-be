@@ -13,11 +13,16 @@ export class SkillService {
       home.take_skill_dmg = 0;
       return [home, away];
     }
-    const ratioHp = away.current_hp / away.hp;
+    const ratioAwayHp = away.current_hp / away.hp;
+
+    // if (home.hp <= 0.5) {
+    //   home.is_active_skill = true;
+    //   away.current_hp *= 0.7;
+    // }
+
     if (
-      ratioHp <= 0.3 ||
-      (home.current_hp / home.hp <= 0.5 && ratioHp <= 0.35) ||
-      (home.current_hp / home.hp <= 0.1 && ratioHp <= 0.4)
+      ratioAwayHp <= 0.3 ||
+      (home.current_hp / home.hp <= 0.01 && ratioAwayHp <= 0.4)
     ) {
       console.log(
         'Hell A',
@@ -31,6 +36,11 @@ export class SkillService {
       away.status = 0;
       away.current_hp = 0;
     }
+
+    if (home.current_hp / home.hp <= 0.6) {
+      away.current_def = 0;
+    }
+
     return [home, away];
   }
 
@@ -64,6 +74,7 @@ export class SkillService {
       return [home, away];
     }
     if (home.intrinsic_status < 5) {
+      home.current_def *= 1.15;
       home.is_active_skill = true;
       home.intrinsic_status += 1;
     } else {
@@ -88,35 +99,32 @@ export class SkillService {
     }
 
     if (away.intrinsic_status !== 0 && home.intrinsic_status == 0) {
-      home.effect_resistance = 1;
-      console.log(
-        '-----------------Hera BB-------------------',
-        home.name,
-        home.current_hp,
-        home.hp,
-        away.name,
-      );
+      //Kick hoat skill
       home.is_active_skill = true;
-      home.intrinsic_status += 1;
-      away.current_atk *= 0.7;
+      // Tang diem noi tai
+      home.intrinsic_status = 1;
+      away.current_atk *= 0.75;
     }
 
-    const ratioHp = away.current_hp / away.hp;
-    if (ratioHp <= 0.6) {
+    const ratioHp = home.current_hp / home.hp;
+    if (ratioHp <= 0.7) {
       const r = Math.floor(Math.random() * 100) + 1;
-      if (r <= 60) {
-        home.is_active_skill = true;
+      if (r <= 33) {
+        // Cam skill
         home.effect_resistance = 1;
-        home.current_crit_rate += 10;
         console.log(
           '-----------------Hera A-------------------',
           home.name,
           home.current_hp,
-          ratioHp,
+          // ratioHp,
           home.hp,
           away.name,
         );
+      } else {
+        home.current_crit_dmg *= 1.1;
+        home.current_def *= 1.15;
       }
+      home.is_active_skill = true;
     }
 
     return [home, away];
@@ -132,10 +140,11 @@ export class SkillService {
       return [home, away];
     }
 
-    const ratioHp = away.current_hp / away.hp;
+    const ratioHp = home.current_hp / home.hp;
     if (ratioHp <= 0.6) {
       home.is_active_skill = true;
-      home.current_atk *= 1.5;
+      home.current_atk *= 1.55;
+      home.current_def *= 1.5;
       home.intrinsic_status = -1;
       console.log(
         '-----------------Darklord A-------------------',
@@ -164,11 +173,13 @@ export class SkillService {
       //Reset lai
       home.is_active_skill = true;
       home.intrinsic_status += 1;
-    } else {
-      home.intrinsic_status = -1;
+      home.current_atk *= 1.07;
+      home.current_def *= 1.02;
     }
+    // else {
+    //   // home.intrinsic_status = -1;
+    // }
 
-    home.current_atk *= 1.07;
     return [home, away];
   }
 
@@ -193,13 +204,14 @@ export class SkillService {
     home.is_active_skill = true;
     home.current_crit_rate += 5;
     home.current_crit_dmg += 15;
+    // home.current_def += 1.07;
     console.log(
       '-----------------Fenrir A-------------------',
       home.name,
       away.name,
     );
 
-    home.intrinsic_status = -2;
+    home.intrinsic_status += 1;
 
     return [home, away];
   }
@@ -214,16 +226,19 @@ export class SkillService {
       return [home, away];
     }
 
-    const ratioHp = away.current_hp / away.hp;
-    if (ratioHp <= 0.6) {
-      //Reset lai
-      home.is_active_skill = true;
-      const r = Math.floor(Math.random() * 100) + 1;
-      if (r <= 25) {
-        home.effect_resistance = 1;
-      }
-      home.current_atk *= 1.15;
-    }
+    // const ratioHp = home.current_hp / home.hp;
+    // if (ratioHp <= 0.6) {
+    //Reset lai
+    home.is_active_skill = true;
+    // const r = Math.floor(Math.random() * 100) + 1;
+    // if (r <= 25) {
+    //   home.effect_resistance = 1;
+    // }
+    home.current_atk *= 1.035;
+    home.current_hp += 0.05 * (home.hp - home.current_hp);
+    home.current_def *= 1.03;
+    home.intrinsic_status += 1;
+    // }
     return [home, away];
   }
 
@@ -243,12 +258,19 @@ export class SkillService {
     }
 
     const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.4) {
+    if (ratioHp <= 0.5) {
       //Reset lai
       home.is_active_skill = true;
-      home.current_hp = home.hp * 0.6;
+      // if (away.intrinsic_status > 3) {
+      //   home.current_hp = home.hp * away.intrinsic_status * 0.16;
+      // } else {
+      //
+      // }
+      home.current_hp += (home.hp - home.current_hp) * 0.6;
+
       home.current_def *= 2;
-      home.current_spd *= 2;
+      // home.current_spd *= 1.1;
+      // home.effect_resistance = 1;
       home.intrinsic_status = -1;
 
       console.log(

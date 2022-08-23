@@ -67,7 +67,7 @@ export class AppGateway
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, room: string) {
     await client.join(room);
-    client.emit('joinedRoom', '0k');
+    client.emit('joinedRoom', room);
     return room;
   }
 

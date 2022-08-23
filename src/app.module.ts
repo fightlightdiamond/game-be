@@ -9,6 +9,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
 import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeormConfigAsync } from './config/typeorm.config';
@@ -39,7 +40,6 @@ import { BetRepository } from './app/bet/bet.repository';
 import { UserHeroRepository } from './app/user-hero/user-hero.repository';
 import { UserHeroController } from './app/user-hero/user-hero.controller';
 import { UserHeroService } from './app/user-hero/user-hero.service';
-import { RewardCron } from './app/reward/reward.cron';
 import { queueConfigAsync } from './config/queue.config';
 import { MatchEntity } from './migrations/entities/match.entity';
 import { BetEntity } from './migrations/entities/bet.entity';
@@ -48,7 +48,10 @@ import { MatchExistsRule } from './common/rules/match-exists.rule';
 import { HeroExistsRule } from './common/rules/hero-exists.rule';
 import { UserExistsRule } from './common/rules/user-exists.rule';
 import { PreMatchCron } from './app/match/pre-match.cron';
-import { MatchCron } from './app/match/match.cron';
+import { FightingService } from './app/match/fighting.service';
+import { BetConsumer } from './app/bet/bet.consumer';
+import { RewardService } from './app/reward/reward.service';
+import { StatisticMatchController } from './app/match/statistic-match.controller';
 
 @Module({
   imports: [
@@ -56,10 +59,15 @@ import { MatchCron } from './app/match/match.cron';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    //Cron
+    ScheduleModule.forRoot(),
     //Queue
     BullModule.forRootAsync(queueConfigAsync),
     BullModule.registerQueue({
       name: 'socket.io',
+    }),
+    BullModule.registerQueue({
+      name: 'bet',
     }),
     // Cache
     CacheModule.register(),
@@ -109,6 +117,7 @@ import { MatchCron } from './app/match/match.cron';
     AuthController,
     BetController,
     MatchController,
+    StatisticMatchController,
     UserHeroController,
   ],
   providers: [
@@ -133,8 +142,13 @@ import { MatchCron } from './app/match/match.cron';
 
     //Cron
     PreMatchCron,
-    MatchCron,
-    RewardCron,
+
+    //Bet
+    FightingService,
+    RewardService,
+
+    //Consumer
+    BetConsumer,
 
     //Validate
     MatchExistsRule,

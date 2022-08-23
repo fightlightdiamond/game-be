@@ -40,7 +40,6 @@ export class JwtAuthGuard extends PassportStrategy(Strategy) {
       token,
       userId: user.id,
     });
-    console.log({ token, user });
     if (!authToken) {
       throw new UnauthorizedException();
     }

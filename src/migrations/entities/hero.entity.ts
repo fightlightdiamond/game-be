@@ -114,6 +114,12 @@ export class HeroEntity extends BaseEntity {
   @Column({
     type: 'text',
   })
+  skill: string;
+
+  @Field()
+  @Column({
+    type: 'text',
+  })
   story: string;
 
   @Field()

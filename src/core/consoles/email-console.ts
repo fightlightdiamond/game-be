@@ -7,7 +7,6 @@ export class EmailConsole {
 
   @Command({ command: 'mail' })
   async test() {
-    console.log('Mail Testing...');
     await this.emailService.example();
   }
 }

@@ -11,6 +11,7 @@ import { UserEntity } from '../../migrations/entities/user.entity';
 import { AuthTokenService } from './auth-token/auth-token.service';
 import { RegisterReqDto } from './dto/register.req.dto';
 import { LoginReqDto } from './dto/login.req.dto';
+import { ILoginResDto } from './dto/login.res.dto';
 
 /**
  * Auth Service
@@ -39,7 +40,7 @@ export class AuthService {
    * Login
    * @param user
    */
-  login(user: LoginReqDto): Observable<string> {
+  login(user: LoginReqDto): Observable<ILoginResDto> {
     const { email, password } = user;
     return this.validateUser(email, password).pipe(
       switchMap((user: UserEntity) => {
@@ -62,7 +63,16 @@ export class AuthService {
               userId: user.id,
               token: jwt,
             });
-            return jwt;
+
+            const { id, email, balance } = user;
+            const payload: ILoginResDto = {
+              id,
+              email,
+              balance,
+              token: jwt,
+            };
+
+            return payload;
           }),
         );
       }),

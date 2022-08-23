@@ -35,7 +35,7 @@ export class TurnService {
     }
     away.take_dmg = dame;
     console.log('Take dame', away.name, away.take_dmg);
-    away.current_hp -= dame;
+    away.current_hp -= dame - away.current_def;
     console.log('HP', away.name, away.current_hp);
     return [home, away];
   }
