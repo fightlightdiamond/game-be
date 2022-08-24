@@ -52,6 +52,8 @@ import { FightingService } from './app/match/fighting.service';
 import { BetConsumer } from './app/bet/bet.consumer';
 import { RewardService } from './app/reward/reward.service';
 import { StatisticMatchController } from './app/match/statistic-match.controller';
+import { ChartsService } from './app/charts/charts.service';
+import { ChartsController } from './app/charts/charts.controller';
 
 @Module({
   imports: [
@@ -119,6 +121,7 @@ import { StatisticMatchController } from './app/match/statistic-match.controller
     MatchController,
     StatisticMatchController,
     UserHeroController,
+    ChartsController,
   ],
   providers: [
     AppService,
@@ -154,6 +157,7 @@ import { StatisticMatchController } from './app/match/statistic-match.controller
     MatchExistsRule,
     HeroExistsRule,
     UserExistsRule,
+    ChartsService,
   ],
   exports: [MatchService],
 })

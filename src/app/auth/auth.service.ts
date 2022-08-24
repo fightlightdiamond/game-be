@@ -124,4 +124,19 @@ export class AuthService {
       }),
     );
   }
+
+  async profile(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'balance',
+        'avatar',
+        'address',
+      ],
+    });
+  }
 }

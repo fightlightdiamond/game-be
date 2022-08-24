@@ -63,8 +63,10 @@ export class AuthController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Profile' })
+  @ApiResponse({ status: 200, description: 'Profile successfully.' })
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@Request() req) {
+    return this.authService.profile(req.user.id);
   }
 }
