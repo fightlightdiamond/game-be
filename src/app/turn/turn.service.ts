@@ -27,16 +27,12 @@ export class TurnService {
     // Dame
     const bProbability = probability();
     let dame = home.current_atk;
-    console.log('Dame', home.name, dame);
     if (bProbability <= home.current_crit_rate) {
-      dame = (dame * home.current_crit_dmg) / 100;
-      console.log('Crit', home.name, dame);
+      dame = Math.round((dame * home.current_crit_dmg) / 100);
       home.is_crit = true;
     }
     away.take_dmg = dame;
-    console.log('Take dame', away.name, away.take_dmg);
     away.current_hp -= dame - away.current_def;
-    console.log('HP', away.name, away.current_hp);
     return [home, away];
   }
 }

@@ -17,7 +17,8 @@ export class PreMatchCron {
     private readonly matchService: MatchService,
   ) {}
 
-  @Cron('0 */10 * * * *')
+  // @Cron('0 */10 * * * *')
+  @Cron('0 * * * * *')
   async execute() {
     let match = await this.matchRepository.findOne({
       where: { status: BetStatusConstant.PENDING },
@@ -60,7 +61,5 @@ export class PreMatchCron {
       },
       { delay: 48000 }, // 8 m delayed
     );
-
-    console.log('betting', match);
   }
 }

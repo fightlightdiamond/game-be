@@ -58,7 +58,6 @@ export class MatchService {
     ) {
       this.home.round = this.round;
       this.away.round = this.round;
-      console.log('Round: ', this.round);
 
       if (this.home.current_spd > this.away.current_spd) {
         const res = this.home.attack(_.cloneDeep(this.away));
@@ -76,7 +75,6 @@ export class MatchService {
             if (key == 3) {
               this.away = hero;
             }
-            if (key == 4) throw Error('fsfs');
           });
         }
       } else {
