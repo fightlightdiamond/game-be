@@ -63,26 +63,27 @@ export class HeroLog extends Hero implements IMatchLog {
       _.cloneDeep(away),
     );
 
-    if (away2.current_hp < 0) {
-      console.log(this.name, 'WIN');
-
+    if (away2.current_hp <= 0) {
       return [home2, away2];
     }
+
     // Turn 2
     const [away3, home3] = TurnService.turn(
       _.cloneDeep(away2),
       _.cloneDeep(home2),
     );
 
-    if (home3.current_hp < 0) {
-      console.log(away.name, 'WIN');
-
+    if (home3.current_hp <= 0) {
       return [home3, away3];
     }
 
     return [home2, away2, home3, away3];
   }
 
+  /**
+   * Set Đội tuyển
+   * @param home
+   */
   setHome(home: IHero): IMatchLog {
     for (const [key, value] of Object.entries(home)) {
       this[key] = value;

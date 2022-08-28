@@ -64,15 +64,10 @@ export class AuthService {
               token: jwt,
             });
 
-            const { id, email, balance } = user;
-            const payload: ILoginResDto = {
-              id,
-              email,
-              balance,
+            return {
+              user,
               token: jwt,
             };
-
-            return payload;
           }),
         );
       }),
@@ -87,7 +82,16 @@ export class AuthService {
   validateUser(email: string, password: string): Observable<UserEntity> {
     return from(
       this.userRepository.findOne({
-        select: ['id', 'firstName', 'lastName', 'email', 'password', 'role'],
+        select: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'password',
+          'role',
+          'balance',
+          'address',
+        ],
         where: { email },
       }),
     ).pipe(

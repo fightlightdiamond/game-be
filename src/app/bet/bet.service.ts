@@ -51,4 +51,11 @@ export class BetService {
 
     return this.betRepository.save(body);
   }
+
+  async getOneByData(data) {
+    return this.betRepository.findOne({
+      where: data,
+      select: ['id', 'balance'],
+    });
+  }
 }

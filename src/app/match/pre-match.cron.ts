@@ -18,18 +18,9 @@ export class PreMatchCron {
   ) {}
 
   // @Cron('0 */10 * * * *')
-  @Cron('0 * * * * *')
+  @Cron('0 */5 * * * *')
   async execute() {
-    let match = await this.matchRepository.findOne({
-      where: { status: BetStatusConstant.PENDING },
-      select: ['id', 'hero_info'],
-    });
-
-    if (!match) {
-      match = await this.matchService.bet();
-
-      // await this.matchService.bet();
-    }
+    const match = await this.matchService.bet();
 
     await this.matchRepository.update(
       { id: match.id },
@@ -38,6 +29,7 @@ export class PreMatchCron {
       },
     );
 
+    match.status = BetStatusConstant.BETTING;
     const data: ISocketQueueContract = {
       event: 'betting',
       room: 'match',
@@ -47,11 +39,11 @@ export class PreMatchCron {
     await this.queue.add(NameQueueConstant.ROOM_QUEUE, data);
 
     await this.betQueue.add(
-      NameQueueConstant.MATCH_QUEUE,
+      NameQueueConstant.FIGHT_QUEUE,
       {
         id: match.id,
       },
-      { delay: 18000 }, // 3 m delayed
+      { delay: 1000 * 60 * 2 }, // 1 m delayed
     );
 
     await this.betQueue.add(
@@ -59,7 +51,7 @@ export class PreMatchCron {
       {
         id: match.id,
       },
-      { delay: 48000 }, // 8 m delayed
+      { delay: 1000 * 60 * 3 }, // 8 m delayed
     );
   }
 }

@@ -27,46 +27,44 @@ export class RewardService {
       },
     });
 
-    if (match) {
-      const { winner } = match;
-      await this.matchRepository.update(
-        { id: match.id },
-        {
-          status: BetStatusConstant.END,
-        },
+    const { winner } = match;
+    await this.matchRepository.update(
+      { id: match.id },
+      {
+        status: BetStatusConstant.END,
+      },
+    );
+
+    const bets = await this.betRepository.find({
+      where: {
+        match_id: id,
+        hero_id: winner,
+      },
+      select: ['user_id', 'balance'],
+    });
+
+    /**
+     * TODO: sau này cần chuyển qua update switch case
+     */
+    const ps = [];
+    for (const bet of bets) {
+      ps.push(
+        this.userRepository.update(
+          {
+            id: bet.user_id,
+          },
+          {
+            balance: () => `balance + ${bet.user_id * 2}`,
+          },
+        ),
       );
-
-      const bets = await this.betRepository.find({
-        where: {
-          match_id: id,
-          hero_id: winner,
-        },
-        select: ['user_id', 'balance'],
-      });
-
-      /**
-       * TODO: sau này cần chuyển qua update switch case
-       */
-      const ps = [];
-      for (const bet of bets) {
-        ps.push(
-          this.userRepository.update(
-            {
-              id: bet.user_id,
-            },
-            {
-              balance: () => `balance + ${bet.user_id * 2}`,
-            },
-          ),
-        );
-      }
-      await Promise.all(ps);
-
-      await this.queue.add(NameQueueConstant.ROOM_QUEUE, {
-        room: 'all',
-        event: 'reward',
-        data: bets,
-      });
     }
+    await Promise.all(ps);
+
+    await this.queue.add(NameQueueConstant.ROOM_QUEUE, {
+      room: 'all',
+      event: 'reward',
+      data: bets,
+    });
   }
 }

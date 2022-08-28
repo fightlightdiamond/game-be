@@ -22,9 +22,6 @@ export class MatchService {
 
   async bet() {
     const heroes = await this.heroRepository.getPairHeroes();
-    if (heroes.length !== 2) {
-      throw Error("Can't match heroes");
-    }
 
     const a = heroes[0];
     const b = heroes[1];
@@ -61,10 +58,11 @@ export class MatchService {
 
       if (this.home.current_spd > this.away.current_spd) {
         const res = this.home.attack(_.cloneDeep(this.away));
+
         if (res.length == 2) {
           const [i, y] = res;
-          this.home = i;
-          this.away = y;
+          this.home = _.cloneDeep(i);
+          this.away = _.cloneDeep(y);
           logs = [...logs, _.cloneDeep(i), _.cloneDeep(y)];
         } else {
           res.forEach((hero, key) => {
@@ -81,20 +79,19 @@ export class MatchService {
         const res = this.away.attack(_.cloneDeep(this.home));
         if (res.length == 2) {
           const [i, y] = res;
-          this.home = y;
-          this.away = i;
+          this.home = _.cloneDeep(y);
+          this.away = _.cloneDeep(i);
 
           logs = [...logs, _.cloneDeep(y), _.cloneDeep(i)];
         } else {
           res.forEach((hero, key) => {
             logs = [...logs, _.cloneDeep(hero)];
             if (key == 2) {
-              this.away = hero;
+              this.away = _.cloneDeep(hero);
             }
             if (key == 3) {
-              this.home = hero;
+              this.home = _.cloneDeep(hero);
             }
-            if (key == 4) throw Error('fsfs');
           });
         }
       }
@@ -113,6 +110,7 @@ export class MatchService {
           ? this.away.id
           : this.home.id,
       turns: JSON.stringify(logs),
+      start_time: Date.now().toString(),
     };
 
     await this.matchRepository.update(
@@ -128,6 +126,7 @@ export class MatchService {
     this.match.winner = dataMatchUpdate.winner;
     this.match.loser = dataMatchUpdate.loser;
     this.match.turns = dataMatchUpdate.turns;
+    this.match.start_time = dataMatchUpdate.start_time;
 
     return this.match;
   }
@@ -146,7 +145,7 @@ export class MatchService {
     });
   }
 
-  async betting() {
+  async current() {
     const match = await this.matchRepository
       .createQueryBuilder()
       .where({

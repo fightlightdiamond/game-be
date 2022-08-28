@@ -1,6 +1,6 @@
+import { UserEntity } from '../../../migrations/entities/user.entity';
+
 export interface ILoginResDto {
-  id: number;
-  email: string;
   token: string;
-  balance: number;
+  user: UserEntity;
 }

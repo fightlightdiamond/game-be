@@ -23,7 +23,7 @@ export class FightingService {
   async execute(id: number) {
     const match = await this.matchRepository.findOne({
       where: { id },
-      select: ['id', 'turns'],
+      select: ['id', 'hero_info', 'turns', 'status', 'start_time'],
     });
 
     if (!match) {
@@ -37,6 +37,7 @@ export class FightingService {
       },
     );
 
+    match.status = BetStatusConstant.FIGHTING;
     const data: ISocketQueueContract = {
       event: 'matching',
       room: 'match',

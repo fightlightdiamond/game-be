@@ -14,9 +14,9 @@ export class MatchController {
     return match.turns;
   }
 
-  @Get('betting')
-  async betting() {
-    return this.matchService.betting();
+  @Get('current')
+  async current() {
+    return this.matchService.current();
   }
 
   @Get('/:id')
@@ -24,8 +24,8 @@ export class MatchController {
     name: 'id',
     description: 'The id of match',
   })
-  @ApiOperation({ summary: 'get match' })
-  @ApiResponse({ status: 200, description: 'get match successfully.' })
+  @ApiOperation({ summary: 'get current match' })
+  @ApiResponse({ status: 200, description: 'get current match successfully.' })
   async find(@Param('id', MatchExistsPipe) id) {
     return this.matchService.find(id);
   }

@@ -13,4 +13,5 @@ export interface MatchInterface {
   winner: number;
   loser: number;
   type: number;
+  start_time: string;
 }

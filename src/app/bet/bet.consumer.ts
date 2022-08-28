@@ -11,7 +11,7 @@ export class BetConsumer {
     private readonly rewardService: RewardService,
   ) {}
 
-  @Process(NameQueueConstant.MATCH_QUEUE)
+  @Process(NameQueueConstant.FIGHT_QUEUE)
   async match(job: Job) {
     const data = job.data;
     const { id } = data;

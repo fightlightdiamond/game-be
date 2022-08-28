@@ -1,5 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { MatchInterface } from '../interfaces/match.interface';
 
 @ObjectType()
@@ -22,6 +29,13 @@ export class MatchEntity extends BaseEntity implements MatchInterface {
     nullable: true,
   })
   turns: string;
+
+  @Field()
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  start_time: string;
 
   @Field()
   @Column({
@@ -52,4 +66,12 @@ export class MatchEntity extends BaseEntity implements MatchInterface {
     default: 0,
   })
   type: number;
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

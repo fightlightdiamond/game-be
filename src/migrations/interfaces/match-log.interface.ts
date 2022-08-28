@@ -5,6 +5,7 @@ export interface IMatchLog {
   name: string;
   effect_resistance: number;
   intrinsic_status: number;
+  atk: number;
   hp: number;
   status: number;
 
