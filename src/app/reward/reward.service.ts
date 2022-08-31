@@ -23,11 +23,13 @@ export class RewardService {
     const match = await this.matchRepository.findOne({
       where: {
         id: id,
-        status: BetStatusConstant.FIGHTING,
       },
     });
 
     const { winner } = match;
+
+    console.log({ winner, id });
+
     await this.matchRepository.update(
       { id: match.id },
       {
@@ -40,8 +42,10 @@ export class RewardService {
         match_id: id,
         hero_id: winner,
       },
-      select: ['user_id', 'balance'],
+      select: ['user_id', 'balance', 'match_id', 'hero_id'],
     });
+
+    console.log({ bets });
 
     /**
      * TODO: sau này cần chuyển qua update switch case
@@ -54,7 +58,7 @@ export class RewardService {
             id: bet.user_id,
           },
           {
-            balance: () => `balance + ${bet.user_id * 2}`,
+            balance: () => `balance + ${bet.balance * 2}`,
           },
         ),
       );

@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { HeroLog } from '../hero/hero.log';
 import { IHero } from '../../migrations/interfaces/hero.interface';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
@@ -18,6 +19,7 @@ export class MatchService {
   constructor(
     private readonly heroRepository: HeroRepository,
     private readonly matchRepository: MatchRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async bet() {
@@ -111,6 +113,7 @@ export class MatchService {
           : this.home.id,
       turns: JSON.stringify(logs),
       start_time: Date.now().toString(),
+      status: BetStatusConstant.BETTING,
     };
 
     await this.matchRepository.update(
@@ -145,19 +148,17 @@ export class MatchService {
     });
   }
 
+  /**
+   * Get current match
+   */
   async current() {
-    const match = await this.matchRepository
-      .createQueryBuilder()
-      .where({
-        status: BetStatusConstant.PENDING,
-      })
-      .orWhere({
-        status: BetStatusConstant.BETTING,
-      })
-      .orWhere({
-        status: BetStatusConstant.FIGHTING,
-      })
-      .getOne();
+    const id: number = await this.cacheManager.get('currentMatchId');
+    console.log({ id });
+    const match = await this.matchRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
 
     if (!match) {
       return match;

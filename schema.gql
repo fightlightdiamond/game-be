@@ -14,9 +14,9 @@ type UserEntity {
   confirmed: Boolean!
   balance: Float!
   available_balance: Float!
+  fullName: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  fullName: String!
 }
 
 """

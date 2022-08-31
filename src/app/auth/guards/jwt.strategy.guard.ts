@@ -33,6 +33,7 @@ export class JwtAuthGuard extends PassportStrategy(Strategy) {
    * @param payload
    */
   async validate(@Request() req, payload) {
+    console.log({ payload });
     const { user } = payload;
     const bearerToken = req.header('authorization');
     const token = bearerToken.replace('Bearer ', '');

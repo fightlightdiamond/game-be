@@ -13,6 +13,17 @@ export class BetService {
   ) {}
 
   async bet(body) {
+    const bet = await this.betRepository.findOne({
+      where: body,
+    });
+
+    if (bet) {
+      throw new HttpException(
+        'The match had bet',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const match = await this.matchRepository.findOne({
       where: {
         id: body.match_id,
@@ -55,7 +66,7 @@ export class BetService {
   async getOneByData(data) {
     return this.betRepository.findOne({
       where: data,
-      select: ['id', 'balance'],
+      // select: ['id', 'balance'],
     });
   }
 }

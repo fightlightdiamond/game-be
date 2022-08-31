@@ -81,7 +81,7 @@ export class SkillService {
     }
 
     const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.7) {
+    if (ratioHp <= 0.8) {
       const r = Math.floor(Math.random() * 100) + 1;
       if (r <= 33) {
         // Cam skill
@@ -160,7 +160,7 @@ export class SkillService {
     }
 
     const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.5) {
+    if (ratioHp <= 0.6) {
       //Reset lai
       home.is_active_skill = true;
       home.current_hp += Math.round((home.hp - home.current_hp) * 0.4);

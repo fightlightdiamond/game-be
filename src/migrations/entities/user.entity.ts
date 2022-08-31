@@ -97,14 +97,6 @@ export class UserEntity extends BaseEntity implements UserInterface {
   available_balance: number;
 
   @Field()
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @Field()
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @Field()
   @Expose()
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
@@ -128,4 +120,12 @@ export class UserEntity extends BaseEntity implements UserInterface {
   })
   @JoinColumn()
   public address: AddressEntity;
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

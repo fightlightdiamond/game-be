@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { Cache } from 'cache-manager';
 import { BetStatusConstant } from '../../common/constants/bet-status.constant';
 import ISocketQueueContract from '../../common/contracts/socket-queue.contract';
 import { NameQueueConstant } from '../../common/constants/name-queue.constant';
@@ -15,19 +16,22 @@ export class PreMatchCron {
     @InjectQueue('bet') private betQueue: Queue,
     private readonly matchRepository: MatchRepository,
     private readonly matchService: MatchService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // @Cron('0 */10 * * * *')
-  @Cron('0 */5 * * * *')
+  @Cron('0 */3 * * * *')
   async execute() {
     const match = await this.matchService.bet();
 
-    await this.matchRepository.update(
-      { id: match.id },
-      {
-        status: BetStatusConstant.BETTING,
-      },
-    );
+    await this.cacheManager.set('currentMatchId', match.id, 1000 * 60 * 3);
+
+    // await this.matchRepository.update(
+    //   { id: match.id },
+    //   {
+    //     status: BetStatusConstant.BETTING,
+    //   },
+    // );
 
     match.status = BetStatusConstant.BETTING;
     const data: ISocketQueueContract = {
@@ -43,7 +47,7 @@ export class PreMatchCron {
       {
         id: match.id,
       },
-      { delay: 1000 * 60 * 2 }, // 1 m delayed
+      { delay: 1000 * 60 }, // 1 m delayed
     );
 
     await this.betQueue.add(
@@ -51,7 +55,7 @@ export class PreMatchCron {
       {
         id: match.id,
       },
-      { delay: 1000 * 60 * 3 }, // 8 m delayed
+      { delay: 1000 * 60 * 3 }, // 3 m delayed
     );
   }
 }
