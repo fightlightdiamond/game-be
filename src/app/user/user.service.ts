@@ -202,4 +202,13 @@ export class UserService {
       return user;
     }
   }
+
+  /**
+   * Update user
+   * @param id
+   */
+  async updateUser(id, data) {
+    const user = await this.userRepository.update(id, data);
+    return user;
+  }
 }

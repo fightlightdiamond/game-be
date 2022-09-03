@@ -56,6 +56,10 @@ import { ChartsService } from './app/charts/charts.service';
 import { ChartsController } from './app/charts/charts.controller';
 import { HeroController } from './app/hero/hero.controller';
 import { HeroService } from './app/hero/hero.service';
+import { TreeController } from './app/tree/tree.controller';
+import { TreeRepository } from './app/tree/tree.repository';
+import { TreeEntity } from './migrations/entities/tree.entity';
+import { TreeService } from './app/tree/tree.service';
 
 @Module({
   imports: [
@@ -113,8 +117,15 @@ import { HeroService } from './app/hero/hero.service';
       HeroRepository,
       MatchRepository,
       UserHeroRepository,
+      TreeRepository,
     ]),
-    TypeOrmModule.forFeature([HeroEntity, MatchEntity, BetEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      HeroEntity,
+      MatchEntity,
+      BetEntity,
+      UserEntity,
+      TreeEntity,
+    ]),
   ],
   controllers: [
     AppController,
@@ -125,6 +136,7 @@ import { HeroService } from './app/hero/hero.service';
     StatisticMatchController,
     UserHeroController,
     HeroController,
+    TreeController,
   ],
   providers: [
     AppService,
@@ -163,6 +175,7 @@ import { HeroService } from './app/hero/hero.service';
     ChartsService,
 
     HeroService,
+    TreeService,
   ],
   exports: [MatchService],
 })
