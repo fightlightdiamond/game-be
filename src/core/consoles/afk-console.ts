@@ -10,7 +10,7 @@ import { MatchEntity } from '../../migrations/entities/match.entity';
 export class AfkConsole {
   home: IMatchLog;
   away: IMatchLog;
-  round = 1;
+  turn = 1;
   match: MatchEntity;
 
   @Command({ command: 'war' })
@@ -24,7 +24,7 @@ export class AfkConsole {
   }
 
   preBet(home: IHero, away: IHero) {
-    this.round = 1;
+    this.turn = 1;
     this.home = new HeroLog().setHome(home).setCurrent();
     this.away = new HeroLog().setHome(away).setCurrent();
     return this;
@@ -56,11 +56,11 @@ export class AfkConsole {
     while (
       this.home.current_hp > 0 &&
       this.away.current_hp > 0 &&
-      this.round < 20
+      this.turn < 20
     ) {
-      this.home.round = this.round;
-      this.away.round = this.round;
-      console.log('Round: ', this.round);
+      this.home.turn = this.turn;
+      this.away.turn = this.turn;
+      console.log('Round: ', this.turn);
 
       if (this.home.current_spd > this.away.current_spd) {
         const res = this.home.attack(_.cloneDeep(this.away));
@@ -103,7 +103,7 @@ export class AfkConsole {
         }
       }
 
-      this.round++;
+      this.turn++;
     }
     console.log('End War');
     return logs;

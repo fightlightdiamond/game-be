@@ -1,8 +1,3 @@
-// const VINH_CUU_STATUS = -2;
-// const DISABLE_STATUS = -1;
-// const ENABLE_STATUS = 0;
-
-import * as _ from 'lodash';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 
 export class SkillService {
@@ -11,7 +6,7 @@ export class SkillService {
     away.take_skill_dmg = 0;
     home.take_dmg = 0;
     away.effect_resistance = 0;
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   };
 
   static Hell(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -31,7 +26,7 @@ export class SkillService {
       away.current_hp = 0;
     }
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Spinx(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -47,7 +42,7 @@ export class SkillService {
       home.current_atk_healing += 30;
       home.intrinsic_status = -1;
     }
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Valkyrie(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -64,7 +59,7 @@ export class SkillService {
     away.take_skill_dmg = dmg;
     away.current_hp -= dmg;
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Hera(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -77,7 +72,8 @@ export class SkillService {
       home.is_active_skill = true;
       // Tang diem noi tai
       home.intrinsic_status = 1;
-      away.current_atk = Math.round(away.current_atk * 0.75);
+      away.current_atk = Math.round(away.current_atk * 0.8);
+      away.atk = Math.round(away.atk * 0.8);
     }
 
     const ratioHp = home.current_hp / home.hp;
@@ -93,7 +89,7 @@ export class SkillService {
       home.is_active_skill = true;
     }
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Darklord(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -110,7 +106,7 @@ export class SkillService {
       home.intrinsic_status = -1;
     }
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Poseidon(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -125,7 +121,7 @@ export class SkillService {
       home.current_def = Math.round(home.current_def * 1.02);
     }
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Fenrir(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -138,7 +134,7 @@ export class SkillService {
     home.current_crit_dmg += 15;
     home.intrinsic_status += 1;
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Chiron(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -151,7 +147,7 @@ export class SkillService {
       home.atk * (1 + ((home.hp - home.current_hp) / home.hp) * 0.8),
     );
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 
   static Phoenix(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
@@ -169,6 +165,6 @@ export class SkillService {
       home.intrinsic_status = -1;
     }
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 }

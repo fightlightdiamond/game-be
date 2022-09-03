@@ -1,6 +1,10 @@
-import * as _ from 'lodash';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 import { HeroLog } from '../hero/hero.log';
 import { IHero } from '../../migrations/interfaces/hero.interface';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
@@ -13,7 +17,7 @@ import { MatchRepository } from './match.repository';
 export class MatchService {
   home: IMatchLog;
   away: IMatchLog;
-  round = 1;
+  turn = 1;
   match: MatchEntity;
 
   constructor(
@@ -21,6 +25,19 @@ export class MatchService {
     private readonly matchRepository: MatchRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<MatchEntity>> {
+    const queryBuilder = this.matchRepository.createQueryBuilder('c');
+    queryBuilder
+      .orderBy('c.id', 'DESC')
+      .where({
+        status: BetStatusConstant.END,
+      })
+      .select(['c.id', 'c.winner', 'c.loser', 'c.turn_number', 'c.start_time']); // Or whatever you need to do
+    return paginate<MatchEntity>(queryBuilder, options);
+  }
 
   async bet() {
     const heroes = await this.heroRepository.getPairHeroes();
@@ -32,13 +49,13 @@ export class MatchService {
   }
 
   async preBet(home: IHero, away: IHero) {
-    this.round = 1;
+    this.turn = 1;
     this.home = new HeroLog().setHome(home).setCurrent();
     this.away = new HeroLog().setHome(away).setCurrent();
     this.match = await this.matchRepository.save({
       hero_info: JSON.stringify([
-        JSON.parse(JSON.stringify(this.home)),
-        JSON.parse(JSON.stringify(this.away)),
+        JSON.stringify(this.home),
+        JSON.stringify(this.away),
       ]),
     });
     return this;
@@ -48,27 +65,27 @@ export class MatchService {
    * execute
    */
   async execute(): Promise<MatchEntity> {
-    let logs: IMatchLog[] = [];
+    let logs: string[] = [];
 
     while (
       this.home.current_hp > 0 &&
       this.away.current_hp > 0 &&
-      this.round < 20
+      this.turn < 20
     ) {
-      this.home.round = this.round;
-      this.away.round = this.round;
+      this.home.turn = this.turn;
+      this.away.turn = this.turn;
 
       if (this.home.current_spd > this.away.current_spd) {
-        const res = this.home.attack(_.cloneDeep(this.away));
+        const res = this.home.attack(this.away);
 
         if (res.length == 2) {
           const [i, y] = res;
-          this.home = _.cloneDeep(i);
-          this.away = _.cloneDeep(y);
-          logs = [...logs, _.cloneDeep(i), _.cloneDeep(y)];
+          this.home = i;
+          this.away = y;
+          logs = [...logs, JSON.stringify(i), JSON.stringify(y)];
         } else {
           res.forEach((hero, key) => {
-            logs = [...logs, _.cloneDeep(hero)];
+            logs = [...logs, JSON.stringify(hero)];
             if (key == 2) {
               this.home = hero;
             }
@@ -78,31 +95,31 @@ export class MatchService {
           });
         }
       } else {
-        const res = this.away.attack(_.cloneDeep(this.home));
+        const res = this.away.attack(this.home);
         if (res.length == 2) {
           const [i, y] = res;
-          this.home = _.cloneDeep(y);
-          this.away = _.cloneDeep(i);
+          this.home = y;
+          this.away = i;
 
-          logs = [...logs, _.cloneDeep(y), _.cloneDeep(i)];
+          logs = [...logs, JSON.stringify(y), JSON.stringify(i)];
         } else {
           res.forEach((hero, key) => {
-            logs = [...logs, _.cloneDeep(hero)];
+            logs = [...logs, JSON.stringify(hero)];
             if (key == 2) {
-              this.away = _.cloneDeep(hero);
+              this.away = hero;
             }
             if (key == 3) {
-              this.home = _.cloneDeep(hero);
+              this.home = hero;
             }
           });
         }
       }
 
-      this.round++;
+      this.turn++;
     }
 
     const dataMatchUpdate = {
-      turn_number: this.round,
+      turn_number: this.turn,
       winner:
         this.home.current_hp > this.away.current_hp
           ? this.home.id

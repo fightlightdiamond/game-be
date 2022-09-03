@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { SkillFactory } from '../skill/skill.factory';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { probability } from '../../common/utils/hero.util';
@@ -22,13 +21,13 @@ export class TurnService {
     away.take_skill_dmg = 0;
     // Skill
     const [i, y]: [IMatchLog, IMatchLog] = SkillFactory.create(home, away);
-    home = _.cloneDeep(i);
-    away = _.cloneDeep(y);
+    home = i;
+    away = y;
 
     // Dame
     let dame = home.current_atk;
 
-    // Random sac xuat
+    // Random xac suat crit
     const bProbability = probability();
 
     if (bProbability <= home.current_crit_rate) {
@@ -40,6 +39,6 @@ export class TurnService {
     away.take_dmg = dame;
     away.current_hp -= dame;
 
-    return [_.cloneDeep(home), _.cloneDeep(away)];
+    return [home, away];
   }
 }

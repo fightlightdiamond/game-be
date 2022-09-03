@@ -1,10 +1,11 @@
-import * as _ from 'lodash';
+import { randomUUID } from 'crypto';
 import { TurnService } from '../turn/turn.service';
 import { IHero } from '../../migrations/interfaces/hero.interface';
 import { Hero } from '../../common/utils/hero.util';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 
 export class HeroLog extends Hero implements IMatchLog {
+  id: number;
   atk: number;
   def: number;
   crit_rate: number;
@@ -21,7 +22,6 @@ export class HeroLog extends Hero implements IMatchLog {
   take_dmg_healing: number;
   take_skill_dmg: number;
   status: number;
-  round: number;
 
   //Base stats
   current_hp?: number;
@@ -39,8 +39,16 @@ export class HeroLog extends Hero implements IMatchLog {
   current_acc?: number;
   // L3
   current_cc?: number;
+  logs: IMatchLog[];
+  turn: number;
+  is_atk: boolean;
+  u_id: string;
 
-  setCurrent() {
+  /**
+   * Set Attribute
+   */
+  setCurrent(): IMatchLog {
+    this.u_id = randomUUID();
     this.current_hp = this.hp;
     this.current_atk = this.atk;
     this.current_def = this.def;
@@ -52,26 +60,24 @@ export class HeroLog extends Hero implements IMatchLog {
     this.current_dodge = this.dodge;
     this.current_acc = this.acc;
     this.current_cc = this.cc;
-
+    this.is_atk = false;
     return this;
   }
 
+  /**
+   * Hero atk
+   * @param away
+   */
   attack(away: IMatchLog): IMatchLog[] {
     // Turn 1
-    const [home2, away2]: IMatchLog[] = TurnService.turn(
-      _.cloneDeep(this),
-      _.cloneDeep(away),
-    );
+    const [home2, away2]: IMatchLog[] = TurnService.turn(this, away);
 
     if (away2.current_hp <= 0) {
       return [home2, away2];
     }
 
     // Turn 2
-    const [away3, home3] = TurnService.turn(
-      _.cloneDeep(away2),
-      _.cloneDeep(home2),
-    );
+    const [away3, home3] = TurnService.turn(away2, home2);
 
     if (home3.current_hp <= 0) {
       return [home3, away3];

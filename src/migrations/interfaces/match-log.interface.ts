@@ -1,7 +1,8 @@
 import { IHero } from './hero.interface';
 
 export interface IMatchLog {
-  id?: number;
+  id: number;
+  u_id: string;
   name: string;
   effect_resistance: number;
   intrinsic_status: number;
@@ -13,7 +14,7 @@ export interface IMatchLog {
   is_active_skill: boolean;
   take_skill_dmg: number;
   take_dmg: number;
-  round: number;
+  turn: number;
 
   //Base stats
   current_hp?: number;
@@ -31,6 +32,8 @@ export interface IMatchLog {
   current_acc?: number;
   // L3
   current_cc?: number;
+  is_atk?: boolean;
+
   attack(away: IMatchLog): IMatchLog[];
   setHome(home: IHero): IMatchLog;
   setCurrent(): IMatchLog;

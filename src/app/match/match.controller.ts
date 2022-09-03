@@ -1,17 +1,28 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MatchExistsPipe } from '../../common/pipes/match-exists.pipe';
 import { MatchService } from './match.service';
+import { PaginateReqDto } from './dto/paginate.req.dto';
 
 @ApiTags('match')
 @Controller('matches')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
+  @ApiQuery({
+    type: PaginateReqDto,
+  })
+  @ApiOperation({ summary: 'paginate match' })
+  @ApiResponse({ status: 200, description: 'paginate match successfully.' })
   @Get('')
-  async match() {
-    const match = await this.matchService.bet();
-    return match.turns;
+  async paginate(@Query() query) {
+    return this.matchService.paginate(query);
   }
 
   @Get('current')
