@@ -4,24 +4,28 @@ import {
   ParseIntPipe,
   Post,
   Req,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 import { TreeService } from './tree.service';
 
-@ApiTags('user-hero')
+@ApiTags('Lucky-tree')
 @Controller('tree')
 export class TreeController {
   constructor(private readonly treeService: TreeService) {}
 
-  @Post('planting')
+  @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @Post('planting')
   @ApiOperation({ summary: 'planting tree money' })
   @ApiResponse({ status: 200, description: 'tree planting successfully.' })
   @UsePipes(ValidationPipe)
@@ -30,8 +34,13 @@ export class TreeController {
     return this.treeService.planting(user.id);
   }
 
-  @Post('rob')
+  @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @Post('rob/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'The id of tree',
+  })
   @ApiOperation({ summary: 'rob tree money' })
   @ApiResponse({ status: 200, description: 'rob tree successfully.' })
   @UsePipes(ValidationPipe)
@@ -40,8 +49,13 @@ export class TreeController {
     return this.treeService.rob(id, user.id);
   }
 
-  @Post('finish-planting')
+  @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @Post('finish-planting/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'The id of tree',
+  })
   @ApiOperation({ summary: 'finished planting' })
   @ApiResponse({ status: 200, description: 'Planting Complete.' })
   @UsePipes(ValidationPipe)
