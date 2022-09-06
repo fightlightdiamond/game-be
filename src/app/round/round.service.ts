@@ -1,5 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import * as __ from 'lodash';
 import { HeroRepository } from '../hero/hero.repository';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { BetStatusConstant } from '../../common/constants/bet-status.constant';
@@ -8,17 +9,16 @@ import { IHero } from '../../migrations/interfaces/hero.interface';
 import { HeroLog } from '../hero/hero.log';
 import { SkillFactory } from '../skill/skill.factory';
 import { probability } from '../../common/utils/hero.util';
-import { MatchRepository } from './match.repository';
+import { MatchRepository } from '../match/match.repository';
 
 @Injectable()
 export class RoundService {
   home: IMatchLog;
   away: IMatchLog;
-  turn = 1;
+  turn_number = 1;
   match: MatchEntity;
-  hero_info: any;
-  turns: string;
-  logs: any;
+  hero_info: any = [];
+  turns: any = [];
 
   constructor(
     private readonly heroRepository: HeroRepository,
@@ -26,24 +26,26 @@ export class RoundService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  async bet() {
+    const heroes = await this.heroRepository.getPairHeroes();
+
+    const a = heroes[0];
+    const b = heroes[1];
+    const logs = this.preBet(a, b);
+    return logs.execute();
+  }
+
   /**
    * Chuẩn bi data
    * @param home
    * @param away
    */
   preBet(home: IHero, away: IHero) {
-    this.turn = 1;
+    this.turn_number = 1;
     this.home = new HeroLog().setHome(home).setCurrent();
     this.away = new HeroLog().setHome(away).setCurrent();
-
-    this.logs = {};
-    this.logs[this.home.u_id] = [];
-    this.logs[this.away.u_id] = [];
-
-    this.hero_info = [
-      JSON.parse(JSON.stringify(this.home)),
-      JSON.parse(JSON.stringify(this.away)),
-    ];
+    this.turns = [];
+    this.hero_info = [__.cloneDeep(this.home), __.cloneDeep(this.away)];
 
     return this;
   }
@@ -55,10 +57,10 @@ export class RoundService {
     while (
       this.home.current_hp > 0 &&
       this.away.current_hp > 0 &&
-      this.turn < 20
+      this.turn_number < 20
     ) {
-      this.home.turn = this.turn;
-      this.away.turn = this.turn;
+      this.home.turn_number = this.turn_number;
+      this.away.turn_number = this.turn_number;
 
       if (this.home.current_spd > this.away.current_spd) {
         this.attack(this.home, this.away);
@@ -66,12 +68,12 @@ export class RoundService {
         this.attack(this.away, this.home);
       }
 
-      this.turn++;
+      this.turn_number++;
     }
 
     const dataMatchUpdate = {
       hero_info: this.hero_info,
-      turn_number: this.turn,
+      turn_number: this.turn_number,
       winner:
         this.home.current_hp > this.away.current_hp
           ? this.home.id
@@ -80,7 +82,7 @@ export class RoundService {
         this.home.current_hp > this.away.current_hp
           ? this.away.id
           : this.home.id,
-      turns: this.logs,
+      turns: this.turns,
       start_time: Date.now().toString(),
       status: BetStatusConstant.BETTING,
     };
@@ -124,26 +126,26 @@ export class RoundService {
     away.take_dmg = dame;
     away.current_hp -= dame;
 
-    this.logs[home.u_id].push(this.getData(home));
-    this.logs[away.u_id].push(this.getData(away));
+    this.turns.push(this.getData(home));
+    this.turns.push(this.getData(away));
   }
 
   getData(home) {
-    const data = JSON.parse(JSON.stringify(home));
-    const delArr = [
-      'atk',
-      'def',
-      'hp',
-      'spd',
-      'crit_dmg',
-      'crit_rate',
-      'id',
-      'u_id',
-      'name',
-    ];
-    delArr.forEach((name) => {
-      delete data[name];
-    });
+    const data = __.cloneDeep(home);
+    // const delArr = [
+    //   'atk',
+    //   'def',
+    //   'hp',
+    //   'spd',
+    //   'crit_dmg',
+    //   'crit_rate',
+    //   'id',
+    //   'u_id',
+    //   'name',
+    // ];
+    // delArr.forEach((name) => {
+    //   delete data[name];
+    // });
 
     return data;
   }

@@ -54,6 +54,7 @@
     "@ngneat/falso": "^6.0.3",
     "@socket.io/redis-adapter": "^7.2.0",
     "@socket.io/redis-emitter": "^4.1.1",
+    "@studimax/elo": "^1.0.1",
     "apollo-server-express": "^3.10.0",
     "aws-sdk": "^2.1178.0",
     "bcrypt": "^5.0.1",

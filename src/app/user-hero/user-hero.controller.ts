@@ -5,6 +5,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UsePipes,
@@ -27,6 +28,16 @@ import { UpdatePointHeroReqDto } from './dto/update-point-hero.req.dto';
 @Controller('user-heroes')
 export class UserHeroController {
   constructor(private readonly userHeroService: UserHeroService) {}
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Post('')
+  @ApiOperation({ summary: 'user-heroes' })
+  @ApiResponse({ status: 200, description: 'select heroes successfully.' })
+  @UsePipes(ValidationPipe)
+  async gets(@Query() query) {
+    return this.userHeroService.paginate(query);
+  }
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()

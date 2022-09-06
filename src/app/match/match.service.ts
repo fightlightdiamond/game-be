@@ -17,7 +17,7 @@ import { MatchRepository } from './match.repository';
 export class MatchService {
   home: IMatchLog;
   away: IMatchLog;
-  turn = 1;
+  turn_number = 1;
   match: MatchEntity;
 
   constructor(
@@ -49,7 +49,7 @@ export class MatchService {
   }
 
   async preBet(home: IHero, away: IHero) {
-    this.turn = 1;
+    this.turn_number = 1;
     this.home = new HeroLog().setHome(home).setCurrent();
     this.away = new HeroLog().setHome(away).setCurrent();
     this.match = await this.matchRepository.save({
@@ -65,15 +65,15 @@ export class MatchService {
    * execute
    */
   async execute(): Promise<MatchEntity> {
-    let logs: string[] = [];
+    let logs: IMatchLog[] = [];
 
     while (
       this.home.current_hp > 0 &&
       this.away.current_hp > 0 &&
-      this.turn < 20
+      this.turn_number < 20
     ) {
-      this.home.turn = this.turn;
-      this.away.turn = this.turn;
+      this.home.turn_number = this.turn_number;
+      this.away.turn_number = this.turn_number;
 
       if (this.home.current_spd > this.away.current_spd) {
         const res = this.home.attack(this.away);
@@ -82,10 +82,14 @@ export class MatchService {
           const [i, y] = res;
           this.home = i;
           this.away = y;
-          logs = [...logs, JSON.stringify(i), JSON.stringify(y)];
+          logs = [
+            ...logs,
+            JSON.parse(JSON.stringify(i)),
+            JSON.parse(JSON.stringify(y)),
+          ];
         } else {
           res.forEach((hero, key) => {
-            logs = [...logs, JSON.stringify(hero)];
+            logs = [...logs, JSON.parse(JSON.stringify(hero))];
             if (key == 2) {
               this.home = hero;
             }
@@ -101,10 +105,14 @@ export class MatchService {
           this.home = y;
           this.away = i;
 
-          logs = [...logs, JSON.stringify(y), JSON.stringify(i)];
+          logs = [
+            ...logs,
+            JSON.parse(JSON.stringify(y)),
+            JSON.parse(JSON.stringify(i)),
+          ];
         } else {
           res.forEach((hero, key) => {
-            logs = [...logs, JSON.stringify(hero)];
+            logs = [...logs, JSON.parse(JSON.stringify(hero))];
             if (key == 2) {
               this.away = hero;
             }
@@ -115,11 +123,11 @@ export class MatchService {
         }
       }
 
-      this.turn++;
+      this.turn_number++;
     }
 
     const dataMatchUpdate = {
-      turn_number: this.turn,
+      turn_number: this.turn_number,
       winner:
         this.home.current_hp > this.away.current_hp
           ? this.home.id

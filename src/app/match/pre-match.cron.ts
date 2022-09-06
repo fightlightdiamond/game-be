@@ -6,6 +6,7 @@ import { Cache } from 'cache-manager';
 import { BetStatusConstant } from '../../common/constants/bet-status.constant';
 import ISocketQueueContract from '../../common/contracts/socket-queue.contract';
 import { NameQueueConstant } from '../../common/constants/name-queue.constant';
+import { RoundService } from '../round/round.service';
 import { MatchRepository } from './match.repository';
 import { MatchService } from './match.service';
 
@@ -16,13 +17,14 @@ export class PreMatchCron {
     @InjectQueue('bet') private betQueue: Queue,
     private readonly matchRepository: MatchRepository,
     private readonly matchService: MatchService,
+    private readonly roundService: RoundService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // @Cron('0 */10 * * * *')
   @Cron('0 */3 * * * *')
   async execute() {
-    const match = await this.matchService.bet();
+    const match = await this.roundService.bet();
 
     await this.cacheManager.set('currentMatchId', match.id, 1000 * 60 * 3);
 

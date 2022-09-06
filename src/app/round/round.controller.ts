@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HeroRepository } from '../hero/hero.repository';
-import { RoundService } from '../match/round.service';
+import { RoundService } from './round.service';
 
 @ApiTags('match')
 @Controller('round')

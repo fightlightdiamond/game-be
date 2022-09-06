@@ -40,7 +40,7 @@ export class HeroLog extends Hero implements IMatchLog {
   // L3
   current_cc?: number;
   logs: IMatchLog[];
-  turn: number;
+  turn_number: number;
   is_atk: boolean;
   u_id: string;
 

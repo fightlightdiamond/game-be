@@ -1,5 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../../migrations/entities/user.entity';
 import { UserHeroEntity } from '../../migrations/entities/user-hero.entity';
@@ -13,7 +18,25 @@ export class UserHeroService {
     private dataSource: DataSource,
   ) {}
 
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<UserHeroEntity>> {
+    const queryBuilder = this.userHeroRepository.createQueryBuilder('c');
+    queryBuilder.orderBy('c.id', 'DESC');
+    return paginate<UserHeroEntity>(queryBuilder, options);
+  }
+
   async create(data: { hero_id: number; user_id: number }) {
+    const userHero = await this.userHeroRepository.findOne({
+      where: {
+        user_id: data.user_id,
+      },
+    });
+
+    if (userHero) {
+      throw new HttpException('You had hero', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     return this.userHeroRepository.save(data);
   }
 
