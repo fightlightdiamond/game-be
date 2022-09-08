@@ -140,6 +140,7 @@ import { UserGemRepository } from './app/user-gem/user-gem.repository';
       MatchEntity,
       BetEntity,
       UserEntity,
+      UserGemEntity,
       TreeEntity,
     ]),
     //Redis

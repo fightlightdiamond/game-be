@@ -6,6 +6,7 @@ import { MatchRepository } from '../match/match.repository';
 import { BetStatusConstant } from '../../common/constants/bet-status.constant';
 import { UserRepository } from '../user/user.repository';
 import { NameQueueConstant } from '../../common/constants/name-queue.constant';
+import { UserGemService } from '../user-gem/user-gem.service';
 
 @Injectable()
 export class RewardService {
@@ -13,6 +14,7 @@ export class RewardService {
     private readonly betRepository: BetRepository,
     private readonly matchRepository: MatchRepository,
     private readonly userRepository: UserRepository,
+    private readonly userGemService: UserGemService,
     @InjectQueue('socket.io') private readonly queue: Queue,
   ) {}
 
@@ -62,6 +64,12 @@ export class RewardService {
           },
         ),
       );
+      if (this.userGemService.isDropGem()) {
+        ps.push(this.userGemService.add(bet.user_id));
+        console.log(
+          `-------    User has id:${bet.user_id} earned gem    --------`,
+        );
+      }
     }
     await Promise.all(ps);
 

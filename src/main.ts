@@ -7,6 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { useContainer } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -32,6 +33,7 @@ async function bootstrap() {
   app.setViewEngine('hbs');
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3003);
 }
 void bootstrap().then(() => console.log('Server started...'));

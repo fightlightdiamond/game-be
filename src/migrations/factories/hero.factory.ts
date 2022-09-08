@@ -10,6 +10,7 @@ export const HeroFactory = () => {
   u.crit_rate = 20;
   u.crit_dmg = 200;
   u.spd = 200;
+  u.skill = '';
   u.name = randFullName();
   u.story = randText();
   u.guide = randText();
