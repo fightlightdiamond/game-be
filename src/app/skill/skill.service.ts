@@ -84,7 +84,7 @@ export class SkillService {
         home.effect_resistance = 1;
       } else {
         home.current_crit_dmg = Math.round(home.current_crit_dmg * 1.2);
-        home.current_def = Math.round(home.current_def * 1.15);
+        home.current_def = Math.round(home.current_def * 1.1);
       }
       home.is_active_skill = true;
     }

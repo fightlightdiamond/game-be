@@ -120,6 +120,7 @@ export class HeroEntity extends BaseEntity {
   @Field()
   @Column({
     type: 'text',
+    nullable: true,
   })
   skill: string;
 

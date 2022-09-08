@@ -142,4 +142,9 @@ export class UserHeroService {
       await queryRunner.release();
     }
   }
+
+  async atk(body) {
+    const { hero_id, competitor } = body;
+    console.log({ hero_id, competitor });
+  }
 }

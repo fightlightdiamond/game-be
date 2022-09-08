@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Post,
@@ -31,12 +32,22 @@ export class UserHeroController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Post('')
+  @Get('')
   @ApiOperation({ summary: 'user-heroes' })
   @ApiResponse({ status: 200, description: 'select heroes successfully.' })
   @UsePipes(ValidationPipe)
   async gets(@Query() query) {
     return this.userHeroService.paginate(query);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Post('/atk')
+  @ApiOperation({ summary: 'user-heroes' })
+  @ApiResponse({ status: 200, description: 'select heroes successfully.' })
+  @UsePipes(ValidationPipe)
+  async atk(@Body() body: { hero_id: number; competitor: number }) {
+    return this.userHeroService.atk(body);
   }
 
   @UseGuards(JwtGuard)

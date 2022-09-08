@@ -87,7 +87,11 @@ export class RoundService {
       status: BetStatusConstant.BETTING,
     };
 
-    return this.matchRepository.save(dataMatchUpdate);
+    const match = await this.matchRepository.save(dataMatchUpdate);
+    match.winner = 0;
+    match.loser = 0;
+    match.turns = [];
+    return match;
   }
 
   /**
@@ -113,6 +117,7 @@ export class RoundService {
 
     // Dame
     let dame = home.current_atk;
+    dame -= away.current_def;
 
     // Random xac suat crit
     const bProbability = probability();
@@ -122,7 +127,6 @@ export class RoundService {
       home.is_crit = true;
     }
 
-    dame -= away.current_def;
     away.take_dmg = dame;
     away.current_hp -= dame;
 

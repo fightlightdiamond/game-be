@@ -28,7 +28,7 @@ export class BetEntity extends BaseEntity {
   hero_id: number;
 
   @Field()
-  @Column()
+  @Column({ type: 'decimal', precision: 50, scale: 0, default: 0 })
   balance: number;
 
   @Field()
