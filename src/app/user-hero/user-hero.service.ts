@@ -31,6 +31,7 @@ export class UserHeroService {
     queryBuilder
       .orderBy('c.elo', 'DESC')
       .leftJoin('users', 's', 's.id = c.user_id')
+      .leftJoin('heroes', 'h', 'h.id = c.hero_id')
       .select([
         'c.id as id',
         'c.user_id as user_id',
@@ -38,6 +39,7 @@ export class UserHeroService {
         'c.elo as elo',
         'c.level as level',
         's.email as email',
+        'h.name as hero',
       ]);
     return paginateRaw<UserHeroEntity>(queryBuilder, options);
   }
