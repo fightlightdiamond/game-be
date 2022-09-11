@@ -8,7 +8,9 @@ export class RedisIoAdapter extends IoAdapter {
 
   connectToRedis() {
     const pubClient: RedisClient = createClient({
-      url: `redis://localhost:6379`,
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      password: process.env.REDIS_PASSWORD,
     });
     const subClient = pubClient.duplicate();
 

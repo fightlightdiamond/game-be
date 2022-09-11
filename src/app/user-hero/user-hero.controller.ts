@@ -30,8 +30,6 @@ import { UpdatePointHeroReqDto } from './dto/update-point-hero.req.dto';
 export class UserHeroController {
   constructor(private readonly userHeroService: UserHeroService) {}
 
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
   @Get('')
   @ApiOperation({ summary: 'user-heroes' })
   @ApiResponse({ status: 200, description: 'select heroes successfully.' })
@@ -42,18 +40,8 @@ export class UserHeroController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Post('/atk')
-  @ApiOperation({ summary: 'user-heroes' })
-  @ApiResponse({ status: 200, description: 'select heroes successfully.' })
-  @UsePipes(ValidationPipe)
-  async atk(@Body() body: { hero_id: number; competitor: number }) {
-    return this.userHeroService.atk(body);
-  }
-
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
   @Post('')
-  @ApiOperation({ summary: 'user-heroes' })
+  @ApiOperation({ summary: 'select hero for fight elo match' })
   @ApiResponse({ status: 200, description: 'select heroes successfully.' })
   @UsePipes(ValidationPipe)
   async pickHero(@Body() body: PickHeroReqDto, @Req() request) {

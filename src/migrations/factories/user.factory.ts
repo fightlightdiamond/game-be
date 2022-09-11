@@ -7,6 +7,6 @@ define(UserEntity, () => {
   u.email = randEmail();
   u.firstName = randFirstName();
   u.lastName = randLastName();
-  u.password = '123456';
+  u.password = '1234@aA';
   return u;
 });

@@ -6,7 +6,11 @@ import { createClient } from 'redis';
  */
 export class RedisIoEmitter {
   static create() {
-    const redisClient = createClient({ url: 'redis://localhost:6379' });
+    const redisClient = createClient({
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      password: process.env.REDIS_PASSWORD,
+    });
     return new Emitter(redisClient);
   }
 }

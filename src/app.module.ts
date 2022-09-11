@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
 import { DataSource } from 'typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RedisModule } from 'nestjs-redis';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeormConfigAsync } from './config/typeorm.config';
@@ -64,6 +65,15 @@ import { TreeRepository } from './app/tree/tree.repository';
 import { TreeEntity } from './migrations/entities/tree.entity';
 import { TreeService } from './app/tree/tree.service';
 import { RoundService } from './app/round/round.service';
+import { EloMatchService } from './app/elo-match/elo-match.service';
+import { redisConfigAsync } from './config/redis.config';
+import { EloMatchController } from './app/elo-match/elo-match.controller';
+import { UserHeroExistsRule } from './common/rules/user-hero-exists.rule';
+import { UserGemController } from './app/user-gem/user-gem.controller';
+import { UserGemService } from './app/user-gem/user-gem.service';
+import { GemIdsUniqueRule } from './common/rules/gem-ids-unique.rule';
+import { EloMatchRepository } from './app/elo-match/elo-match.repository';
+import { UserGemRepository } from './app/user-gem/user-gem.repository';
 
 @Module({
   imports: [
@@ -122,6 +132,8 @@ import { RoundService } from './app/round/round.service';
       MatchRepository,
       UserHeroRepository,
       TreeRepository,
+      EloMatchRepository,
+      UserGemRepository,
     ]),
     TypeOrmModule.forFeature([
       HeroEntity,
@@ -130,6 +142,8 @@ import { RoundService } from './app/round/round.service';
       UserEntity,
       TreeEntity,
     ]),
+    //Redis
+    RedisModule.forRootAsync(redisConfigAsync),
   ],
   controllers: [
     AppController,
@@ -143,6 +157,8 @@ import { RoundService } from './app/round/round.service';
     TreeController,
     MasterController,
     RoundController,
+    EloMatchController,
+    UserGemController,
   ],
   providers: [
     AppService,
@@ -178,13 +194,18 @@ import { RoundService } from './app/round/round.service';
     MatchExistsRule,
     HeroExistsRule,
     UserExistsRule,
-    ChartsService,
+    GemIdsUniqueRule,
+    UserHeroExistsRule,
 
+    ChartsService,
     HeroService,
     TreeService,
 
     MasterService,
     RoundService,
+    EloMatchService,
+
+    UserGemService,
   ],
   exports: [MatchService],
 })

@@ -2,36 +2,66 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
   IPaginationOptions,
-  paginate,
+  paginateRaw,
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../../migrations/entities/user.entity';
 import { UserHeroEntity } from '../../migrations/entities/user-hero.entity';
+import { HeroRepository } from '../hero/hero.repository';
 import { UserHeroRepository } from './user-hero.repository';
 
 @Injectable()
 export class UserHeroService {
   constructor(
+    private readonly heroRepository: HeroRepository,
     private readonly userHeroRepository: UserHeroRepository,
     private readonly userRepository: UserRepository,
     private dataSource: DataSource,
   ) {}
 
+  /**
+   * Paginate
+   * @param options
+   */
   async paginate(
     options: IPaginationOptions,
   ): Promise<Pagination<UserHeroEntity>> {
     const queryBuilder = this.userHeroRepository.createQueryBuilder('c');
-    queryBuilder.orderBy('c.id', 'DESC');
-    return paginate<UserHeroEntity>(queryBuilder, options);
+    queryBuilder
+      .orderBy('c.elo', 'DESC')
+      .leftJoin('users', 's', 's.id = c.user_id')
+      .select([
+        'c.id as id',
+        'c.user_id as user_id',
+        'c.hero_id as hero_id',
+        'c.elo as elo',
+        'c.level as level',
+        's.email as email',
+      ]);
+    return paginateRaw<UserHeroEntity>(queryBuilder, options);
   }
 
+  /***
+   * Create
+   * @param data
+   */
   async create(data: { hero_id: number; user_id: number }) {
     const userHero = await this.userHeroRepository.findOne({
       where: {
         user_id: data.user_id,
       },
+      select: ['id'],
     });
+
+    const hero = await this.heroRepository.findOneBy({ id: data.hero_id });
+    delete hero.id;
+    delete hero.createdAt;
+    delete hero.updatedAt;
+
+    for (const [key, value] of Object.entries(hero)) {
+      data[key] = value;
+    }
 
     if (userHero) {
       throw new HttpException('You had hero', HttpStatus.UNPROCESSABLE_ENTITY);
@@ -40,6 +70,11 @@ export class UserHeroService {
     return this.userHeroRepository.save(data);
   }
 
+  /**
+   * UpdatePoint
+   * @param id
+   * @param data
+   */
   async updatePoint(
     id: number,
     data: {
@@ -76,6 +111,11 @@ export class UserHeroService {
     );
   }
 
+  /**
+   * Level up
+   * @param id
+   * @param user_id
+   */
   async levelUp(id: number, user_id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -141,10 +181,5 @@ export class UserHeroService {
       // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
-  }
-
-  async atk(body) {
-    const { hero_id, competitor } = body;
-    console.log({ hero_id, competitor });
   }
 }

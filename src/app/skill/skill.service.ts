@@ -50,11 +50,13 @@ export class SkillService {
       return SkillService.restSkill(home, away);
     }
 
-    if (home.intrinsic_status < 5) {
+    if (home.intrinsic_status < 4) {
       home.intrinsic_status += 1;
+      home.current_def = Math.round(home.current_def * 1.1);
     }
 
     home.is_active_skill = true;
+
     const dmg = Math.round(0.02 * home.intrinsic_status * away.hp);
     away.take_skill_dmg = dmg;
     away.current_hp -= dmg;
@@ -77,7 +79,7 @@ export class SkillService {
     }
 
     const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.8) {
+    if (ratioHp <= 0.85) {
       const r = Math.floor(Math.random() * 100) + 1;
       if (r <= 33) {
         // Cam skill
@@ -99,9 +101,9 @@ export class SkillService {
 
     const ratioHp = home.current_hp / home.hp;
 
-    if (ratioHp <= 0.6) {
+    if (ratioHp <= 0.65) {
       home.is_active_skill = true;
-      home.current_atk = Math.round(home.current_atk * 1.55);
+      home.current_atk = Math.round(home.current_atk * 1.6);
       home.current_def = Math.round(home.current_def * 1.5);
       home.intrinsic_status = -1;
     }
@@ -131,7 +133,7 @@ export class SkillService {
 
     home.is_active_skill = true;
     home.current_crit_rate += 5;
-    home.current_crit_dmg += 15;
+    home.current_crit_dmg += 20;
     home.intrinsic_status += 1;
 
     return [home, away];
