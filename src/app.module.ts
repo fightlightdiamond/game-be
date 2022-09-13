@@ -74,6 +74,7 @@ import { UserGemService } from './app/user-gem/user-gem.service';
 import { GemIdsUniqueRule } from './common/rules/gem-ids-unique.rule';
 import { EloMatchRepository } from './app/elo-match/elo-match.repository';
 import { UserGemRepository } from './app/user-gem/user-gem.repository';
+import { UserGemEntity } from './migrations/entities/user-gem.entity';
 
 @Module({
   imports: [
