@@ -20,11 +20,9 @@ export class TreeService {
   async planting(userId: number) {
     const user = await this.userService.getById(userId);
 
-    if (user.balance > 0 && user.available_balance > 0) {
+    if (user.balance > 0) {
       await this.userService.updateUser(userId, {
         balance: user.balance - user.balance * 0.01,
-        available_balance:
-          user.available_balance - user.available_balance * 0.01,
       });
 
       const tree = await this.treeRepository.save({
@@ -32,7 +30,7 @@ export class TreeService {
         startTime: new Date(),
         status: 0,
         bandit: null,
-        startingValue: user.available_balance * 0.01,
+        startingValue: user.balance * 0.01,
       });
       return tree;
     }
@@ -78,8 +76,6 @@ export class TreeService {
     const user = await this.userService.getById(userId);
     await this.userService.updateUser(userId, {
       balance: user.balance + resultInMinutes * tree.startingValue,
-      available_balance:
-        user.available_balance + resultInMinutes * tree.startingValue,
     });
 
     return treeUpdate;
