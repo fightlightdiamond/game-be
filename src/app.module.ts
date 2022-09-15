@@ -11,6 +11,7 @@ import { DataSource } from 'typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisModule } from 'nestjs-redis';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeormConfigAsync } from './config/typeorm.config';
@@ -75,6 +76,7 @@ import { GemIdsUniqueRule } from './common/rules/gem-ids-unique.rule';
 import { EloMatchRepository } from './app/elo-match/elo-match.repository';
 import { UserGemRepository } from './app/user-gem/user-gem.repository';
 import { UserGemEntity } from './migrations/entities/user-gem.entity';
+import { IsKeyValueValidate } from './core/validator/iskeyvalue-validator';
 
 @Module({
   imports: [
@@ -94,6 +96,8 @@ import { UserGemEntity } from './migrations/entities/user-gem.entity';
     }),
     // Cache
     CacheModule.register(),
+    //Event
+    EventEmitterModule.forRoot(),
     // Mysql
     TypeOrmModule.forRootAsync(typeormConfigAsync),
     // Authentication
@@ -198,6 +202,7 @@ import { UserGemEntity } from './migrations/entities/user-gem.entity';
     UserExistsRule,
     GemIdsUniqueRule,
     UserHeroExistsRule,
+    IsKeyValueValidate,
 
     ChartsService,
     HeroService,

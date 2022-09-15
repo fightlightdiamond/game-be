@@ -33,7 +33,7 @@ export class AuthController {
    * Do User Registration
    * @param registerBody
    */
-  @Post('/register')
+  @Post('/sign-up')
   @ApiCreatedResponse({
     description: 'Created user object as response',
   })

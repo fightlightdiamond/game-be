@@ -8,6 +8,7 @@ export interface IMatchLog {
   intrinsic_status: number;
   atk: number;
   hp: number;
+  def: number;
   status: number;
 
   is_crit: boolean;

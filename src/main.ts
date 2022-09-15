@@ -33,7 +33,17 @@ async function bootstrap() {
   app.setViewEngine('hbs');
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: false,
+      errorHttpStatusCode: 422,
+    }),
+  );
   app.useGlobalPipes(new ValidationPipe());
+
   await app.listen(3003);
 }
 void bootstrap().then(() => console.log('Server started...'));

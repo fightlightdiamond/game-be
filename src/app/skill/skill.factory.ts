@@ -12,7 +12,7 @@ export class SkillFactory {
     switch (home.name) {
       case 'Hell':
         return SkillService.Hell(home, away);
-      case 'Spinx':
+      case 'Sphinx':
         return SkillService.Spinx(home, away);
       case 'Darklord':
         return SkillService.Darklord(home, away);

@@ -5,10 +5,12 @@ import {
   paginateRaw,
   Pagination,
 } from 'nestjs-typeorm-paginate';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../../migrations/entities/user.entity';
 import { UserHeroEntity } from '../../migrations/entities/user-hero.entity';
 import { HeroRepository } from '../hero/hero.repository';
+import { UserHeroUpdatingEvent } from '../../core/events/user-hero-updating.event';
 import { UserHeroRepository } from './user-hero.repository';
 
 @Injectable()
@@ -18,6 +20,7 @@ export class UserHeroService {
     private readonly userHeroRepository: UserHeroRepository,
     private readonly userRepository: UserRepository,
     private dataSource: DataSource,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -56,6 +59,10 @@ export class UserHeroService {
       select: ['id'],
     });
 
+    if (userHero) {
+      throw new HttpException('You had hero', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     const hero = await this.heroRepository.findOneBy({ id: data.hero_id });
     delete hero.id;
     delete hero.createdAt;
@@ -63,10 +70,6 @@ export class UserHeroService {
 
     for (const [key, value] of Object.entries(hero)) {
       data[key] = value;
-    }
-
-    if (userHero) {
-      throw new HttpException('You had hero', HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     return this.userHeroRepository.save(data);
@@ -107,9 +110,25 @@ export class UserHeroService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+
+    const event = new UserHeroUpdatingEvent();
+    event.atk_point = data.atk_point;
+    event.def_point = data.def_point;
+    event.hp_point = data.hp_point;
+    event.spd_point = data.spd_point;
+    event.atk = 1000 * (1 + 0.01 * atk_point);
+    event.def = 200 * (1 + 0.01 * def_point);
+    event.hp = 10000 * (1 + 0.01 * hp_point);
+    event.spd = 200 * (1 + 0.01 * spd_point);
+
+    // this.eventEmitter.emit(
+    //   UserHeroUpdatingEvent.name,
+    //   new UserHeroUpdatingEvent(),
+    // );
+
     return this.userHeroRepository.update(
       { id: id, user_id: data.user_id },
-      data,
+      event,
     );
   }
 
