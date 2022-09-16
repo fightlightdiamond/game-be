@@ -117,14 +117,9 @@ export class UserHeroService {
     event.hp_point = data.hp_point;
     event.spd_point = data.spd_point;
     event.atk = 1000 * (1 + 0.01 * atk_point);
-    event.def = 200 * (1 + 0.01 * def_point);
-    event.hp = 10000 * (1 + 0.01 * hp_point);
+    event.def = 200 * (1 + 0.065 * def_point);
+    event.hp = 10000 * (1 + 0.0156 * hp_point);
     event.spd = 200 * (1 + 0.01 * spd_point);
-
-    // this.eventEmitter.emit(
-    //   UserHeroUpdatingEvent.name,
-    //   new UserHeroUpdatingEvent(),
-    // );
 
     return this.userHeroRepository.update(
       { id: id, user_id: data.user_id },
@@ -194,7 +189,6 @@ export class UserHeroService {
       );
       await queryRunner.commitTransaction();
     } catch (err) {
-      console.log(err);
       // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
       throw err;
@@ -202,5 +196,9 @@ export class UserHeroService {
       // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
+  }
+
+  async getByUser(user_id: number) {
+    return this.userHeroRepository.geHeroByUser(user_id);
   }
 }

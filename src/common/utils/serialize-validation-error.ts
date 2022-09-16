@@ -14,6 +14,5 @@ export const SerializeValidationError = (err: ValidationError) => {
     });
   });
 
-  console.log({ invalid });
   return invalid;
 };

@@ -1,6 +1,7 @@
 import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { MESSAGE, REGEX } from '../../user/user.const';
+import { EmailUniqueValidator } from '../../../common/validators/email-unique.validator';
 
 export class RegisterReqDto {
   @ApiProperty({
@@ -9,6 +10,7 @@ export class RegisterReqDto {
   })
   @IsNotEmpty()
   @IsEmail()
+  @EmailUniqueValidator()
   email: string;
 
   @ApiProperty({

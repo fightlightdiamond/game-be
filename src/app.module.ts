@@ -77,6 +77,7 @@ import { EloMatchRepository } from './app/elo-match/elo-match.repository';
 import { UserGemRepository } from './app/user-gem/user-gem.repository';
 import { UserGemEntity } from './migrations/entities/user-gem.entity';
 import { IsKeyValueValidate } from './core/validator/iskeyvalue-validator';
+import { EmailExistsRule } from './common/rules/email-exists.rule';
 
 @Module({
   imports: [
@@ -203,7 +204,7 @@ import { IsKeyValueValidate } from './core/validator/iskeyvalue-validator';
     GemIdsUniqueRule,
     UserHeroExistsRule,
     IsKeyValueValidate,
-
+    EmailExistsRule,
     ChartsService,
     HeroService,
     TreeService,

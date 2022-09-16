@@ -1,9 +1,4 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { BaseSchema } from 'yup';
 import { SerializeValidationError } from '../utils/serialize-validation-error';
 
@@ -11,15 +6,11 @@ import { SerializeValidationError } from '../utils/serialize-validation-error';
 export class YupValidationPipe implements PipeTransform {
   constructor(private readonly schema: BaseSchema<object>) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any) {
     try {
       await this.schema.validate(value, { abortEarly: false });
     } catch (err) {
-      // throw err
-      console.log(err);
       const yupError = SerializeValidationError(err);
-      console.log({ yupError });
       throw new BadRequestException(yupError);
     }
     return value;

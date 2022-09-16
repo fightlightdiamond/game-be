@@ -29,7 +29,7 @@ export class SkillService {
     return [home, away];
   }
 
-  static Spinx(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
+  static Sphinx(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       return SkillService.resetSkill(home, away);
     }
@@ -37,13 +37,14 @@ export class SkillService {
     home.is_active_skill = true;
 
     away.current_def -= Math.round(
-      20 + away.current_def > 0 ? away.current_def * 0.2 : 0,
+      30 + (away.current_def > 0 ? away.current_def * 0.1 : 0),
     );
-    away.def -= Math.round(20 + away.def > 0 ? away.def * 0.2 : 0);
+    away.def -= Math.round(
+      home.current_atk * 0.03 + (away.def > 0 ? away.def * 0.2 : 0),
+    );
 
     if (home.turn_number % 2 === 0 && home.current_hp < away.current_hp) {
-      home.current_crit_rate += 10;
-      home.current_atk *= 1.1;
+      home.current_atk = Math.round(home.current_atk * 1.2);
     }
 
     return [home, away];
@@ -56,7 +57,6 @@ export class SkillService {
 
     if (home.intrinsic_status < 4) {
       home.intrinsic_status += 1;
-      home.current_def = Math.round(home.current_def * 1.05);
     }
 
     home.is_active_skill = true;
@@ -83,9 +83,10 @@ export class SkillService {
     }
 
     if (away.intrinsic_status === -1 || this.getRand() > 30) {
-      home.current_def = Math.round(home.current_def * 1.05);
-      // Cam skill
+      home.current_crit_dmg = Math.round(home.current_crit_dmg * 1.15);
     } else {
+      // Cam skill
+      away.current_crit_rate += 5;
       home.effect_resistance = 1;
     }
     home.is_active_skill = true;
@@ -104,10 +105,10 @@ export class SkillService {
 
     const ratioHp = home.current_hp / home.hp;
 
-    if (ratioHp <= 0.65) {
+    if (ratioHp <= 0.6) {
       home.is_active_skill = true;
       home.current_atk = Math.round(home.current_atk * 1.6);
-      home.current_def = Math.round(home.current_def * 1.4);
+      home.current_def = Math.round(home.current_def * 1.5);
       home.intrinsic_status = -1;
     }
 
@@ -122,7 +123,7 @@ export class SkillService {
     if (home.intrinsic_status < 10) {
       home.is_active_skill = true;
       home.intrinsic_status += 1;
-      home.current_atk = Math.round(home.current_atk * 1.07);
+      home.current_atk = Math.round(home.current_atk * 1.075);
       home.current_def = Math.round(home.current_def * 1.02);
     }
 
@@ -149,7 +150,7 @@ export class SkillService {
 
     home.is_active_skill = true;
     home.current_atk = Math.round(
-      home.atk * (1 + ((home.hp - home.current_hp) / home.hp) * 0.8),
+      home.atk * (1 + ((home.hp - home.current_hp) / home.hp) * 0.85),
     );
 
     return [home, away];
@@ -159,17 +160,36 @@ export class SkillService {
     if (away.effect_resistance || home.intrinsic_status === -1) {
       return SkillService.resetSkill(home, away);
     }
+    const skillDame = Math.round((home.hp - home.current_hp) * 0.09);
+    away.current_hp -= skillDame;
+    away.take_skill_dmg = skillDame;
+    home.is_active_skill = true;
 
-    const ratioHp = home.current_hp / home.hp;
-    if (ratioHp <= 0.6) {
-      //Reset lai
-      home.is_active_skill = true;
-      home.current_hp += Math.round((home.hp - home.current_hp) * 0.4);
-      home.current_def *= 2;
-      home.current_crit_rate += 20;
-      home.current_crit_dmg += 20;
-      home.intrinsic_status = -1;
+    return [home, away];
+  }
+
+  static Synthia(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
+    if (away.effect_resistance || home.intrinsic_status === -1) {
+      return SkillService.resetSkill(home, away);
     }
+
+    home.intrinsic_status += 1;
+    away.take_skill_dmg = home.intrinsic_status * home.current_atk * 0.1;
+    away.current_hp -= away.take_skill_dmg;
+
+    return [home, away];
+  }
+
+  static Amon(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
+    if (away.effect_resistance || home.intrinsic_status === -1) {
+      return SkillService.resetSkill(home, away);
+    }
+    home.is_active_skill = true;
+    home.intrinsic_status += 1;
+    home.current_hp += Math.round(home.current_atk * 0.3);
+    away.current_def -= Math.round(
+      (home.hp - home.current_hp) * 0.006 + (away.def > 0 ? away.def * 0.2 : 0),
+    );
 
     return [home, away];
   }

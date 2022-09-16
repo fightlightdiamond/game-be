@@ -1,7 +1,9 @@
 import {
   Body,
+  CACHE_MANAGER,
   Controller,
   Get,
+  Inject,
   Param,
   ParseIntPipe,
   Post,
@@ -19,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Cache } from 'cache-manager';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { HeroExistsPipe } from '../../common/pipes/hero-exists.pipe';
 import { UserHeroService } from './user-hero.service';
@@ -28,14 +31,44 @@ import { UpdatePointHeroReqDto } from './dto/update-point-hero.req.dto';
 @ApiTags('user-hero')
 @Controller('user-heroes')
 export class UserHeroController {
-  constructor(private readonly userHeroService: UserHeroService) {}
+  constructor(
+    private readonly userHeroService: UserHeroService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @Get('')
   @ApiOperation({ summary: 'user-heroes' })
   @ApiResponse({ status: 200, description: 'select heroes successfully.' })
   @UsePipes(ValidationPipe)
   async gets(@Query() query) {
-    return this.userHeroService.paginate(query);
+    const key = JSON.stringify(query);
+    const value = await this.cacheManager.get(key);
+    if (value) {
+      return value;
+    }
+    query.limit = 100;
+    const userHeroes = await this.userHeroService.paginate(query);
+    await this.cacheManager.set(key, userHeroes, 1);
+
+    return userHeroes;
+  }
+
+  @Get('/my-heroes')
+  @ApiOperation({ summary: 'my hero' })
+  @ApiResponse({ status: 200, description: 'select my hero successfully.' })
+  @UsePipes(ValidationPipe)
+  async my(@Req() request) {
+    const { user } = request;
+    const { id } = user;
+    const key = `my_hero_${id}`;
+    const value = await this.cacheManager.get(key);
+    if (value) {
+      return value;
+    }
+    const userHeroes = await this.userHeroService.getByUser(id);
+    await this.cacheManager.set(key, userHeroes, 1);
+
+    return userHeroes;
   }
 
   @UseGuards(JwtGuard)

@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Query,
   Request,
   UseGuards,
   UsePipes,
@@ -33,8 +35,26 @@ export class EloMatchController {
   @ApiOperation({ summary: 'atk elo-matches' })
   @ApiResponse({ status: 200, description: 'atk elo-matches successfully.' })
   @UsePipes(ValidationPipe)
-  async atk(@Request() req, @Body() body: FightEloMatchDto) {
+  async fight(@Request() req, @Body() body: FightEloMatchDto) {
     const { competitor } = body;
     return this.eloMatchService.fight(req.user.id, competitor);
+  }
+
+  /**
+   * History
+   * @param query
+   * @param req
+   */
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Get('/histories')
+  @ApiOperation({ summary: 'History elo-matches' })
+  @ApiResponse({
+    status: 200,
+    description: 'History elo-matches successfully.',
+  })
+  @UsePipes(ValidationPipe)
+  async history(@Query() query, @Request() req) {
+    return this.eloMatchService.paginateByUser(query, req.user.id);
   }
 }

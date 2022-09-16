@@ -13,7 +13,7 @@ export class SkillFactory {
       case 'Hell':
         return SkillService.Hell(home, away);
       case 'Sphinx':
-        return SkillService.Spinx(home, away);
+        return SkillService.Sphinx(home, away);
       case 'Darklord':
         return SkillService.Darklord(home, away);
       case 'Valkyrie':
@@ -28,6 +28,8 @@ export class SkillFactory {
         return SkillService.Hera(home, away);
       case 'Fenrir':
         return SkillService.Fenrir(home, away);
+      case 'Amon':
+        return SkillService.Amon(home, away);
       default:
         throw Error('Not found skill for Hero');
     }

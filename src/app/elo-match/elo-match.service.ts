@@ -9,6 +9,7 @@ import { Cache } from 'cache-manager';
 import * as __ from 'lodash';
 import { In } from 'typeorm';
 import Elo from '@studimax/elo';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { IHero } from '../../migrations/interfaces/hero.interface';
 import { HeroLog } from '../hero/hero.log';
 import { UserHeroRepository } from '../user-hero/user-hero.repository';
@@ -50,7 +51,7 @@ export class EloMatchService {
 
     if (!userHero) {
       throw new HttpException(
-        'Hero id not found',
+        'User Hero id not found',
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
@@ -64,6 +65,23 @@ export class EloMatchService {
 
     const logs = this.preBet(heroes[0], heroes[1]);
     return logs.execute();
+  }
+
+  /**
+   * paginate By User
+   *
+   * @param options
+   * @param user_id
+   */
+  async paginateByUser(options: IPaginationOptions, user_id: number) {
+    const queryBuilder = this.eloMatchRepository.createQueryBuilder('c');
+    queryBuilder
+      .orderBy('c.id', 'DESC')
+      .where({
+        user_id,
+      })
+      .select(['c.id', 'c.winner', 'c.loser', 'c.turn_number', 'c.start_time']); // Or whatever you need to do
+    return paginate<MatchEntity>(queryBuilder, options);
   }
 
   /**
@@ -125,8 +143,20 @@ export class EloMatchService {
       this.away.elo,
       this.home.current_hp > this.away.current_hp ? 1 : 0,
     );
+
+    console.log({ Ra, Rb });
+
     this.home.elo = Ra;
     this.away.elo = Rb;
+
+    await this.userHeroRepository.update(
+      {
+        id: this.home.id,
+      },
+      {
+        elo: Ra,
+      },
+    );
 
     await this.userHeroRepository.update(
       {
@@ -138,8 +168,6 @@ export class EloMatchService {
     );
 
     const match = await this.eloMatchRepository.save(dataMatchUpdate);
-    match.winner = 0;
-    match.loser = 0;
     match.turns = [];
     return match;
   }

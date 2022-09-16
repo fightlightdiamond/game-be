@@ -178,7 +178,6 @@ export class MatchService {
    */
   async current() {
     const id: number = await this.cacheManager.get('currentMatchId');
-    console.log({ id });
     const match = await this.matchRepository.findOne({
       where: {
         id: id,
@@ -195,12 +194,14 @@ export class MatchService {
           id: match.id,
           hero_info: match.hero_info,
           status: match.status,
+          start_time: match.start_time,
         };
       case BetStatusConstant.BETTING:
         return {
           id: match.id,
           hero_info: match.hero_info,
           status: match.status,
+          start_time: match.start_time,
         };
       case BetStatusConstant.FIGHTING:
         return match;
