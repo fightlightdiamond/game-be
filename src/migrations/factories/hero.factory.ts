@@ -14,6 +14,7 @@ export const HeroFactory = () => {
   u.name = randFullName();
   u.story = randText();
   u.guide = randText();
+  u.dodge = 5;
   return u;
 };
 

@@ -196,20 +196,29 @@ export class EloMatchService {
     home = i;
     away = y;
 
-    // Dame
-    let dame = home.current_atk;
-    dame -= away.current_def;
+    // Random xac suat ne'
+    const dodgeProbability = probability();
+    if (dodgeProbability > away.dodge) {
+      // Dame
+      let dame = home.current_atk;
+      dame -= away.current_def;
 
-    // Random xac suat crit
-    const bProbability = probability();
+      // Random xac suat crit
+      const bProbability = probability();
 
-    if (bProbability <= home.current_crit_rate) {
-      dame = Math.round((dame * home.current_crit_dmg) / 100);
-      home.is_crit = true;
+      if (bProbability <= home.current_crit_rate) {
+        dame = Math.round((dame * home.current_crit_dmg) / 100);
+        home.is_crit = true;
+      }
+
+      // Neu dame < 0 thi mac dinh doi phuong mat 1 HP
+      if (dame < 0) {
+        dame = 1;
+      }
+
+      away.take_dmg = dame;
+      away.current_hp -= dame;
     }
-
-    away.take_dmg = dame;
-    away.current_hp -= dame;
 
     this.turns.push(this.getData(home));
     this.turns.push(this.getData(away));
