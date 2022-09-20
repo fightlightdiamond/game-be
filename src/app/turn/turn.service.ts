@@ -36,6 +36,9 @@ export class TurnService {
     }
 
     dame -= away.current_def;
+    if (dame < 0) {
+      dame = 1;
+    }
     away.take_dmg = dame;
     away.current_hp -= dame;
 

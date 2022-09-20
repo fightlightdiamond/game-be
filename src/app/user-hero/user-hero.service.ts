@@ -117,8 +117,8 @@ export class UserHeroService {
     event.hp_point = data.hp_point;
     event.spd_point = data.spd_point;
     event.atk = 1000 * (1 + 0.01 * atk_point);
-    event.def = 200 * (1 + 0.065 * def_point);
-    event.hp = 10000 * (1 + 0.0156 * hp_point);
+    event.def = Math.round(200 * (1 + 0.023 * def_point));
+    event.hp = 10000 * (1 + 0.0138 * hp_point);
     event.spd = 200 * (1 + 0.01 * spd_point);
 
     return this.userHeroRepository.update(
