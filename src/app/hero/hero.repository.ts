@@ -12,6 +12,7 @@ export class HeroRepository extends Repository<HeroEntity> {
         'atk',
         'hp',
         'def',
+        'dodge',
         'crit_rate',
         'crit_dmg',
         'spd',
