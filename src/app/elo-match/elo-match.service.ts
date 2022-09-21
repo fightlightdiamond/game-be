@@ -144,8 +144,6 @@ export class EloMatchService {
       this.home.current_hp > this.away.current_hp ? 1 : 0,
     );
 
-    console.log({ Ra, Rb });
-
     this.home.elo = Ra;
     this.away.elo = Rb;
 
@@ -167,9 +165,7 @@ export class EloMatchService {
       },
     );
 
-    const match = await this.eloMatchRepository.save(dataMatchUpdate);
-    match.turns = [];
-    return match;
+    return this.eloMatchRepository.save(dataMatchUpdate);
   }
 
   /**
