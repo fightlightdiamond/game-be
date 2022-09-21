@@ -86,7 +86,7 @@ export class SkillService {
       home.current_crit_dmg = Math.round(home.current_crit_dmg * 1.15);
     } else {
       // Cam skill
-      away.current_crit_rate += 5;
+      home.current_crit_rate += 5;
       home.effect_resistance = 1;
     }
     home.is_active_skill = true;
