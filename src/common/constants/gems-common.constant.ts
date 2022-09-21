@@ -1,3 +1,3 @@
 export enum GEM_COMMON_CONST {
-  DROP_CHANCE = 1,
+  DROP_CHANCE = 5,
 }
