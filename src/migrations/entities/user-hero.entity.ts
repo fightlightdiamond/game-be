@@ -60,6 +60,12 @@ export class UserHeroEntity extends BaseEntity {
 
   @Field()
   @Column({
+    default: 0,
+  })
+  crit_rate_point: number;
+
+  @Field()
+  @Column({
     default: 1600,
   })
   elo: number;

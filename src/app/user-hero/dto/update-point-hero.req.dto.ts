@@ -33,4 +33,12 @@ export class UpdatePointHeroReqDto {
   @IsNotEmpty()
   @Min(0)
   spd_point: number;
+
+  @ApiProperty({
+    description: 'The crit_rate_point id',
+    example: 1,
+  })
+  @IsNotEmpty()
+  @Min(0)
+  crit_rate_point: number;
 }

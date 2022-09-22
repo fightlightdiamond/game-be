@@ -87,6 +87,7 @@ export class UserHeroService {
       def_point: number;
       hp_point: number;
       spd_point: number;
+      crit_rate_point: number;
       user_id: number;
     },
   ) {
@@ -97,15 +98,19 @@ export class UserHeroService {
       select: ['level'],
     });
 
-    const { atk_point, def_point, hp_point, spd_point } = data;
+    const { atk_point, def_point, hp_point, spd_point, crit_rate_point } = data;
 
-    if (userHero.level < atk_point + def_point + hp_point + spd_point) {
+    if (
+      userHero.level <
+      atk_point + def_point + hp_point + spd_point + crit_rate_point
+    ) {
       throw new HttpException(
         {
           atk_point: 'The total point cannot be greater than the level',
           def_point: 'The total point cannot be greater than the level',
           hp_point: 'The total point cannot be greater than the level',
           spd_point: 'The total point cannot be greater than the level',
+          crit_rate_point: 'The total point cannot be greater than the level',
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
@@ -116,10 +121,12 @@ export class UserHeroService {
     event.def_point = data.def_point;
     event.hp_point = data.hp_point;
     event.spd_point = data.spd_point;
+    event.crit_rate_point = data.crit_rate_point;
     event.atk = 1000 * (1 + 0.01 * atk_point);
     event.def = Math.round(200 * (1 + 0.023 * def_point));
     event.hp = 10000 * (1 + 0.0138 * hp_point);
     event.spd = 200 * (1 + 0.01 * spd_point);
+    event.crit_rate = 20 + Math.round(0.25 * crit_rate_point);
 
     return this.userHeroRepository.update(
       { id: id, user_id: data.user_id },

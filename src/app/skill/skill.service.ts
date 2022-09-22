@@ -83,7 +83,7 @@ export class SkillService {
     }
 
     if (away.intrinsic_status === -1 || this.getRand() > 30) {
-      home.current_crit_dmg = Math.round(home.current_crit_dmg * 1.15);
+      home.current_crit_dmg = Math.round(home.current_crit_dmg * 1.1);
     } else {
       // Cam skill
       home.current_crit_rate += 5;
