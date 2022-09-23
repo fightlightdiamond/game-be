@@ -193,4 +193,17 @@ export class SkillService {
 
     return [home, away];
   }
+
+  static Nezha(home: IMatchLog, away: IMatchLog): [IMatchLog, IMatchLog] {
+    if (away.effect_resistance || home.intrinsic_status === -1) {
+      return SkillService.resetSkill(home, away);
+    }
+
+    const ratioHp = home.current_hp / home.hp;
+    if (ratioHp <= 0.5 && this.getRand() <= 50) {
+      home.is_active_skill = true;
+    }
+
+    return [home, away];
+  }
 }

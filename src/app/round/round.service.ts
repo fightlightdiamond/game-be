@@ -135,6 +135,19 @@ export class RoundService {
         dame = 1;
       }
 
+      // Neu tuong la` Nezha
+      const ratioHp = home.current_hp / home.hp;
+      if (home.name == 'Nezha' && ratioHp <= 0.5) {
+        if (home.is_active_skill) {
+          const skillDame = dame;
+          away.current_hp -= skillDame;
+          away.take_skill_dmg = skillDame;
+        } else {
+          // Hoi HP tuong duong 50% dame
+          home.current_hp += Math.round(dame * 0.5);
+        }
+      }
+
       away.take_dmg = dame;
       away.current_hp -= dame;
     }

@@ -30,6 +30,8 @@ export class SkillFactory {
         return SkillService.Fenrir(home, away);
       case 'Amon':
         return SkillService.Amon(home, away);
+      case 'Nezha':
+        return SkillService.Nezha(home, away);
       default:
         throw Error('Not found skill for Hero');
     }
