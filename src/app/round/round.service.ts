@@ -1,6 +1,7 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import * as __ from 'lodash';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HeroRepository } from '../hero/hero.repository';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { BetStatusConstant } from '../../common/constants/bet-status.constant';
@@ -24,6 +25,7 @@ export class RoundService {
     private readonly heroRepository: HeroRepository,
     private readonly matchRepository: MatchRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async bet() {
@@ -88,9 +90,19 @@ export class RoundService {
     };
 
     const match = await this.matchRepository.save(dataMatchUpdate);
+
+    // const preAutoBetData = {
+    //   match_id: match.id,
+    //   rival_pair:
+    //     this.home.id < this.away.id
+    //       ? `${this.home.id}|${this.away.id}`
+    //       : `${this.away.id}|${this.home.id}`,
+    // };
+
     match.winner = 0;
     match.loser = 0;
     match.turns = [];
+
     return match;
   }
 

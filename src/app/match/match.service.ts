@@ -5,8 +5,6 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { HeroLog } from '../hero/hero.log';
-import { IHero } from '../../migrations/interfaces/hero.interface';
 import { IMatchLog } from '../../migrations/interfaces/match-log.interface';
 import { MatchEntity } from '../../migrations/entities/match.entity';
 import { HeroRepository } from '../hero/hero.repository';
@@ -37,126 +35,6 @@ export class MatchService {
       })
       .select(['c.id', 'c.winner', 'c.loser', 'c.turn_number', 'c.start_time']); // Or whatever you need to do
     return paginate<MatchEntity>(queryBuilder, options);
-  }
-
-  async bet() {
-    const heroes = await this.heroRepository.getPairHeroes();
-
-    const a = heroes[0];
-    const b = heroes[1];
-    const logs = await this.preBet(a, b);
-    return logs.execute();
-  }
-
-  async preBet(home: IHero, away: IHero) {
-    this.turn_number = 1;
-    this.home = new HeroLog().setHome(home).setCurrent();
-    this.away = new HeroLog().setHome(away).setCurrent();
-    this.match = await this.matchRepository.save({
-      hero_info: JSON.stringify([
-        JSON.stringify(this.home),
-        JSON.stringify(this.away),
-      ]),
-    });
-    return this;
-  }
-
-  /**
-   * execute
-   */
-  async execute(): Promise<MatchEntity> {
-    let logs: IMatchLog[] = [];
-
-    while (
-      this.home.current_hp > 0 &&
-      this.away.current_hp > 0 &&
-      this.turn_number < 20
-    ) {
-      this.home.turn_number = this.turn_number;
-      this.away.turn_number = this.turn_number;
-
-      if (this.home.current_spd > this.away.current_spd) {
-        const res = this.home.attack(this.away);
-
-        if (res.length == 2) {
-          const [i, y] = res;
-          this.home = i;
-          this.away = y;
-          logs = [
-            ...logs,
-            JSON.parse(JSON.stringify(i)),
-            JSON.parse(JSON.stringify(y)),
-          ];
-        } else {
-          res.forEach((hero, key) => {
-            logs = [...logs, JSON.parse(JSON.stringify(hero))];
-            if (key == 2) {
-              this.home = hero;
-            }
-            if (key == 3) {
-              this.away = hero;
-            }
-          });
-        }
-      } else {
-        const res = this.away.attack(this.home);
-        if (res.length == 2) {
-          const [i, y] = res;
-          this.home = y;
-          this.away = i;
-
-          logs = [
-            ...logs,
-            JSON.parse(JSON.stringify(y)),
-            JSON.parse(JSON.stringify(i)),
-          ];
-        } else {
-          res.forEach((hero, key) => {
-            logs = [...logs, JSON.parse(JSON.stringify(hero))];
-            if (key == 2) {
-              this.away = hero;
-            }
-            if (key == 3) {
-              this.home = hero;
-            }
-          });
-        }
-      }
-
-      this.turn_number++;
-    }
-
-    const dataMatchUpdate = {
-      turn_number: this.turn_number,
-      winner:
-        this.home.current_hp > this.away.current_hp
-          ? this.home.id
-          : this.away.id,
-      loser:
-        this.home.current_hp > this.away.current_hp
-          ? this.away.id
-          : this.home.id,
-      turns: JSON.stringify(logs),
-      start_time: Date.now().toString(),
-      status: BetStatusConstant.BETTING,
-    };
-
-    await this.matchRepository.update(
-      {
-        id: this.match.id,
-      },
-      {
-        ...dataMatchUpdate,
-      },
-    );
-
-    this.match.turn_number = dataMatchUpdate.turn_number;
-    this.match.winner = dataMatchUpdate.winner;
-    this.match.loser = dataMatchUpdate.loser;
-    this.match.turns = dataMatchUpdate.turns;
-    this.match.start_time = dataMatchUpdate.start_time;
-
-    return this.match;
   }
 
   async find(id: number) {

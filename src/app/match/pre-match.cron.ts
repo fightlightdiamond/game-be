@@ -13,7 +13,7 @@ import { MatchService } from './match.service';
 @Injectable()
 export class PreMatchCron {
   constructor(
-    @InjectQueue('socket.io') private readonly queue: Queue,
+    @InjectQueue('socket.io') private readonly socketQueue: Queue,
     @InjectQueue('bet') private betQueue: Queue,
     private readonly matchRepository: MatchRepository,
     private readonly matchService: MatchService,
@@ -21,19 +21,14 @@ export class PreMatchCron {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  // @Cron('0 */10 * * * *')
   @Cron('0 */3 * * * *')
   async execute() {
     const match = await this.roundService.bet();
 
+    /**
+     * Cache current match ID
+     */
     await this.cacheManager.set('currentMatchId', match.id, 1000 * 60 * 3);
-
-    // await this.matchRepository.update(
-    //   { id: match.id },
-    //   {
-    //     status: BetStatusConstant.BETTING,
-    //   },
-    // );
 
     match.status = BetStatusConstant.BETTING;
     const data: ISocketQueueContract = {
@@ -42,8 +37,14 @@ export class PreMatchCron {
       data: match,
     };
 
-    await this.queue.add(NameQueueConstant.ROOM_QUEUE, data);
+    /**
+     * BET
+     */
+    await this.socketQueue.add(NameQueueConstant.ROOM_QUEUE, data);
 
+    /**
+     * FIGHT
+     */
     await this.betQueue.add(
       NameQueueConstant.FIGHT_QUEUE,
       {
@@ -52,6 +53,9 @@ export class PreMatchCron {
       { delay: 1000 * 60 }, // 1 m delayed
     );
 
+    /**
+     * REWARD
+     */
     await this.betQueue.add(
       NameQueueConstant.REWARD_QUEUE,
       {

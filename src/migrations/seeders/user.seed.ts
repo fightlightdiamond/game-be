@@ -12,7 +12,7 @@ export class UserSeed implements Seeder {
 
     for (const user of users) {
       const userHero = new UserHeroEntity();
-      const idR = randNumber({ min: 0, max: 7 });
+      const idR = randNumber({ min: 1, max: 8 });
       const hero = heroes[idR];
       userHero.hero_id = idR;
       userHero.user_id = user.id;

@@ -78,6 +78,9 @@ import { UserGemRepository } from './app/user-gem/user-gem.repository';
 import { UserGemEntity } from './migrations/entities/user-gem.entity';
 import { IsKeyValueValidate } from './core/validator/iskeyvalue-validator';
 import { EmailExistsRule } from './common/rules/email-exists.rule';
+import { AutoBetService } from './app/auto-bet/auto-bet.service';
+import { AutoBetController } from './app/auto-bet/auto-bet.controller';
+import { AutoBetRepository } from './app/auto-bet/auto-bet.repository';
 
 @Module({
   imports: [
@@ -140,6 +143,7 @@ import { EmailExistsRule } from './common/rules/email-exists.rule';
       TreeRepository,
       EloMatchRepository,
       UserGemRepository,
+      AutoBetRepository,
     ]),
     TypeOrmModule.forFeature([
       HeroEntity,
@@ -166,6 +170,7 @@ import { EmailExistsRule } from './common/rules/email-exists.rule';
     RoundController,
     EloMatchController,
     UserGemController,
+    AutoBetController,
   ],
   providers: [
     AppService,
@@ -214,6 +219,8 @@ import { EmailExistsRule } from './common/rules/email-exists.rule';
     EloMatchService,
 
     UserGemService,
+
+    AutoBetService,
   ],
   exports: [MatchService],
 })

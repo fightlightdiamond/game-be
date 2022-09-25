@@ -4,6 +4,9 @@ import { CustomRepository } from '../../core/typeorm/typeorm.decorator';
 
 @CustomRepository(HeroEntity)
 export class HeroRepository extends Repository<HeroEntity> {
+  /**
+   * Get Pair Heroes
+   */
   async getPairHeroes() {
     return this.createQueryBuilder()
       .select([
@@ -20,5 +23,14 @@ export class HeroRepository extends Repository<HeroEntity> {
       .orderBy('RAND()')
       .limit(2)
       .execute();
+  }
+
+  /**
+   * GET IDS
+   */
+  async getIds() {
+    return this.find({
+      select: ['id'],
+    });
   }
 }
