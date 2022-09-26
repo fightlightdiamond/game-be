@@ -214,14 +214,16 @@ export class EloMatchService {
 
       // Neu tuong la` Nezha
       const ratioHp = home.current_hp / home.hp;
-      if (home.name == 'Nezha' && ratioHp <= 0.5) {
-        if (home.is_active_skill) {
-          const skillDame = dame;
-          away.current_hp -= skillDame;
-          away.take_skill_dmg = skillDame;
-        } else {
+      if (home.name == 'Nezha') {
+        if (ratioHp <= 0.8) {
           // Hoi HP tuong duong 50% dame
           home.current_hp += Math.round(dame * 0.5);
+        }
+        if (home.is_active_skill && ratioHp <= 0.5) {
+          // Gay them dame = 2 * dame
+          const skillDame = dame * 2;
+          away.current_hp -= skillDame;
+          away.take_skill_dmg = skillDame;
         }
       }
 
