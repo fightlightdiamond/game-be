@@ -11,6 +11,7 @@ export class RedisIoAdapter extends IoAdapter {
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT),
       password: process.env.REDIS_PASSWORD,
+      db: process.env.REDIS_DB,
     });
     const subClient = pubClient.duplicate();
 
