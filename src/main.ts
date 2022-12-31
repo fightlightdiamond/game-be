@@ -6,8 +6,8 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { useContainer } from 'class-validator';
-import { ValidationPipe } from '@nestjs/common';
+import { useContainer, ValidationError } from 'class-validator';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -40,9 +40,16 @@ async function bootstrap() {
       transform: true,
       forbidNonWhitelisted: false,
       errorHttpStatusCode: 422,
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        if (validationErrors.length) {
+          const validate = validationErrors.map((val: ValidationError) => {
+            return { [val.property]: Object.values(val.constraints) };
+          });
+          return new BadRequestException(validate);
+        }
+      },
     }),
   );
-  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3003);
 }
