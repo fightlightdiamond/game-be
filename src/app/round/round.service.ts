@@ -164,6 +164,9 @@ export class RoundService {
 
       away.take_dmg = dame;
       away.current_hp -= dame;
+    } else {
+      //TODO: xử lý hiển thị né
+      //away.take_dmg = -1;
     }
 
     this.turns.push(this.getData(home));
@@ -171,23 +174,7 @@ export class RoundService {
   }
 
   getData(home) {
-    const data = __.cloneDeep(home);
-    // const delArr = [
-    //   'atk',
-    //   'def',
-    //   'hp',
-    //   'spd',
-    //   'crit_dmg',
-    //   'crit_rate',
-    //   'id',
-    //   'u_id',
-    //   'name',
-    // ];
-    // delArr.forEach((name) => {
-    //   delete data[name];
-    // });
-
-    return data;
+    return __.cloneDeep(home);
   }
 
   /**

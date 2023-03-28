@@ -5,6 +5,12 @@ networks:
     driver: bridge
 
 services:
+  webserver:
+    image: 'nginx:latest'
+    ports:
+      - '83:80'
+    volumes:
+    - /some/content:/usr/share/nginx/html
   mysql:
     image: "mysql:latest"
     hostname: mysql
@@ -12,10 +18,13 @@ services:
     networks:
       - betn
     environment:
-      - MYSQL_ROOT_PASSWORD=123abc
+      - MYSQL_ROOT_PASSWORD=hero
       - MYSQL_DATABASE=bet_herox
       - MYSQL_USERNAME=siteuser
       - MYSQL_PASSWORD=sitepass
+#    command: ['mysqld', '--default-authentication-plugin=mysql_native_password']
+    volumes:
+      - ./docker/my.cnf:/etc/my.cnf
     ports:
       - '3306:3306'
     cap_add:
@@ -39,12 +48,12 @@ services:
 #    networks:
 #      - betn
 
-#  redis:
-#    image: 'redis:latest'
-#    ports:
-#      - '6379:6379'
-#    networks:
-#      - betn
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+    networks:
+      - betn
 
 #  elasticsearch:
 #    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
