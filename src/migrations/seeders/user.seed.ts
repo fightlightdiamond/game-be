@@ -16,9 +16,9 @@ export class UserSeed implements Seeder {
       const hero = heroes[idR];
       userHero.hero_id = idR;
       userHero.user_id = user.id;
-      hero.id && delete hero.id;
-      hero.createdAt && delete hero.createdAt;
-      hero.updatedAt && delete hero.updatedAt;
+      hero?.id && delete hero?.id;
+      hero?.createdAt && delete hero?.createdAt;
+      hero?.updatedAt && delete hero?.updatedAt;
 
       // for (const [key, value] of Object.entries(hero)) {
       //   userHero[key] = value;

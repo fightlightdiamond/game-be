@@ -1,5 +1,5 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+// import { Cron } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { Cache } from 'cache-manager';
@@ -21,7 +21,7 @@ export class PreMatchCron {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  @Cron('0 */3 * * * *')
+  // @Cron('0 */3 * * * *')
   async execute() {
     const match = await this.roundService.bet();
 

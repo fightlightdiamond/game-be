@@ -30,6 +30,13 @@ export class AppGateway
   private readonly logger = new Logger(this.constructor.name);
 
   /**
+   * Player
+   */
+  player: any = {};
+  pickItem: any[] = [];
+  doneItem: any[] = [];
+
+  /**
    * @param socketService
    */
   constructor(private readonly socketService: SocketService) {
@@ -67,6 +74,7 @@ export class AppGateway
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, room: string) {
     await client.join(room);
+    this.player[client.id] = {};
     client.emit('joinedRoom', room);
     return room;
   }
@@ -81,4 +89,59 @@ export class AppGateway
     await client.leave(room);
     return room;
   }
+
+  @SubscribeMessage('pick')
+  pick(client: Socket, item_id: number) {
+    console.log('Pick', item_id, this.pickItem);
+    // if (this.pickItem.includes(item_id) === false) {
+    this.player[client.id].item_id = item_id;
+    this.pickItem.push(item_id);
+    client.broadcast.emit('picked', this.player[client.id]);
+    // }
+  }
+
+  @SubscribeMessage('move')
+  move(client: Socket, data: IData) {
+    this.player[client.id] = client.id;
+    this.player[client.id] = { ...this.player[client.id], ...data };
+    client.broadcast.emit('moving', this.player[client.id]);
+    return data;
+  }
+
+  @SubscribeMessage('done')
+  done(client: Socket, item_id: number) {
+    console.log({ item_id }, this.doneItem, this.pickItem);
+    this.doneItem.push({ item_id, client_id: client.id });
+    this.player[client.id] = {};
+    client.broadcast.emit('hadDone', this.player[client.id]);
+
+    if (this.doneItem.length > 3) {
+      client.broadcast.emit('finish', this.player[client.id]);
+      this.doneItem = [];
+      this.pickItem = [];
+    }
+  }
 }
+
+interface IData {
+  x: number;
+  y: number;
+  socket_id?: string;
+  item_id?: string;
+  is_done?: false;
+}
+// interface IDone {
+//   socket_id?: string;
+//   item_id?: string;
+//   is_done?: false;
+// }
+
+// interface gameInfo {
+//   socket_id: {
+//     item_id: {
+//       x: number;
+//       y: number;
+//       is_done?: false;
+//     }
+//   }
+// }
