@@ -17,8 +17,6 @@
     "migration:revert": "npm run build && npx typeorm migration:revert",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
-    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
-    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n ormconfig.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -69,6 +67,7 @@
     "ioredis": "^5.2.1",
     "kafkajs": "^2.1.0",
     "lodash": "^4.17.21",
+    "mathjax-node": "^2.1.1",
     "mysql2": "^2.3.3",
     "nestjs-console": "^8.0.0",
     "nestjs-redis": "git+https://github.com/GyanendroKh/nestjs-redis.git#nest8-fix",
@@ -84,7 +83,6 @@
     "socket.io": "^4.5.1",
     "socket.io-adapter": "^2.4.0",
     "typeorm": "^0.3.9",
-    "typeorm-seeding": "^1.6.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

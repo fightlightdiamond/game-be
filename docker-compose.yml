@@ -17,7 +17,7 @@ services:
       - MYSQL_USERNAME=siteuser
       - MYSQL_PASSWORD=sitepass
     ports:
-      - '3306:3306'
+      - '33068:3306'
     cap_add:
       - SYS_NICE
   mailhog:

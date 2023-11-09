@@ -1,9 +1,33 @@
 import { Controller, Get } from '@nestjs/common';
 
+const mjAPI = require('mathjax-node');
+
+mjAPI.config({
+  MathJax: {
+    // traditional MathJax configuration
+  },
+});
+mjAPI.start();
+
 @Controller()
 export class AppController {
   @Get('ping')
   root() {
     return '0k';
+  }
+
+  @Get('mathjax')
+  async mathjax() {
+    // var yourMath = 'E = mc^2';
+    const yourMath =
+      '$$\\large \\begin{array}{r} \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ①}}1\\textcolor[gray]{0}{^{\\scriptsize ⑤}}1\\textcolor[gray]{0}{^{\\scriptsize ⑨}}1} \\hspace{0.5pt}\\\\[-3pt] 1\\phantom{^{\\scriptsize ①}}1\\enclose{longdiv}{\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ②}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}0^{\\scriptsize ①}0}}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ③}}1\\textcolor[gray]{0}{^{\\scriptsize ④}}1\\phantom{^{\\scriptsize ①}0}} \\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0} \\textcolor[gray]{0}{^{\\scriptsize ⑥}}1\\phantom{^{\\scriptsize ③}}1\\phantom{^{\\scriptsize ③}0}}} \\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑦}}1\\textcolor[gray]{0}{^{\\scriptsize ⑧}}1}\\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0}\\phantom{^{\\scriptsize ①}0}\\textcolor[gray]{0}{^{\\scriptsize ⑩}}1\\phantom{^{\\scriptsize ⑧}}1}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑪}}1\\phantom{^{\\scriptsize ⑪}}1}\\hspace{0.5pt}\\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\end{array} \\hspace{1.0cm} \\begin{array}{l} {\\tiny ①たてる　11\\div11} \\phantom{0}\\\\[-10pt] {\\tiny \\phantom{①たてる　} \\ ⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ②かける　11\\times1=11}\\\\[-10pt] {\\tiny ③ひく　　11-11=1}\\\\[-10pt] {\\tiny ④おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑤たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑤たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑥かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑦ひく　　11-11=1} \\\\[-10pt] {\\tiny ⑧おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑨たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑨たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑩かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑪ひく　　11-11=11（あまり）} \\end{array} \\large \\begin{array}{r} \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ①}}1\\textcolor[gray]{0}{^{\\scriptsize ⑤}}1\\textcolor[gray]{0}{^{\\scriptsize ⑨}}1} \\hspace{0.5pt}\\\\[-3pt] 1\\phantom{^{\\scriptsize ①}}1\\enclose{longdiv}{\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ②}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}0^{\\scriptsize ①}0}}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ③}}1\\textcolor[gray]{0}{^{\\scriptsize ④}}1\\phantom{^{\\scriptsize ①}0}} \\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0} \\textcolor[gray]{0}{^{\\scriptsize ⑥}}1\\phantom{^{\\scriptsize ③}}1\\phantom{^{\\scriptsize ③}0}}} \\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑦}}1\\textcolor[gray]{0}{^{\\scriptsize ⑧}}1}\\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0}\\phantom{^{\\scriptsize ①}0}\\textcolor[gray]{0}{^{\\scriptsize ⑩}}1\\phantom{^{\\scriptsize ⑧}}1}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑪}}1\\phantom{^{\\scriptsize ⑪}}1}\\hspace{0.5pt}\\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\end{array} \\hspace{1.0cm} \\begin{array}{l} {\\tiny ①たてる　11\\div11} \\phantom{0}\\\\[-10pt] {\\tiny \\phantom{①たてる　} \\ ⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ②かける　11\\times1=11}\\\\[-10pt] {\\tiny ③ひく　　11-11=1}\\\\[-10pt] {\\tiny ④おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑤たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑤たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑥かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑦ひく　　11-11=1} \\\\[-10pt] {\\tiny ⑧おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑨たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑨たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑩かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑪ひく　　11-11=11（あまり）} \\end{array} \\large \\begin{array}{r} \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ①}}1\\textcolor[gray]{0}{^{\\scriptsize ⑤}}1\\textcolor[gray]{0}{^{\\scriptsize ⑨}}1} \\hspace{0.5pt}\\\\[-3pt] 1\\phantom{^{\\scriptsize ①}}1\\enclose{longdiv}{\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}}1}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ②}}1\\phantom{^{\\scriptsize ①}}1\\phantom{^{\\scriptsize ①}0^{\\scriptsize ①}0}}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ③}}1\\textcolor[gray]{0}{^{\\scriptsize ④}}1\\phantom{^{\\scriptsize ①}0}} \\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0} \\textcolor[gray]{0}{^{\\scriptsize ⑥}}1\\phantom{^{\\scriptsize ③}}1\\phantom{^{\\scriptsize ③}0}}} \\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑦}}1\\textcolor[gray]{0}{^{\\scriptsize ⑧}}1}\\hspace{0.5pt}\\\\[-3pt] \\underline{\\textcolor[gray]{0.8}{\\phantom{^{\\scriptsize ①}0}\\phantom{^{\\scriptsize ①}0}\\textcolor[gray]{0}{^{\\scriptsize ⑩}}1\\phantom{^{\\scriptsize ⑧}}1}}\\hspace{0.5pt}\\\\[-3pt] \\textcolor[gray]{0.8}{\\textcolor[gray]{0}{^{\\scriptsize ⑪}}1\\phantom{^{\\scriptsize ⑪}}1}\\hspace{0.5pt}\\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\\\[-3pt] \\end{array} \\hspace{1.0cm} \\begin{array}{l} {\\tiny ①たてる　11\\div11} \\phantom{0}\\\\[-10pt] {\\tiny \\phantom{①たてる　} \\ ⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ②かける　11\\times1=11}\\\\[-10pt] {\\tiny ③ひく　　11-11=1}\\\\[-10pt] {\\tiny ④おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑤たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑤たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑥かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑦ひく　　11-11=1} \\\\[-10pt] {\\tiny ⑧おろす}\\phantom{0}\\\\[-10pt] {\\tiny ⑨たてる　11\\div11}\\phantom{0}\\\\[-10pt] {\\tiny \\phantom{⑨たてる　}⇒\\ 1}\\phantom{0}\\\\[-10pt] {\\tiny ⑩かける　11\\times1=11}\\\\[-10pt] {\\tiny ⑪ひく　　11-11=11（あまり）} \\end{array}$$';
+
+    const result = await mjAPI.typeset({
+      math: yourMath,
+      format: 'TeX', // or "inline-TeX", "MathML"
+      html: true, // or svg:true, or html:true
+    });
+
+    return result.html;
   }
 }
