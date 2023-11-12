@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Title</title>
+</head>
+<body>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'
+     xmlns:xlink='http://www.w3.org/1999/xlink'>
+    <defs>
+      <!-- Định nghĩa một hình tròn có thể tái sử dụng -->
+      <circle id="myCircle" cx="50" cy="50" r="40" fill="blue" />
+
+      <!-- Định nghĩa một gradient có thể tái sử dụng -->
+      <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+      </linearGradient>
+
+      <mask id="myMask" maskContentUnits="objectBoundingBox">
+        <rect width="1" height="1" fill="white" />
+        <circle cx="0.5" cy="0.5" r="0.4" fill="black" />
+      </mask>
+    </defs>
+  <!-- Sử dụng hình tròn được định nghĩa trước đó -->
+  <use xlink:href="#myCircle" />
+
+  <!-- Sử dụng gradient được định nghĩa trước đó -->
+  <rect x="10" y="100" width="180" height="50" fill="url(#myGradient)" />
+  <!-- Phần nền (màu đỏ trong trường hợp này) -->
+  <rect width="100%" height="100%" fill="red" />
+
+  <!-- Hình ảnh bạn muốn áp dụng mask -->
+  <rect width="100%" height="100%" fill="blue" mask="url(#myMask)" />
+</svg>
+
+</body>
+</html>

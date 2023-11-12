@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Title</title>
+  <style>
+      /* Chiều rộng 100% và chiều cao tự động điều chỉnh theo tỷ lệ */
+      .img-responsive-full {
+          width: 100%;
+          height: auto;
+      }
+  </style>
+</head>
+<body>
+
+<h2>inside html</h2>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'
+     xmlns:xlink='http://www.w3.org/1999/xlink'>
+  <rect x='10' y='10' width='100' height='100' rx='10'
+        stroke-dasharray='10 5'
+        style='stroke: #ff0000; fill:#ff6666;' />
+  <rect x='30' y='30' width='100' height='100' rx='10'
+        fill-opacity='0.5'
+        stroke-dasharray='10 5'
+        style='stroke: #220000; fill:#336666;' />
+  <ellipse cx='210' cy='110' rx='100' ry='50' style='fill:#6666ff; stroke: #0000ff' />
+  <line x1='50' y1='50' x2='180' y2='150' style='fill: none; stroke: #00ff00' />
+
+  <circle r='120' cx='120' cy='120' stroke='#006600' fill='#0000ff'></circle>
+
+  <polyline points='100,100 200,100 150,150' style='stroke: #ff0000' fill='none' />
+
+  <polygon points='200,200 300,200 250,250' style='stroke: #ff0000' fill='none' />
+
+  <path d='M100,100 L150,150, L150,200
+  A50,50 0 1,0 100,150
+  Q50,200 200,300
+  C255,350 375,350 400,300
+' style='stroke: #777889' stroke-width='3' fill='none'/>
+  <path d="M10 10 L50 10 L50 50 L10 50 Z" fill="blue" />
+
+  <image x="0" y='0' class='img-responsive-full' xlink:href='test.svg'
+         transform='scale(1, 1), rotate(5)'
+         height='100%'/>
+
+  <text
+    x='100' y='240' fill='#000' font-size='20px'
+  >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad architecto asperiores aut consequuntur enim eveniet exercitationem inventore, ipsa itaque iusto laudantium maxime mollitia neque numquam sed sint, suscipit vero?</text>
+</svg>
+
+<h2>store file</h2>
+<iframe src='./test.svg'></iframe>
+<div class='row'>
+  <div class='col-md-12'>
+    <h3>IMGGG</h3>
+    <img class='img-responsive-full' src='test.svg' alt='test'>
+  </div>
+</div>
+<div class='row'>
+  <div class='col-md-12'>
+    <h3>IMGGG</h3>
+    <img class="img-responsive-full" alt="Responsive image" src='https://e1.pxfuel.com/desktop-wallpaper/117/253/desktop-wallpaper-hyper-muteki-exaid-by-grandzone0-on-deviantart-hyper-muteki.jpg'>
+  </div>
+</div>
+
+<embed src='test.svg'>
+
+</body>
+</html>
