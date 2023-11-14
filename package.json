@@ -68,6 +68,7 @@
     "kafkajs": "^2.1.0",
     "lodash": "^4.17.21",
     "mathjax-node": "^2.1.1",
+    "mathjax-node-page": "^3.2.0",
     "mysql2": "^2.3.3",
     "nestjs-console": "^8.0.0",
     "nestjs-redis": "git+https://github.com/GyanendroKh/nestjs-redis.git#nest8-fix",
