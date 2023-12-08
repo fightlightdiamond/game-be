@@ -81,6 +81,7 @@ import { EmailExistsRule } from './common/rules/email-exists.rule';
 import { AutoBetService } from './app/auto-bet/auto-bet.service';
 import { AutoBetController } from './app/auto-bet/auto-bet.controller';
 import { AutoBetRepository } from './app/auto-bet/auto-bet.repository';
+import { RedisController } from './redis/redis.controller';
 
 @Module({
   imports: [
@@ -171,6 +172,7 @@ import { AutoBetRepository } from './app/auto-bet/auto-bet.repository';
     EloMatchController,
     UserGemController,
     AutoBetController,
+    RedisController,
   ],
   providers: [
     AppService,

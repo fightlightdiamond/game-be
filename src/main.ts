@@ -53,4 +53,6 @@ async function bootstrap() {
 
   await app.listen(3003);
 }
-void bootstrap().then(() => console.log('Server started...'));
+void bootstrap().then(() =>
+  console.log('Server started localhost:3003/api...'),
+);
