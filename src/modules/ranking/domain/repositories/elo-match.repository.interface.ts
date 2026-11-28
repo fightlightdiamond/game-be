@@ -1,8 +1,8 @@
-import { EloMatch } from '../entities/elo-match.entity';
+import { Challenge } from '../challenge';
 
 export const ELO_MATCH_REPOSITORY = Symbol('IEloMatchRepository');
 
 export interface IEloMatchRepository {
-  save(eloMatch: EloMatch): Promise<EloMatch>;
-  findByUserId(userId: number): Promise<EloMatch[]>;
+  save(challenge: Challenge): Promise<Challenge>;
+  findByUserId(userId: number): Promise<Challenge[]>;
 }

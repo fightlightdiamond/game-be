@@ -4,7 +4,7 @@ import {
   USER_HERO_REPOSITORY,
   IUserHeroRepository,
 } from '../../../domain/repositories/user-hero.repository.interface';
-import { UserHero } from '../../../domain/aggregates/user-hero.aggregate';
+import { OwnedHero } from '../../../domain/owned-hero';
 import { AllocatePointsCommand } from './allocate-points.command';
 
 @CommandHandler(AllocatePointsCommand)
@@ -16,7 +16,7 @@ export class AllocatePointsHandler
     private readonly userHeroRepo: IUserHeroRepository,
   ) {}
 
-  async execute(command: AllocatePointsCommand): Promise<UserHero> {
+  async execute(command: AllocatePointsCommand): Promise<OwnedHero> {
     // 1. Load UserHero by id and verify userId matches
     const userHero = await this.userHeroRepo.findById(command.userHeroId);
     if (!userHero) {

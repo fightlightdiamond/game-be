@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Challenge } from '../../../domain/challenge';
 import { IEloMatchRepository } from '../../../domain/repositories/elo-match.repository.interface';
-import { EloMatch } from '../../../domain/entities/elo-match.entity';
 import { EloMatchOrmEntity } from './elo-match.orm-entity';
 
 @Injectable()
@@ -12,13 +12,13 @@ export class TypeOrmEloMatchRepository implements IEloMatchRepository {
     private readonly orm: Repository<EloMatchOrmEntity>,
   ) {}
 
-  async save(eloMatch: EloMatch): Promise<EloMatch> {
-    const ormEntity = this.toOrm(eloMatch);
+  async save(challenge: Challenge): Promise<Challenge> {
+    const ormEntity = this.toOrm(challenge);
     const saved = await this.orm.save(ormEntity);
     return this.toDomain(saved);
   }
 
-  async findByUserId(userId: number): Promise<EloMatch[]> {
+  async findByUserId(userId: number): Promise<Challenge[]> {
     const rows = await this.orm
       .createQueryBuilder('elo_match')
       .where('elo_match.winner = :userId OR elo_match.loser = :userId', {
@@ -28,8 +28,8 @@ export class TypeOrmEloMatchRepository implements IEloMatchRepository {
     return rows.map((row) => this.toDomain(row));
   }
 
-  private toDomain(row: EloMatchOrmEntity): EloMatch {
-    return new EloMatch(
+  private toDomain(row: EloMatchOrmEntity): Challenge {
+    return new Challenge(
       row.id,
       row.hero_info ? JSON.parse(row.hero_info) : [],
       row.turns ? JSON.parse(row.turns) : [],
@@ -42,18 +42,18 @@ export class TypeOrmEloMatchRepository implements IEloMatchRepository {
     );
   }
 
-  private toOrm(eloMatch: EloMatch): EloMatchOrmEntity {
+  private toOrm(challenge: Challenge): EloMatchOrmEntity {
     const row = new EloMatchOrmEntity();
-    if (eloMatch.id) {
-      row.id = eloMatch.id;
+    if (challenge.id) {
+      row.id = challenge.id;
     }
-    row.hero_info = JSON.stringify(eloMatch.heroInfo);
-    row.turns = JSON.stringify(eloMatch.turns);
-    row.start_time = eloMatch.startTime;
-    row.turn_number = eloMatch.turnNumber;
-    row.status = eloMatch.status;
-    row.winner = eloMatch.winner;
-    row.loser = eloMatch.loser;
+    row.hero_info = JSON.stringify(challenge.heroInfo);
+    row.turns = JSON.stringify(challenge.turns);
+    row.start_time = challenge.startTime;
+    row.turn_number = challenge.turnNumber;
+    row.status = challenge.status;
+    row.winner = challenge.winner;
+    row.loser = challenge.loser;
     row.type = 0;
     return row;
   }

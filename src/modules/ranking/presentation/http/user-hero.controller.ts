@@ -15,7 +15,9 @@ import { JwtGuard } from '../../../identity/infrastructure/auth/jwt.guard';
 import { GetUserHeroQuery } from '../../application/queries/get-user-hero/get-user-hero.query';
 import { LevelUpUserHeroCommand } from '../../application/commands/level-up-user-hero/level-up-user-hero.command';
 import { AllocatePointsCommand } from '../../application/commands/allocate-points/allocate-points.command';
+import { ClaimOwnedHeroCommand } from '../../application/commands/claim-owned-hero/claim-owned-hero.command';
 import { AllocatePointsDto } from './dtos/allocate-points.dto';
+import { ClaimOwnedHeroDto } from './dtos/claim-owned-hero.dto';
 
 @ApiTags('user-heroes')
 @Controller('user-heroes')
@@ -30,6 +32,16 @@ export class UserHeroController {
   @ApiBearerAuth()
   async getMyHero(@Request() req) {
     return this.queryBus.execute(new GetUserHeroQuery(req.user.id));
+  }
+
+  @Post('claim')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @UsePipes(new ValidationPipe())
+  async claim(@Body() dto: ClaimOwnedHeroDto, @Request() req) {
+    return this.commandBus.execute(
+      new ClaimOwnedHeroCommand(req.user.id, dto.heroId),
+    );
   }
 
   @Post('level-up/:id')

@@ -1,13 +1,13 @@
-import { UserHero } from '../aggregates/user-hero.aggregate';
+import { OwnedHero } from '../owned-hero';
 
 export const USER_HERO_REPOSITORY = Symbol('IUserHeroRepository');
 
 export interface IUserHeroRepository {
-  findById(id: number): Promise<UserHero | null>;
-  findByUserId(userId: number): Promise<UserHero | null>;
-  save(userHero: UserHero): Promise<UserHero>;
+  findById(id: number): Promise<OwnedHero | null>;
+  findByUserId(userId: number): Promise<OwnedHero | null>;
+  save(hero: OwnedHero): Promise<OwnedHero>;
   findLeaderboard(options: {
     page: number;
     limit: number;
-  }): Promise<UserHero[]>;
+  }): Promise<OwnedHero[]>;
 }

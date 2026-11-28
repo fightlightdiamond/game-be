@@ -1,24 +1,20 @@
-import {
-  CommandHandler,
-  EventBus,
-  ICommandHandler,
-  QueryBus,
-} from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { GetHeroQuery } from '../../../../hero-catalog/application/queries/get-hero/get-hero.query';
 import { Hero } from '../../../../hero-catalog/domain/hero';
-import {
-  USER_HERO_REPOSITORY,
-  IUserHeroRepository,
-} from '../../../domain/repositories/user-hero.repository.interface';
+import { CombatEngine } from '../../../../combat/domain/combat-engine';
+import { Challenge } from '../../../domain/challenge';
+import { nextElo } from '../../../domain/elo';
 import {
   ELO_MATCH_REPOSITORY,
   IEloMatchRepository,
 } from '../../../domain/repositories/elo-match.repository.interface';
-import { CombatEngine } from '../../../../combat/domain/combat-engine';
-import { EloMatch } from '../../../domain/entities/elo-match.entity';
-import { freezeOwned } from './freeze-fighter';
+import {
+  USER_HERO_REPOSITORY,
+  IUserHeroRepository,
+} from '../../../domain/repositories/user-hero.repository.interface';
 import { ChallengeCommand } from './challenge.command';
+import { freezeOwned } from './freeze-fighter';
 
 @CommandHandler(ChallengeCommand)
 export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
@@ -29,10 +25,9 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     private readonly eloMatchRepo: IEloMatchRepository,
     private readonly combatEngine: CombatEngine,
     private readonly queryBus: QueryBus,
-    private readonly eventBus: EventBus,
   ) {}
 
-  async execute(command: ChallengeCommand): Promise<EloMatch> {
+  async execute(command: ChallengeCommand): Promise<Challenge> {
     // 1. Load challenger's UserHero
     const home = await this.userHeroRepo.findByUserId(command.userId);
     if (!home) {
@@ -57,24 +52,11 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     const awayFighter = freezeOwned(away.id, away, awayHero);
     const result = this.combatEngine.simulate(homeFighter, awayFighter);
 
-    // 5. Determine outcome for home hero
     const homeOutcome: 0 | 1 = result.winnerId === home.id ? 1 : 0;
+    const awayOutcome: 0 | 1 = homeOutcome === 1 ? 0 : 1;
+    home.setElo(nextElo(home.elo, away.elo, homeOutcome));
+    away.setElo(nextElo(away.elo, home.elo, awayOutcome));
 
-    // 6. Calculate new ELO ratings
-    const newHomeRating = home.eloRating.recalculate(
-      away.eloRating,
-      homeOutcome,
-    );
-    const newAwayRating = away.eloRating.recalculate(
-      home.eloRating,
-      homeOutcome === 1 ? 0 : 1,
-    );
-
-    // 7. Apply ELO results to both aggregates
-    home.applyEloResult(newHomeRating);
-    away.applyEloResult(newAwayRating);
-
-    // 8. Persist both updated UserHero aggregates
     await this.userHeroRepo.save(home);
     await this.userHeroRepo.save(away);
 
@@ -96,7 +78,7 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       isActiveSkill: t.isActiveSkill,
     }));
 
-    const eloMatch = EloMatch.create(
+    const challenge = Challenge.create(
       heroInfo,
       plainTurns,
       result.turnNumber,
@@ -105,15 +87,7 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       command.userId,
     );
 
-    const savedMatch = await this.eloMatchRepo.save(eloMatch);
-
-    // 10. Publish domain events from both aggregates
-    this.eventBus.publishAll(home.getUncommittedEvents());
-    home.commit();
-    this.eventBus.publishAll(away.getUncommittedEvents());
-    away.commit();
-
-    return savedMatch;
+    return this.eloMatchRepo.save(challenge);
   }
 
   private async catalogHero(heroId: number): Promise<Hero> {

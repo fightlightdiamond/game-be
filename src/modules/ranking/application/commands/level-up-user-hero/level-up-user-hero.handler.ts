@@ -5,7 +5,7 @@ import {
   IUserHeroRepository,
 } from '../../../domain/repositories/user-hero.repository.interface';
 import { LEDGER, Ledger } from '../../../../ledger/domain/ledger';
-import { UserHero } from '../../../domain/aggregates/user-hero.aggregate';
+import { OwnedHero } from '../../../domain/owned-hero';
 import { LevelUpUserHeroCommand } from './level-up-user-hero.command';
 
 @CommandHandler(LevelUpUserHeroCommand)
@@ -19,7 +19,7 @@ export class LevelUpUserHeroHandler
     private readonly ledger: Ledger,
   ) {}
 
-  async execute(command: LevelUpUserHeroCommand): Promise<UserHero> {
+  async execute(command: LevelUpUserHeroCommand): Promise<OwnedHero> {
     // 1. Load UserHero by id
     const userHero = await this.userHeroRepo.findById(command.userHeroId);
     if (!userHero) {
