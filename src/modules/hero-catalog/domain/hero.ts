@@ -1,5 +1,6 @@
-import { HeroStats } from '../value-objects/hero-stats.vo';
+import { HeroStats } from './value-objects/hero-stats.vo';
 
+/** A catalog row. No rules. Callers freeze a Fighter from it. */
 export class Hero {
   constructor(
     public readonly id: number,

@@ -1,5 +1,12 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import {
+  CommandHandler,
+  EventBus,
+  ICommandHandler,
+  QueryBus,
+} from '@nestjs/cqrs';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { GetHeroQuery } from '../../../../hero-catalog/application/queries/get-hero/get-hero.query';
+import { Hero } from '../../../../hero-catalog/domain/hero';
 import {
   USER_HERO_REPOSITORY,
   IUserHeroRepository,
@@ -9,8 +16,8 @@ import {
   IEloMatchRepository,
 } from '../../../domain/repositories/elo-match.repository.interface';
 import { CombatEngine } from '../../../../combat/domain/combat-engine';
-import { Fighter } from '../../../../combat/domain/fighter';
 import { EloMatch } from '../../../domain/entities/elo-match.entity';
+import { freezeOwned } from './freeze-fighter';
 import { ChallengeCommand } from './challenge.command';
 
 @CommandHandler(ChallengeCommand)
@@ -21,6 +28,7 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     @Inject(ELO_MATCH_REPOSITORY)
     private readonly eloMatchRepo: IEloMatchRepository,
     private readonly combatEngine: CombatEngine,
+    private readonly queryBus: QueryBus,
     private readonly eventBus: EventBus,
   ) {}
 
@@ -43,38 +51,10 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       );
     }
 
-    const homeFighter = new Fighter(
-      home.id,
-      String(home.heroId),
-      home.hp,
-      home.hp,
-      home.atk,
-      home.atk,
-      home.def,
-      home.def,
-      home.spd,
-      home.critRate,
-      0,
-      0,
-      0,
-      0,
-    );
-    const awayFighter = new Fighter(
-      away.id,
-      String(away.heroId),
-      away.hp,
-      away.hp,
-      away.atk,
-      away.atk,
-      away.def,
-      away.def,
-      away.spd,
-      away.critRate,
-      0,
-      0,
-      0,
-      0,
-    );
+    const homeHero = await this.catalogHero(home.heroId);
+    const awayHero = await this.catalogHero(away.heroId);
+    const homeFighter = freezeOwned(home.id, home, homeHero);
+    const awayFighter = freezeOwned(away.id, away, awayHero);
     const result = this.combatEngine.simulate(homeFighter, awayFighter);
 
     // 5. Determine outcome for home hero
@@ -134,5 +114,18 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     away.commit();
 
     return savedMatch;
+  }
+
+  private async catalogHero(heroId: number): Promise<Hero> {
+    const hero = await this.queryBus.execute<GetHeroQuery, Hero | null>(
+      new GetHeroQuery(heroId),
+    );
+    if (!hero) {
+      throw new HttpException(
+        `Catalog hero ${heroId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return hero;
   }
 }

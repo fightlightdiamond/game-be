@@ -1,4 +1,4 @@
-import { Hero } from '../aggregates/hero.aggregate';
+import { Hero } from '../hero';
 
 export const HERO_REPOSITORY = Symbol('IHeroRepository');
 

@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CombatModule } from '../combat/combat.module';
+import { HeroCatalogModule } from '../hero-catalog/hero-catalog.module';
 import { IdentityModule } from '../identity/identity.module';
 import { LedgerModule } from '../ledger/ledger.module';
 
@@ -35,6 +36,7 @@ import { EloMatchController } from './presentation/http/elo-match.controller';
       UserGemOrmEntity,
     ]),
     CombatModule,
+    HeroCatalogModule,
     IdentityModule,
     LedgerModule,
   ],

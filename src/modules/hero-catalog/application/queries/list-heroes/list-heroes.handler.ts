@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { Hero } from '../../../domain/aggregates/hero.aggregate';
+import { Hero } from '../../../domain/hero';
 import {
   HERO_REPOSITORY,
   IHeroRepository,

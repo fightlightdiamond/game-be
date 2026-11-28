@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IHeroRepository } from '../../../domain/repositories/hero.repository.interface';
-import { Hero } from '../../../domain/aggregates/hero.aggregate';
+import { Hero } from '../../../domain/hero';
 import { HeroStats } from '../../../domain/value-objects/hero-stats.vo';
 import { HeroOrmEntity } from './hero.orm-entity';
 
@@ -32,8 +32,8 @@ export class TypeOrmHeroRepository implements IHeroRepository {
       .limit(2)
       .getMany();
 
-    if (rows.length < 2) {
-      throw new Error('Not enough active heroes to create a pair');
+    if (rows.length < 2 || rows[0].id === rows[1].id) {
+      throw new Error('A pair needs two distinct catalog heroes');
     }
     return [this.toDomain(rows[0]), this.toDomain(rows[1])];
   }
