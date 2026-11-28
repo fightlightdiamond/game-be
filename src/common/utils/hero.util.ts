@@ -1,4 +1,4 @@
-import { IHero } from '../../migrations/interfaces/hero.interface';
+import { IHero } from '../../app/legacy/interfaces/hero.interface';
 
 export const stats = {
   hp: 10000,
