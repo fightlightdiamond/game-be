@@ -1,22 +1,22 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { User } from '../../../domain/aggregates/user.aggregate';
+import { Account } from '../../../domain/account';
 import {
-  USER_REPOSITORY,
-  IUserRepository,
-} from '../../../domain/repositories/user.repository.interface';
+  ACCOUNT_REPOSITORY,
+  AccountRepository,
+} from '../../../domain/repositories/account.repository';
 import { GetUserByEmailQuery } from './get-user-by-email.query';
 
 @QueryHandler(GetUserByEmailQuery)
 export class GetUserByEmailHandler
-  implements IQueryHandler<GetUserByEmailQuery, User | null>
+  implements IQueryHandler<GetUserByEmailQuery, Account | null>
 {
   constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly userRepository: IUserRepository,
+    @Inject(ACCOUNT_REPOSITORY)
+    private readonly accounts: AccountRepository,
   ) {}
 
-  async execute(query: GetUserByEmailQuery): Promise<User | null> {
-    return this.userRepository.findByEmail(query.email);
+  async execute(query: GetUserByEmailQuery): Promise<Account | null> {
+    return this.accounts.findByEmail(query.email);
   }
 }

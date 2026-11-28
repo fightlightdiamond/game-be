@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { User } from '../../../domain/aggregates/user.aggregate';
+import { Account } from '../../../domain/account';
 import {
-  USER_REPOSITORY,
-  IUserRepository,
-} from '../../../domain/repositories/user.repository.interface';
-import { PasswordHasher } from '../../../domain/services/password-hasher.service';
+  ACCOUNT_REPOSITORY,
+  AccountRepository,
+} from '../../../domain/repositories/account.repository';
+import { PasswordHasher } from '../../../infrastructure/auth/password-hasher';
 import { RegisterUserCommand } from './register-user.command';
 
 @CommandHandler(RegisterUserCommand)
@@ -13,14 +13,13 @@ export class RegisterUserHandler
   implements ICommandHandler<RegisterUserCommand>
 {
   constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly userRepository: IUserRepository,
+    @Inject(ACCOUNT_REPOSITORY)
+    private readonly accounts: AccountRepository,
     private readonly passwordHasher: PasswordHasher,
   ) {}
 
-  async execute(command: RegisterUserCommand): Promise<User> {
+  async execute(command: RegisterUserCommand): Promise<Account> {
     const passwordHash = await this.passwordHasher.hash(command.password);
-    const user = User.create(0, command.email, passwordHash);
-    return this.userRepository.save(user);
+    return this.accounts.save(Account.register(command.email, passwordHash));
   }
 }

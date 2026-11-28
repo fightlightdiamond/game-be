@@ -5,11 +5,17 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
-import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
+import { LedgerModule } from '../ledger/ledger.module';
+import { SharedRedisModule } from '../../shared/infrastructure/redis/redis.module';
+import { ACCOUNT_REPOSITORY } from './domain/repositories/account.repository';
+import { CLOCK, SystemClock } from './domain/clock';
+import { GRANTED_DAY } from './domain/granted-day';
 import { UserOrmEntity } from './infrastructure/persistence/typeorm/user.orm-entity';
 import { TypeOrmUserRepository } from './infrastructure/persistence/typeorm/user.repository';
-import { PasswordHasher } from './domain/services/password-hasher.service';
+import { PasswordHasher } from './infrastructure/auth/password-hasher';
 import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
+import { OpenBalance } from './infrastructure/open-balance';
+import { RedisGrantedDay } from './infrastructure/redis-granted-day';
 
 import { RegisterUserHandler } from './application/commands/register-user/register-user.handler';
 import { LoginHandler } from './application/commands/login/login.handler';
@@ -25,6 +31,8 @@ import { AuthController } from './presentation/http/auth.controller';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([UserOrmEntity]),
     ConfigModule,
+    LedgerModule,
+    SharedRedisModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -34,11 +42,11 @@ import { AuthController } from './presentation/http/auth.controller';
     GetUserByEmailHandler,
     PasswordHasher,
     JwtStrategy,
+    OpenBalance,
     TypeOrmUserRepository,
-    {
-      provide: USER_REPOSITORY,
-      useClass: TypeOrmUserRepository,
-    },
+    { provide: ACCOUNT_REPOSITORY, useClass: TypeOrmUserRepository },
+    { provide: CLOCK, useClass: SystemClock },
+    { provide: GRANTED_DAY, useClass: RedisGrantedDay },
   ],
   exports: [CqrsModule, JwtModule, PassportModule],
 })
