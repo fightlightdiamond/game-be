@@ -8,8 +8,8 @@ import {
   ELO_MATCH_REPOSITORY,
   IEloMatchRepository,
 } from '../../../domain/repositories/elo-match.repository.interface';
-import { CombatEngine } from '../../../../combat/services/combat-engine.service';
-import { HeroSnapshot } from '../../../../combat/domain/value-objects/hero-snapshot.vo';
+import { CombatEngine } from '../../../../combat/domain/combat-engine';
+import { Fighter } from '../../../../combat/domain/fighter';
 import { EloMatch } from '../../../domain/entities/elo-match.entity';
 import { ChallengeCommand } from './challenge.command';
 
@@ -43,45 +43,39 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       );
     }
 
-    // 3. Build HeroSnapshots (use 0 defaults for fields not tracked on UserHero)
-    const homeSnapshot = new HeroSnapshot(
+    const homeFighter = new Fighter(
       home.id,
       String(home.heroId),
       home.hp,
+      home.hp,
       home.atk,
+      home.atk,
+      home.def,
       home.def,
       home.spd,
       home.critRate,
-      0, // critDmg
-      0, // atkHealing
-      0, // takeDmgHealing
-      0, // dodge
-      0, // acc
-      0, // cc
-      0, // effectResistance
-      0, // intrinsicStatus
+      0,
+      0,
+      0,
+      0,
     );
-
-    const awaySnapshot = new HeroSnapshot(
+    const awayFighter = new Fighter(
       away.id,
       String(away.heroId),
       away.hp,
+      away.hp,
       away.atk,
+      away.atk,
+      away.def,
       away.def,
       away.spd,
       away.critRate,
-      0, // critDmg
-      0, // atkHealing
-      0, // takeDmgHealing
-      0, // dodge
-      0, // acc
-      0, // cc
-      0, // effectResistance
-      0, // intrinsicStatus
+      0,
+      0,
+      0,
+      0,
     );
-
-    // 4. Run combat simulation
-    const result = this.combatEngine.simulate(homeSnapshot, awaySnapshot);
+    const result = this.combatEngine.simulate(homeFighter, awayFighter);
 
     // 5. Determine outcome for home hero
     const homeOutcome: 0 | 1 = result.winnerId === home.id ? 1 : 0;

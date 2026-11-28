@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
-import { SkillRegistry } from './services/skill-registry.service';
-import { CombatEngine } from './services/combat-engine.service';
+import { CombatEngine } from './domain/combat-engine';
+import { MathRandomSource } from './domain/random-source';
+import { TraitRegistry } from './domain/traits';
 
 @Module({
-  providers: [SkillRegistry, CombatEngine],
+  providers: [
+    {
+      provide: CombatEngine,
+      useFactory: () =>
+        new CombatEngine(new TraitRegistry(), new MathRandomSource()),
+    },
+  ],
   exports: [CombatEngine],
 })
 export class CombatModule {}

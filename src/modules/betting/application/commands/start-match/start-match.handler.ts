@@ -12,8 +12,8 @@ import {
   BETTING_MATCH_REPOSITORY,
   IBettingMatchRepository,
 } from '../../../domain/repositories/betting-match.repository.interface';
-import { CombatEngine } from '../../../../combat/services/combat-engine.service';
-import { HeroSnapshot } from '../../../../combat/domain/value-objects/hero-snapshot.vo';
+import { CombatEngine } from '../../../../combat/domain/combat-engine';
+import { Fighter } from '../../../../combat/domain/fighter';
 import { GetHeroPairQuery } from '../../../../hero-catalog/application/queries/get-hero-pair/get-hero-pair.query';
 import { Hero } from '../../../../hero-catalog/domain/aggregates/hero.aggregate';
 import { NameQueueConstant } from '../../../../../shared/constants/name-queue.constant';
@@ -39,45 +39,9 @@ export class StartMatchHandler implements ICommandHandler<StartMatchCommand> {
       [Hero, Hero]
     >(new GetHeroPairQuery());
 
-    // 2. Build HeroSnapshots from hero stats
-    const snapshotA = new HeroSnapshot(
-      heroA.id,
-      heroA.name,
-      heroA.stats.hp,
-      heroA.stats.atk,
-      heroA.stats.def,
-      heroA.stats.spd,
-      heroA.stats.critRate,
-      heroA.stats.critDmg,
-      heroA.stats.atkHealing,
-      heroA.stats.takeDmgHealing,
-      heroA.stats.dodge,
-      heroA.stats.acc,
-      heroA.stats.cc,
-      heroA.stats.effectResistance,
-      heroA.stats.intrinsicStatus,
-    );
-
-    const snapshotB = new HeroSnapshot(
-      heroB.id,
-      heroB.name,
-      heroB.stats.hp,
-      heroB.stats.atk,
-      heroB.stats.def,
-      heroB.stats.spd,
-      heroB.stats.critRate,
-      heroB.stats.critDmg,
-      heroB.stats.atkHealing,
-      heroB.stats.takeDmgHealing,
-      heroB.stats.dodge,
-      heroB.stats.acc,
-      heroB.stats.cc,
-      heroB.stats.effectResistance,
-      heroB.stats.intrinsicStatus,
-    );
-
-    // 3. Run combat simulation
-    const result = this.combatEngine.simulate(snapshotA, snapshotB);
+    const home = freeze(heroA);
+    const away = freeze(heroB);
+    const result = this.combatEngine.simulate(home, away);
 
     // 4. Build heroInfo
     const heroInfo: Array<Record<string, unknown>> = [
@@ -131,4 +95,23 @@ export class StartMatchHandler implements ICommandHandler<StartMatchCommand> {
 
     return savedMatch;
   }
+}
+
+function freeze(hero: Hero): Fighter {
+  return new Fighter(
+    hero.id,
+    hero.name,
+    hero.stats.hp,
+    hero.stats.hp,
+    hero.stats.atk,
+    hero.stats.atk,
+    hero.stats.def,
+    hero.stats.def,
+    hero.stats.spd,
+    hero.stats.critRate,
+    hero.stats.critDmg,
+    hero.stats.dodge,
+    hero.stats.effectResistance,
+    hero.stats.intrinsicStatus,
+  );
 }
