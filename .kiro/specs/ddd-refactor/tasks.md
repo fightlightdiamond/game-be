@@ -390,22 +390,22 @@ Ordering constraint: **Combat → HeroCatalog & Identity (parallel) → Betting 
 
 - [ ] 13. Cleanup: remove legacy code
 
-  - [-] 13.1 Delete legacy `src/app/` directory
+  - [x] 13.1 Delete legacy `src/app/` directory
 
     - Remove the entire `src/app/` tree; all logic has been migrated to `src/modules/`
     - _Requirements: 1.1_
 
-  - [-] 13.2 Delete `src/migrations/entities/` and `src/migrations/interfaces/`
+  - [x] 13.2 Delete `src/migrations/entities/` and `src/migrations/interfaces/`
 
     - ORM entities now live in each BC's `infrastructure/persistence/typeorm/` folder
     - _Requirements: 9.5, 15.1_
 
-  - [-] 13.3 Delete `src/core/` legacy utilities
+  - [x] 13.3 Delete `src/core/` legacy utilities
 
     - Remove `src/core/typeorm/`, `src/core/validator/`, `src/core/consoles/` — these were monolith-era utilities whose roles are covered by the new module structure
     - _Requirements: 1.1_
 
-  - [~] 13.4 Final build verification
+  - [-] 13.4 Final build verification
     - Run `npm run build` after cleanup; it must succeed with zero errors
     - Remove the `exports: [MatchService]` backward-compat stub from `BettingModule` once confirmed no remaining consumers reference it
     - _Requirements: 11.3, 11.4_

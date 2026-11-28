@@ -871,6 +871,11 @@
         "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
         "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
         "timestamp": 1795827593814
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834082874
       }
     ],
     "13.2 Delete `src/migrations/entities/` and `src/migrations/interfaces/`": [
@@ -883,6 +888,11 @@
         "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
         "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
         "timestamp": 1795827594447
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834083162
       }
     ],
     "13.3 Delete `src/core/` legacy utilities": [
@@ -895,6 +905,11 @@
         "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
         "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
         "timestamp": 1795827594670
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834083279
       }
     ],
     "13.4 Final build verification": [
@@ -902,6 +917,11 @@
         "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
         "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
         "timestamp": 1795799172539
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834087362
       }
     ],
     "14. Final checkpoint — full test suite": [
