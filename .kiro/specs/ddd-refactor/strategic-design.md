@@ -4,7 +4,7 @@ This document fixes the business model before aggregates, commands, or folders.
 
 The words we speak, and the class and method names, are in [ubiquitous-language.md](./ubiquitous-language.md). That file wins on the word. [concepts.md](./concepts.md) wins on whether a named thing is a concept, data, or a rule.
 
-Scope is the product that exists in code, plus the short notes in `src/app/README.md`. This refactor does not change the MySQL schema. Renaming columns comes later, after the language is stable.
+Scope is the product that exists in code. This refactor does not change the MySQL schema. Renaming columns comes later, after the language is stable.
 
 ## 1. The business
 
@@ -235,7 +235,6 @@ The following in `src/modules` break this map. Change the code. Do not change th
 | Betting dispatches an Identity command and plans to dispatch `AddGem` | The customer depends on the supplier's module, and betting would import roster | Ledger port. `RewardsPaid` for gems |
 | `findByUserId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
 | `CombatEngine` is `@Injectable` and calls `Math.random` | Combat is not replayable and it depends on Nest | A `RandomSource` port. The formulas are the original loop in [concepts.md](./concepts.md), not the port that dropped max health |
-| Task 13 deletes `src/app` | Address and gems are not received by a context yet | Delete a legacy path only after its use cases have a context |
 
 Gems stay inside roster and wake up on an event. Do not fold them into Ranking to keep a four-module diagram.
 
