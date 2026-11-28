@@ -30,7 +30,7 @@ A column name is not a word in this language. Mappers translate `bets.balance`, 
 
 These sentences are the language in use. A class model that cannot be read back as these sentences has the wrong names.
 
-**House match.** The house opens a match between two distinct catalog heroes. The result already exists and is hidden. An account places one stake on one of those two heroes. Two minutes later the fight is revealed: the winner and the turn log are public. At five minutes the house settles, and each winning stake is credited `amount × 2`. The next house match starts then. An enabled auto-stake places its `stakeAmount` on the hero it backs for that pair.
+**House match.** The house opens a match between two distinct catalog heroes. The result already exists and is hidden. An account places one stake on one of those two heroes. Two minutes later the fight is revealed: the winner and the turn log are public. At five minutes the house settles, and each winning stake is credited `amount × 2`. The next house match starts then.
 
 **Combat.** A caller freezes two fighters and asks combat to simulate. The faster fighter blows first. A tie on speed goes to away. Each fighter's trait applies before its blow. The fight stops on a knockout or when the turn number reaches 20. Home wins only when home's remaining health is strictly greater.
 
@@ -71,8 +71,6 @@ These sentences are the language in use. A class model that cannot be read back 
 | `open` | Verb | Start the life of a house match at 0:00. The result already exists and is not public | `openBetting`, `startMatch` as a phase name |
 | `reveal` | Verb | At 2:00, close the window and publish the winner and the turn log. Do not simulate again | `closeBetting`, `resolveFighting` |
 | `settle` | Verb | At 5:00, credit each winning stake `amount × 2` and mark the match `Settled` | `reward`, `resolveReward` |
-| `AutoStake` | Noun | One row in an account's set: a pair `lowerId\|higherId`, the hero to back, enabled, and `stakeAmount` | `RivalPair`. `bet_percentage` as a percent |
-| `stakeAmount` | Noun | The absolute amount an enabled auto-stake places | A percent of the balance |
 
 There is no `Scheduled` phase. A house match is created already `Open`. Closing the window and revealing the fight are the same verb, `reveal`.
 
@@ -146,7 +144,7 @@ When the current code uses the word on the left, the language uses the words on 
 
 Do not add a class for these. The sentences that were considered, and the reason they are out, are in [concepts.md](./concepts.md).
 
-- `available_balance`, `user_settings`, `auto_settings`
+- `available_balance`, `user_settings`
 - `attach` as a gem action
 - `Synthia` as a trait
 

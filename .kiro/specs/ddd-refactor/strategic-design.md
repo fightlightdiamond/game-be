@@ -19,7 +19,6 @@ Supporting loops that already have code:
 
 - Ranked challenge between two heroes owned by players, scored with Elo.
 - A gem drop after a winning stake, then leveling that gem in storage. A gem does not change stats.
-- An auto-stake policy per hero pair.
 
 ## 2. Domain and subdomains
 
@@ -41,8 +40,6 @@ These slices have their own rules. They are not the core. House betting and rost
 |---|---|---|---|
 | House betting | Stake on the winner of a hidden fight | `HouseMatch`, `Stake` | One stake per account per match, on one of the two catalog heroes. The window is open for 2 minutes, the reveal lasts 3 minutes, settlement is at 5 minutes, and the next match starts then. Stake only while the window is open. Payout = `amount × 2` for the winning catalog hero. Phases move `Open → Revealed → Settled`. The stored simulation stays complete while the public view hides it |
 | Roster and rank | Raise the one owned hero and rank it | `OwnedHero`, `Gem` | One owned hero per account, claimed from the catalog. Allocated points do not exceed level, and they set the five stats by the formulas in concepts.md. Level-up fee is `2^(currentLevel + 1)`, then level increases by 1. Elo starts at 1600. Challenge updates both Elo numbers with `kFactor` 20. A gem drops at 5% after a winning stake and can be leveled in storage. A gem does not change stats |
-
-`AutoStake` is configuration inside house betting. An account has one set of unordered catalog pairs. Each row has an enabled flag, the hero to back, and `stakeAmount` as an absolute amount. The legacy column name is `bet_percentage`. The listener that builds the pair from winner and loser is wrong. The pair is the two catalog ids.
 
 Gems are part of roster. A drop listens to `RewardsPaid`. It is not a rule of the match.
 
@@ -71,7 +68,7 @@ These have no business rule. Wrap a library.
 
 ### Not classified yet
 
-`available_balance`, `user_settings`, and `auto_settings` have no use case. They are not terms. Do not copy `balance` into `available_balance`.
+`available_balance` and `user_settings` have no use case. They are not terms. Do not copy `balance` into `available_balance`.
 
 ## 3. Ubiquitous language
 
@@ -105,7 +102,6 @@ Inside:
 
 - `HouseMatch`: phase, two frozen `Fighter`s, the internal `CombatResult`, and whether the public view is still hidden.
 - `Stake`: one `AccountId`, one match, one catalog `Hero`, `amount > 0`.
-- `AutoStake`: configuration only. It is not itself a match.
 
 Rules:
 
@@ -239,9 +235,9 @@ The following in `src/modules` break this map. Change the code. Do not change th
 | Betting dispatches an Identity command and plans to dispatch `AddGem` | The customer depends on the supplier's module, and betting would import roster | Ledger port. `RewardsPaid` for gems |
 | `findByUserId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
 | `CombatEngine` is `@Injectable` and calls `Math.random` | Combat is not replayable and it depends on Nest | A `RandomSource` port. The formulas are the original loop in [concepts.md](./concepts.md), not the port that dropped max health |
-| Task 13 deletes `src/app` | Auto-stake, address, and gems are not received by a context yet | Delete a legacy path only after its use cases have a context |
+| Task 13 deletes `src/app` | Address and gems are not received by a context yet | Delete a legacy path only after its use cases have a context |
 
-Auto-stake stays inside house betting. Gems stay inside roster and wake up on an event. Do not fold them into Ranking to keep a four-module diagram.
+Gems stay inside roster and wake up on an event. Do not fold them into Ranking to keep a four-module diagram.
 
 ## 7. Implementation order
 
@@ -252,18 +248,16 @@ Build the core domain first. Then the supporting domain that sits on its result.
 3. Ledger: `debit` / `credit` that stay correct under two concurrent requests. One rule.
 4. Catalog: read-only `Hero` rows. Callers freeze a `Fighter`.
 5. Roster: one owned hero per account, Elo with `kFactor` 20, listener for `RewardsPaid`.
-6. Auto-stake configuration inside house betting, after the ledger and the match stand.
-7. Account and socket: wrap what already runs. No new domain.
+6. Account and socket: wrap what already runs. No new domain.
 
 ## 8. Decisions now closed
 
 These were open. Each one is now a rule in [concepts.md](./concepts.md). Do not reopen them by copying the incomplete `CombatEngine` port or a README sentence that has no use case.
 
-1. **`available_balance`.** No use case. It is not a balance. Do not copy `balance` into it. The same is true of `user_settings` and `auto_settings`.
-2. **`bet_percentage`.** An absolute `stakeAmount`. Not a percent.
-3. **Equal health.** Away wins, including when the fight stops at turn 20. A speed tie also goes to away.
-4. **Owned hero.** One per account, by `claim`. Points set the five stats by the formulas in concepts.md. Elo starts at 1600 and uses `kFactor` 20.
-5. **Gems.** Six types. A 5% drop of a level-1 gem after a winning stake. `levelUpGem` spends storage for a chance at the next level. A gem does not change stats, and there is no attach action.
+1. **`available_balance`.** No use case. It is not a balance. Do not copy `balance` into it. The same is true of `user_settings`.
+2. **Equal health.** Away wins, including when the fight stops at turn 20. A speed tie also goes to away.
+3. **Owned hero.** One per account, by `claim`. Points set the five stats by the formulas in concepts.md. Elo starts at 1600 and uses `kFactor` 20.
+4. **Gems.** Six types. A 5% drop of a level-1 gem after a winning stake. `levelUpGem` spends storage for a chance at the next level. A gem does not change stats, and there is no attach action.
 
 ## 9. Corrections applied while translating
 
@@ -273,7 +267,6 @@ The previous Vietnamese draft had these inconsistencies. This English text is th
 |---|---|---|
 | `closeBetting` and `reveal` are both phase commands | The state list has three transitions | One command, `reveal` |
 | Elo shares the `matches` table | Elo is `@Entity('elo-matches')` | Challenge uses `elo-matches`. A house match uses `matches` |
-| `betPercentage` is a percent of balance | The listener assigns it to stake `balance` | It is an absolute `stakeAmount` |
 | `RewardsPaid` may be published when credits are merely queued | A crash between publish and credit pays nobody or pays twice | Publish only after the settlement transaction commits |
 | House betting is the core, and Combat is only a kernel inside it | The differentiating rules are the 11 traits and the turn loop. Stakes attach money to a finished `CombatResult` | Combat is the only core domain. House betting is supporting |
 | Combat is a Shared Kernel co-owned with its callers | Fight rules are the product's distinctive rules. Betting and Elo must not change them | Combat is the upstream supplier. Customers call `simulate` and conform to `CombatResult` |

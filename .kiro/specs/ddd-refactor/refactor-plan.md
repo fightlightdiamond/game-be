@@ -9,7 +9,7 @@ Each step finishes before the next one starts. A step is finished when its domai
 - Column names stay. Mappers translate `bets.balance` to `amount`, `users.balance` to `Balance`, and `matches.status` numbers to `Open`, `Revealed`, and `Settled`.
 - A domain type does not import `@nestjs/*`, `bcrypt`, `bull`, or `typeorm`.
 - House betting does not import roster or account. It calls a ledger port. Gems wake up on `RewardsPaid`.
-- `available_balance`, `user_settings`, and `auto_settings` are not built. The ledger mapper does not write `available_balance`.
+- `available_balance` and `user_settings` are not built. The ledger mapper does not write `available_balance`.
 - HTTP paths may stay. The controller translates them into the verbs below. The domain method is not named after the old path.
 
 ## 1. Combat
@@ -69,15 +69,7 @@ One owned hero, the real stat formulas, and gems after the payout.
 
 Done when a second claim is refused, a level-up from level 0 persists level 1, and a gem drop does not run inside `settle`.
 
-## 6. Auto-stake
-
-It waits until the ledger and the house match exist.
-
-- `AutoStake` lives in house betting. One set per account, pairs written `lowerId|higherId` from catalog ids. `stakeAmount` is the absolute amount in the `bet_percentage` column. On `BettingOpened`, each enabled row for that pair places a stake. The pair is not built from winner and loser.
-
-Done when an auto-stake for a hidden match still resolves the two catalog ids.
-
-## 7. Account and notification
+## 6. Account and notification
 
 Wrap what is already technical.
 

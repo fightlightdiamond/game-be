@@ -66,8 +66,6 @@ Supporting domain. Owns the clock.
 | `reveal` | Verb | At 2:00, close the window and publish the winner and the turn log | Does not simulate again | `closeBetting`, `FIGHTING` |
 | `settle` | Verb | At 5:00, credit each winning stake and mark the match `Settled`. The next `HouseMatch` starts then | Credits and the settled mark commit together | `Reward` as a verb that also drops gems |
 
-`AutoStake` is configuration inside house betting. An account has one set. The set is created once, as every unordered pair of catalog hero ids, written `lowerId|higherId`. Each row stores whether it is enabled, which hero of that pair to back, and `stakeAmount`. `stakeAmount` is an absolute amount. The legacy column is `bet_percentage`. It is not a percent. When a house match opens, each enabled row whose pair is that match's two catalog ids places a stake of `stakeAmount` on the backed hero. The pair is those two catalog ids. It is not the winner and the loser.
-
 Events this context publishes:
 
 | Event | When | Payload |
@@ -136,5 +134,4 @@ Use this when replacing names in new code. Leave the physical column names until
 | `users.balance` | `Balance` |
 | `users` as a login row | `Account` |
 | `RewardService` doing settle and gem drop together | `settle`, then `RewardsPaid`, then `drop` |
-| `bet_percentage` | `AutoStake.stakeAmount` |
-| `available_balance`, `user_settings`, `auto_settings` | No concept. Do not copy `balance` into `available_balance` |
+| `available_balance`, `user_settings` | No concept. Do not copy `balance` into `available_balance` |
