@@ -104,12 +104,17 @@ export class CombatEngine {
       turnNumber++;
     }
 
+    // Clamp turnNumber to MAX_TURNS: the counter increments before the while
+    // condition re-evaluates, so it can reach MAX_TURNS+1 when the full 20
+    // rounds complete without a knockout.
+    const finalTurnNumber = Math.min(turnNumber, MAX_TURNS);
+
     // Determine winner: higher remaining HP wins; home wins ties
     const homeWins = homeWorking.currentHp >= awayWorking.currentHp;
     const winnerId = homeWins ? home.id : away.id;
     const loserId = homeWins ? away.id : home.id;
 
-    return new CombatResult(winnerId, loserId, turns, turnNumber);
+    return new CombatResult(winnerId, loserId, turns, finalTurnNumber);
   }
 
   /**
