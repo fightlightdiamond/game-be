@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('user_heroes')
-export class UserHeroOrmEntity {
+@Entity('owned_heroes')
+export class OwnedHeroOrmEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  user_id: number;
+  account_id: number;
 
   @Column()
   hero_id: number;
@@ -38,7 +38,6 @@ export class UserHeroOrmEntity {
   @Column({ default: 1600 })
   elo: number;
 
-  // Computed combat stats (stored for fast lookup)
   @Column({ default: 0 })
   atk: number;
 

@@ -7,8 +7,8 @@ import { CombatModule } from '../combat/combat.module';
 import { IdentityModule } from '../identity/identity.module';
 import { HeroCatalogModule } from '../hero-catalog/hero-catalog.module';
 
-import { BettingMatchOrmEntity } from './infrastructure/persistence/typeorm/betting-match.orm-entity';
-import { BetOrmEntity } from './infrastructure/persistence/typeorm/bet.orm-entity';
+import { HouseMatchOrmEntity } from './infrastructure/persistence/typeorm/house-match.orm-entity';
+import { StakeOrmEntity } from './infrastructure/persistence/typeorm/stake.orm-entity';
 import { TypeOrmHouseMatchRepository } from './infrastructure/persistence/typeorm/house-match.repository';
 import { TypeOrmStakeRepository } from './infrastructure/persistence/typeorm/stake.repository';
 
@@ -34,7 +34,7 @@ import { MatchController } from './presentation/http/match.controller';
 @Module({
   imports: [
     CqrsModule,
-    TypeOrmModule.forFeature([BettingMatchOrmEntity, BetOrmEntity]),
+    TypeOrmModule.forFeature([HouseMatchOrmEntity, StakeOrmEntity]),
     BullModule.registerQueue({ name: 'bet' }),
     CombatModule,
     IdentityModule,

@@ -7,7 +7,7 @@ export class OpenBalance {
 
   async openIfMissing(accountId: number): Promise<void> {
     await this.dataSource.query(
-      'UPDATE users SET balance = 0 WHERE id = ? AND balance IS NULL',
+      'UPDATE accounts SET balance = 0 WHERE id = ? AND balance IS NULL',
       [accountId],
     );
   }

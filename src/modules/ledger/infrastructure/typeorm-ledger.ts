@@ -7,9 +7,9 @@ import {
 } from '../domain/insufficient-balance.exception';
 
 export const DEBIT_BALANCE_SQL =
-  'UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?';
+  'UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ?';
 export const CREDIT_BALANCE_SQL =
-  'UPDATE users SET balance = balance + ? WHERE id = ?';
+  'UPDATE accounts SET balance = balance + ? WHERE id = ?';
 
 @Injectable()
 export class TypeOrmLedger implements Ledger {

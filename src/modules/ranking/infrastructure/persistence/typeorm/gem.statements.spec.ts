@@ -3,11 +3,10 @@ import { addLevelOneIn, levelUpGemIn, Sql } from './gem.statements';
 
 type GemRow = {
   id: number;
-  user_id: number;
+  account_id: number;
   type: string;
   level: number;
   available_num: number;
-  attached_num: number;
 };
 
 class Gems {
@@ -25,10 +24,12 @@ class Gems {
       ];
       return this.rows.filter(
         (row) =>
-          row.user_id === accountId && row.type === type && row.level === level,
+          row.account_id === accountId &&
+          row.type === type &&
+          row.level === level,
       );
     }
-    if (sql.startsWith('SELECT id FROM user_gems')) {
+    if (sql.startsWith('SELECT id FROM gems')) {
       const [accountId, type, level] = [
         params[0],
         params[1],
@@ -36,30 +37,29 @@ class Gems {
       ];
       return this.rows.filter(
         (row) =>
-          row.user_id === accountId && row.type === type && row.level === level,
+          row.account_id === accountId &&
+          row.type === type &&
+          row.level === level,
       );
     }
-    if (
-      sql.startsWith('UPDATE user_gems SET available_num = available_num + 1')
-    ) {
+    if (sql.startsWith('UPDATE gems SET available_num = available_num + 1')) {
       const row = this.rows.find((item) => item.id === Number(params[0]));
       row.available_num += 1;
       return { affectedRows: 1 };
     }
-    if (sql.startsWith('UPDATE user_gems SET available_num = ?')) {
+    if (sql.startsWith('UPDATE gems SET available_num = ?')) {
       const row = this.rows.find((item) => item.id === Number(params[1]));
       row.available_num = Number(params[0]);
       return { affectedRows: 1 };
     }
-    if (sql.startsWith('INSERT INTO user_gems')) {
+    if (sql.startsWith('INSERT INTO gems')) {
       const [accountId, type, level, available] = params;
       this.rows.push({
         id: this.nextId++,
-        user_id: Number(accountId),
+        account_id: Number(accountId),
         type: String(type),
         level: Number(level),
         available_num: Number(available),
-        attached_num: 0,
       });
       return { insertId: this.nextId - 1 };
     }
@@ -75,11 +75,10 @@ describe('gem storage', () => {
 
     expect(gems.rows).toEqual([
       expect.objectContaining({
-        user_id: 3,
+        account_id: 3,
         type: 'HP',
         level: 1,
         available_num: 2,
-        attached_num: 0,
       }),
     ]);
   });
@@ -88,11 +87,10 @@ describe('gem storage', () => {
     const gems = new Gems();
     gems.rows.push({
       id: 1,
-      user_id: 3,
+      account_id: 3,
       type: 'ATK',
       level: 1,
       available_num: 10,
-      attached_num: 0,
     });
 
     await levelUpGemIn(gems.query, 3, 'ATK' as GemType, 1, 5, 51);
@@ -103,7 +101,7 @@ describe('gem storage', () => {
     await levelUpGemIn(gems.query, 3, 'ATK', 1, 5, 50);
     expect(gems.rows).toEqual([
       expect.objectContaining({ level: 1, available_num: 0 }),
-      expect.objectContaining({ level: 2, available_num: 1, attached_num: 0 }),
+      expect.objectContaining({ level: 2, available_num: 1 }),
     ]);
   });
 });

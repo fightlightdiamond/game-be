@@ -4,7 +4,7 @@ This document fixes the business model before aggregates, commands, or folders.
 
 The words we speak, and the class and method names, are in [ubiquitous-language.md](./ubiquitous-language.md). That file wins on the word. [concepts.md](./concepts.md) wins on whether a named thing is a concept, data, or a rule.
 
-Scope is the product that exists in code. This refactor does not change the MySQL schema. Renaming columns comes later, after the language is stable.
+Scope is the product that exists in code. The MySQL tables and columns use the words in the ubiquitous language.
 
 ## 1. The business
 
@@ -66,15 +66,11 @@ These have no business rule. Wrap a library.
 | Account | Passport, JWT, bcrypt, email confirmation, address | Balance, heroes, stakes. Login does invoke one supporting rule, the daily grant, which is not an account rule |
 | Notification | Socket.IO, email, Redis | When a match opens, is revealed, or is settled. It does not run the match clock |
 
-### Not classified yet
-
-`available_balance` and `user_settings` have no use case. They are not terms. Do not copy `balance` into `available_balance`.
-
 ## 3. Ubiquitous language
 
 The language is [ubiquitous-language.md](./ubiquitous-language.md). One term, one meaning, one context. Method names are the verbs in that file. This document does not keep a second glossary.
 
-Legacy numbers in `matches.status` (`PENDING = 0`, `BETTING = 1`, `FIGHTING = 2`, `END = 3`) stay in the mapper. The domain phases are `Open`, `Revealed`, `Settled`. Simulation finishes before the window opens. `reveal` publishes. It does not simulate again.
+`house_matches.phase` stores `Open`, `Revealed`, and `Settled`. Simulation finishes before the window opens. `reveal` publishes. It does not simulate again.
 
 The public winner is hidden and the public turn log is empty while the match is `Open`. The internal `CombatResult` stays complete. Those two views do not share one getter.
 
@@ -198,7 +194,7 @@ flowchart LR
 
 **Roster conforms to `RewardsPaid`.** Gems listen. House betting does not import the roster module and does not dispatch `AddGemCommand`.
 
-**House betting and challenge are Separate Ways.** Challenge rows live in `elo-matches`, not in `matches`. They do not share an aggregate. Elo does not pass through the betting window.
+**House betting and challenge are Separate Ways.** Challenge rows live in `elo-matches`, not in `house_matches`. They do not share an aggregate. Elo does not pass through the betting window.
 
 ### Published language
 
@@ -231,7 +227,7 @@ The following in `src/modules` break this map. Change the code. Do not change th
 | `winner` and `turns` getters both hide the public view and feed `toOrm()` | The save wipes the simulation. Settlement then reads winner `0` | Two views: internal and public |
 | `placeBet` checks stakes on an array the repository never loads | A second stake is not rejected | Unique `(accountId, matchId)`, and read it before the debit |
 | Debit commits, then the stake insert commits. Settlement sets `END`, then credits one by one | A failed insert loses money. A retried job cannot pay | One transaction. Settlement is idempotent |
-| User `toOrm()` sets `available_balance = balance` and omits name and avatar | Every money write can destroy the user row | The ledger does not save a full `UserOrmEntity` |
+| A money write saves the whole account row | Every money write can clear a profile column | The ledger updates `accounts.balance` only |
 | Betting dispatches an Identity command and plans to dispatch `AddGem` | The customer depends on the supplier's module, and betting would import roster | Ledger port. `RewardsPaid` for gems |
 | `findByUserId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
 | `CombatEngine` is `@Injectable` and calls `Math.random` | Combat is not replayable and it depends on Nest | A `RandomSource` port. The formulas are the original loop in [concepts.md](./concepts.md), not the port that dropped max health |
@@ -253,10 +249,9 @@ Build the core domain first. Then the supporting domain that sits on its result.
 
 These were open. Each one is now a rule in [concepts.md](./concepts.md). Do not reopen them by copying the incomplete `CombatEngine` port or a README sentence that has no use case.
 
-1. **`available_balance`.** No use case. It is not a balance. Do not copy `balance` into it. The same is true of `user_settings`.
-2. **Equal health.** Away wins, including when the fight stops at turn 20. A speed tie also goes to away.
-3. **Owned hero.** One per account, by `claim`. Points set the five stats by the formulas in concepts.md. Elo starts at 1600 and uses `kFactor` 20.
-4. **Gems.** Six types. A 5% drop of a level-1 gem after a winning stake. `levelUpGem` spends storage for a chance at the next level. A gem does not change stats, and there is no attach action.
+1. **Equal health.** Away wins, including when the fight stops at turn 20. A speed tie also goes to away.
+2. **Owned hero.** One per account, by `claim`. Points set the five stats by the formulas in concepts.md. Elo starts at 1600 and uses `kFactor` 20.
+3. **Gems.** Six types. A 5% drop of a level-1 gem after a winning stake. `levelUpGem` spends storage for a chance at the next level. A gem does not change stats, and there is no attach action.
 
 ## 9. Corrections applied while translating
 
@@ -265,7 +260,7 @@ The previous Vietnamese draft had these inconsistencies. This English text is th
 | Draft claim | Check against code | Resolution |
 |---|---|---|
 | `closeBetting` and `reveal` are both phase commands | The state list has three transitions | One command, `reveal` |
-| Elo shares the `matches` table | Elo is `@Entity('elo-matches')` | Challenge uses `elo-matches`. A house match uses `matches` |
+| Elo shares the `house_matches` table | Elo is `@Entity('elo-matches')` | Challenge uses `elo-matches`. A house match uses `house_matches` |
 | `RewardsPaid` may be published when credits are merely queued | A crash between publish and credit pays nobody or pays twice | Publish only after the settlement transaction commits |
 | House betting is the core, and Combat is only a kernel inside it | The differentiating rules are the 11 traits and the turn loop. Stakes attach money to a finished `CombatResult` | Combat is the only core domain. House betting is supporting |
 | Combat is a Shared Kernel co-owned with its callers | Fight rules are the product's distinctive rules. Betting and Elo must not change them | Combat is the upstream supplier. Customers call `simulate` and conform to `CombatResult` |

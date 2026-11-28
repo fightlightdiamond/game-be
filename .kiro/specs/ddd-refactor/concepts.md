@@ -4,7 +4,7 @@ Names in this file are the ones the refactor uses. They are taken from the busin
 
 A row is a concept only when the business can say what it is without pointing at a table. A column, an id, or a service method is not a concept.
 
-Legacy names stay in the database until a later migration. Mappers translate them. New domain code does not use them.
+The physical table and column names are in the last section of this file.
 
 ## Combat
 
@@ -96,8 +96,8 @@ Generic domain. Knows amounts. Does not know matches, days, or logins.
 
 | Name | Kind | Definition | Rules | Do not say |
 |---|---|---|---|---|
-| `Balance` | Concept | The money of one `AccountId` | Never negative. `debit` fails when the amount is greater than the balance. `credit` adds an amount | `Wallet` on the account. `available_balance` is not a concept |
-| `debit` | Verb | Subtract an amount | One conditional update. Do not load the user row and write it back | |
+| `Balance` | Concept | The money of one `AccountId`. Column `accounts.balance` | Never negative. `debit` fails when the amount is greater than the balance. `credit` adds an amount | `Wallet` on the account |
+| `debit` | Verb | Subtract an amount | One conditional update. Do not load the account row and write it back | |
 | `credit` | Verb | Add an amount | Same write rule as `debit` | |
 
 Payout `× 2`, the level-up fee, and the daily 100 are decided by the caller. The ledger receives the amount.
@@ -117,21 +117,15 @@ Not domains.
 | `Account` | Technical | Email, password, role, confirmation, address. Other contexts receive `AccountId` only | `User` when the meaning is this identity, or when the meaning is the balance |
 | Notification | Technical | Emits `BettingOpened`, `FightRevealed`, and `RewardsPaid`. Does not open, reveal, or settle a match | A context that owns the clock |
 
-## Rename map
+## Physical names
 
-Use this when replacing names in new code. Leave the physical column names until a migration.
-
-| Legacy | Concept name |
-|---|---|
-| `Hero` entity, `heroes` | `Hero` (catalog only) |
-| `UserHero`, `user_heroes` | `OwnedHero` |
-| `HeroLog`, `IMatchLog` | `Fighter` |
-| `Skill`, `SkillFactory`, `SkillService` | `Trait` |
-| `Match` used for the public betting fight | `HouseMatch` |
-| `Bet`, `bets` | `Stake` |
-| `bets.balance` | `Stake.amount` |
-| `BetStatus`, `PENDING`, `BETTING`, `FIGHTING`, `END` | `Open`, `Revealed`, `Settled` |
-| `users.balance` | `Balance` |
-| `users` as a login row | `Account` |
-| `RewardService` doing settle and gem drop together | `settle`, then `RewardsPaid`, then `drop` |
-| `available_balance`, `user_settings` | No concept. Do not copy `balance` into `available_balance` |
+| Table | Column | Word |
+|---|---|---|
+| `heroes` | | `Hero` |
+| `accounts` | `balance` | `Account`, `Balance` |
+| `addresses` | `account_id` | address on the account |
+| `house_matches` | `phase` | `HouseMatch` phase: `Open`, `Revealed`, `Settled` |
+| `stakes` | `amount`, `account_id`, `house_match_id` | `Stake` |
+| `owned_heroes` | `account_id` | `OwnedHero` |
+| `gems` | `account_id`, `available_num` | `Gem` |
+| `elo-matches` | | `Challenge` |

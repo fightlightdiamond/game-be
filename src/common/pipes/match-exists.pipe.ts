@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BettingMatchOrmEntity } from '../../modules/betting/infrastructure/persistence/typeorm/betting-match.orm-entity';
+import { HouseMatchOrmEntity } from '../../modules/betting/infrastructure/persistence/typeorm/house-match.orm-entity';
 
 @Injectable()
 export class MatchExistsPipe implements PipeTransform {
   constructor(
-    @InjectRepository(BettingMatchOrmEntity)
-    private matchRepository: Repository<BettingMatchOrmEntity>,
+    @InjectRepository(HouseMatchOrmEntity)
+    private matchRepository: Repository<HouseMatchOrmEntity>,
   ) {}
 
   async transform(value: any) {

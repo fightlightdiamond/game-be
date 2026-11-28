@@ -3,25 +3,27 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('bets')
-export class BetOrmEntity {
+@Entity('stakes')
+@Unique('one_stake_per_account', ['account_id', 'house_match_id'])
+export class StakeOrmEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  user_id: number;
+  account_id: number;
 
   @Column()
-  match_id: number;
+  house_match_id: number;
 
   @Column()
   hero_id: number;
 
   @Column({ type: 'decimal', precision: 50, scale: 0, default: 0 })
-  balance: number;
+  amount: number;
 
   @Column({ type: 'boolean', default: false })
   result: boolean;

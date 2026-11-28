@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserOrmEntity } from '../../modules/identity/infrastructure/persistence/typeorm/user.orm-entity';
+import { AccountOrmEntity } from '../../modules/identity/infrastructure/persistence/typeorm/account.orm-entity';
 
 @Injectable()
 export class UserExistsPipe implements PipeTransform {
   constructor(
-    @InjectRepository(UserOrmEntity)
-    private userRepository: Repository<UserOrmEntity>,
+    @InjectRepository(AccountOrmEntity)
+    private userRepository: Repository<AccountOrmEntity>,
   ) {}
 
   async transform(value: any) {

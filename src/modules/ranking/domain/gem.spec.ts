@@ -35,6 +35,8 @@ describe('gem', () => {
       'src/modules/betting/infrastructure/persistence/typeorm/house-match.statements.ts',
       'utf8',
     );
-    expect(handler + statements).not.toMatch(/user_gems|droppedType|DropGem/);
+    expect(handler + statements).not.toMatch(
+      /FROM gems|INTO gems|droppedType|DropGem/,
+    );
   });
 });

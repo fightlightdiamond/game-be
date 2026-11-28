@@ -17,7 +17,7 @@ The language is per context. The same English word may be refused in a second co
 
 If two files spell a game word differently, change the other file. This file wins on the word. It does not invent a rule. Words that are out of the product are listed at the end.
 
-A column name is not a word in this language. Mappers translate `bets.balance`, `users.balance`, and `matches.status`. New domain code does not use those names.
+A column uses the same word. `accounts.balance` is the Balance. `stakes.amount` is the stake. `house_matches.phase` is `Open`, `Revealed`, or `Settled`.
 
 ## How to name code
 
@@ -105,7 +105,7 @@ An event is a fact in the past tense. Notification may emit it. Notification doe
 
 | Word | Kind | Say this | Do not say |
 |---|---|---|---|
-| `Balance` | Noun | The money of one `AccountId`. Never negative | `Wallet` on the account. `available_balance` |
+| `Balance` | Noun | The money of one `AccountId`. Never negative. Column `accounts.balance` | `Wallet` on the account |
 | `debit` | Verb | Subtract an amount. Fails when the amount is greater than the balance | `deduct` as a second word. Do not load the account and write it back |
 | `credit` | Verb | Add an amount | `reward` |
 
@@ -144,8 +144,5 @@ When the current code uses the word on the left, the language uses the words on 
 
 Do not add a class for these. The sentences that were considered, and the reason they are out, are in [concepts.md](./concepts.md).
 
-- `available_balance`, `user_settings`
 - `attach` as a gem action
 - `Synthia` as a trait
-
-Legacy column names stay in the database. The map from those columns to these words is in [concepts.md](./concepts.md).

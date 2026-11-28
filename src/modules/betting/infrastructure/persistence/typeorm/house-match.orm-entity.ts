@@ -5,9 +5,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Phase } from '../../../domain/phase';
 
-@Entity('matches')
-export class BettingMatchOrmEntity {
+@Entity('house_matches')
+export class HouseMatchOrmEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,8 +24,8 @@ export class BettingMatchOrmEntity {
   @Column({ default: 0 })
   turn_number: number;
 
-  @Column({ default: 0 })
-  status: number;
+  @Column({ type: 'varchar', default: Phase.Open })
+  phase: Phase;
 
   @Column({ default: 0 })
   winner: number;

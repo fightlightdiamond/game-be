@@ -7,7 +7,6 @@ type UserRow = {
   email: string;
   firstName: string;
   avatar: string;
-  available_balance: number;
 };
 
 /**
@@ -35,7 +34,6 @@ class UsersTable {
   private apply(sql: string, params: number[]): { affectedRows: number } {
     this.calls.push(sql);
     for (const column of [
-      'available_balance',
       'email',
       'avatar',
       'firstName',
@@ -46,7 +44,7 @@ class UsersTable {
         throw new Error(`ledger write mentions ${column}`);
       }
     }
-    if (!sql.startsWith('UPDATE users SET balance = balance')) {
+    if (!sql.startsWith('UPDATE accounts SET balance = balance')) {
       throw new Error(sql);
     }
 
@@ -83,7 +81,6 @@ describe('TypeOrmLedger', () => {
         email: 'a@b.c',
         firstName: 'An',
         avatar: 'pic',
-        available_balance: 7,
       },
     ]);
     const ledger = ledgerFor(table);
@@ -101,8 +98,8 @@ describe('TypeOrmLedger', () => {
     ).toHaveLength(1);
     expect(table.rows[0].balance).toBe(40);
     expect(table.calls).toEqual([
-      'UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?',
-      'UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?',
+      'UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ?',
+      'UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ?',
     ]);
   });
 
@@ -114,7 +111,6 @@ describe('TypeOrmLedger', () => {
         email: 'a@b.c',
         firstName: 'An',
         avatar: 'pic',
-        available_balance: 7,
       },
     ]);
     const ledger = ledgerFor(table);
@@ -127,10 +123,9 @@ describe('TypeOrmLedger', () => {
       email: 'a@b.c',
       firstName: 'An',
       avatar: 'pic',
-      available_balance: 7,
     });
     expect(table.calls).toEqual([
-      'UPDATE users SET balance = balance + ? WHERE id = ?',
+      'UPDATE accounts SET balance = balance + ? WHERE id = ?',
     ]);
   });
 
@@ -142,7 +137,6 @@ describe('TypeOrmLedger', () => {
         email: 'a@b.c',
         firstName: 'An',
         avatar: 'pic',
-        available_balance: 7,
       },
     ]);
     const ledger = ledgerFor(table);
@@ -151,7 +145,6 @@ describe('TypeOrmLedger', () => {
       'Insufficient balance for account 1: 11',
     );
     expect(table.rows[0].balance).toBe(10);
-    expect(table.rows[0].available_balance).toBe(7);
     expect(table.calls).toHaveLength(1);
   });
 });

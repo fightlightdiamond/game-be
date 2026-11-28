@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('user_gems')
-export class UserGemOrmEntity {
+@Entity('gems')
+export class GemOrmEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  user_id: number;
+  account_id: number;
 
   @Column({ type: 'varchar' })
   type: string;
@@ -22,9 +22,6 @@ export class UserGemOrmEntity {
 
   @Column({ default: 0 })
   available_num: number;
-
-  @Column({ default: 0 })
-  attached_num: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

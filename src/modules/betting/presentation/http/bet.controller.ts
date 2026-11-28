@@ -38,7 +38,7 @@ export class BetController {
   async placeBet(@Request() req, @Body() body: PlaceBetDto) {
     const userId: number = req.user.id;
     return this.commandBus.execute(
-      new PlaceStakeCommand(userId, body.match_id, body.hero_id, body.balance),
+      new PlaceStakeCommand(userId, body.match_id, body.hero_id, body.amount),
     );
   }
 

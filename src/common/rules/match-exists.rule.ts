@@ -6,14 +6,14 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BettingMatchOrmEntity } from '../../modules/betting/infrastructure/persistence/typeorm/betting-match.orm-entity';
+import { HouseMatchOrmEntity } from '../../modules/betting/infrastructure/persistence/typeorm/house-match.orm-entity';
 
 @ValidatorConstraint({ name: 'MatchExists', async: true })
 @Injectable()
 export class MatchExistsRule implements ValidatorConstraintInterface {
   constructor(
-    @InjectRepository(BettingMatchOrmEntity)
-    private matchRepository: Repository<BettingMatchOrmEntity>,
+    @InjectRepository(HouseMatchOrmEntity)
+    private matchRepository: Repository<HouseMatchOrmEntity>,
   ) {}
 
   async validate(value: number) {

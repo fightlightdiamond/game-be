@@ -9,10 +9,10 @@ import {
   HouseMatchNotFoundException,
   StakeRefusedException,
 } from '../../../domain/exceptions/stake-refused.exception';
+import { Phase } from '../../../domain/phase';
 import { Stake } from '../../../domain/stake';
 import { winningPayouts } from '../../../domain/winning-payouts';
 import { MatchRow, rowToMatch } from './house-match.mapper';
-import { REVEALED_COLUMN, SETTLED_COLUMN } from './phase-column';
 
 export type Sql = (sql: string, params?: unknown[]) => Promise<unknown>;
 
@@ -24,7 +24,7 @@ export async function placeStakeIn(
   amount: number,
 ): Promise<Stake> {
   const locked = await sql(
-    'SELECT id, hero_info, turns, start_time, turn_number, status, winner, loser FROM matches WHERE id = ? FOR UPDATE',
+    'SELECT id, hero_info, turns, start_time, turn_number, phase, winner, loser FROM house_matches WHERE id = ? FOR UPDATE',
     [matchId],
   );
   const row = firstRow<MatchRow>(locked);
@@ -35,7 +35,7 @@ export async function placeStakeIn(
   match.placeStake(accountId, heroId, amount);
 
   const existing = await sql(
-    'SELECT id FROM bets WHERE user_id = ? AND match_id = ? LIMIT 1',
+    'SELECT id FROM stakes WHERE account_id = ? AND house_match_id = ? LIMIT 1',
     [accountId, matchId],
   );
   if (firstRow(existing)) {
@@ -50,7 +50,7 @@ export async function placeStakeIn(
   }
 
   const inserted = await sql(
-    'INSERT INTO bets (user_id, match_id, hero_id, balance, result) VALUES (?, ?, ?, ?, ?)',
+    'INSERT INTO stakes (account_id, house_match_id, hero_id, amount, result) VALUES (?, ?, ?, ?, ?)',
     [accountId, matchId, heroId, amount, 0],
   );
   return new Stake(insertId(inserted), accountId, matchId, heroId, amount);
@@ -61,34 +61,34 @@ export async function settleIn(
   matchId: number,
 ): Promise<RewardsPaid | null> {
   const updated = await sql(
-    'UPDATE matches SET status = ? WHERE id = ? AND status = ?',
-    [SETTLED_COLUMN, matchId, REVEALED_COLUMN],
+    'UPDATE house_matches SET phase = ? WHERE id = ? AND phase = ?',
+    [Phase.Settled, matchId, Phase.Revealed],
   );
   if (affectedRows(updated) === 0) {
     return null;
   }
 
-  const matchRows = await sql('SELECT winner FROM matches WHERE id = ?', [
+  const matchRows = await sql('SELECT winner FROM house_matches WHERE id = ?', [
     matchId,
   ]);
   const match = firstRow<{ winner: number }>(matchRows);
   const winnerId = Number(match?.winner ?? 0);
   const stakeRows = await sql(
-    'SELECT user_id, hero_id, balance FROM bets WHERE match_id = ?',
+    'SELECT account_id, hero_id, amount FROM stakes WHERE house_match_id = ?',
     [matchId],
   );
   const stakes = rowsOf<{
-    user_id: number;
+    account_id: number;
     hero_id: number;
-    balance: number;
+    amount: number;
   }>(stakeRows).map(
     (row, index) =>
       new Stake(
         index + 1,
-        Number(row.user_id),
+        Number(row.account_id),
         matchId,
         Number(row.hero_id),
-        Number(row.balance),
+        Number(row.amount),
       ),
   );
   const payouts = winningPayouts(stakes, winnerId);

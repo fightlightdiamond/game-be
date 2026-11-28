@@ -4,13 +4,13 @@ import { Repository } from 'typeorm';
 import { OwnedHero } from '../../../domain/owned-hero';
 import { IUserHeroRepository } from '../../../domain/repositories/user-hero.repository.interface';
 import { rowToOwned, toOwnedColumns } from './owned-hero.mapper';
-import { UserHeroOrmEntity } from './user-hero.orm-entity';
+import { OwnedHeroOrmEntity } from './owned-hero.orm-entity';
 
 @Injectable()
 export class TypeOrmUserHeroRepository implements IUserHeroRepository {
   constructor(
-    @InjectRepository(UserHeroOrmEntity)
-    private readonly orm: Repository<UserHeroOrmEntity>,
+    @InjectRepository(OwnedHeroOrmEntity)
+    private readonly orm: Repository<OwnedHeroOrmEntity>,
   ) {}
 
   async findById(id: number): Promise<OwnedHero | null> {
@@ -19,7 +19,7 @@ export class TypeOrmUserHeroRepository implements IUserHeroRepository {
   }
 
   async findByUserId(userId: number): Promise<OwnedHero | null> {
-    const row = await this.orm.findOne({ where: { user_id: userId } });
+    const row = await this.orm.findOne({ where: { account_id: userId } });
     return row ? rowToOwned(row) : null;
   }
 

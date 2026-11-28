@@ -6,16 +6,16 @@ import { RewardsPaid } from '../../../domain/events/rewards-paid.event';
 import { HouseMatchNotFoundException } from '../../../domain/exceptions/stake-refused.exception';
 import { HouseMatchRepository } from '../../../domain/repositories/house-match.repository';
 import { Stake } from '../../../domain/stake';
-import { BettingMatchOrmEntity } from './betting-match.orm-entity';
+import { Phase } from '../../../domain/phase';
+import { HouseMatchOrmEntity } from './house-match.orm-entity';
 import { rowToMatch, toMatchColumns } from './house-match.mapper';
 import { placeStakeIn, settleIn } from './house-match.statements';
-import { OPEN_COLUMN, REVEALED_COLUMN } from './phase-column';
 
 @Injectable()
 export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
   constructor(
-    @InjectRepository(BettingMatchOrmEntity)
-    private readonly orm: Repository<BettingMatchOrmEntity>,
+    @InjectRepository(HouseMatchOrmEntity)
+    private readonly orm: Repository<HouseMatchOrmEntity>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -27,8 +27,8 @@ export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
   async findCurrent(): Promise<HouseMatch | null> {
     const row = await this.orm
       .createQueryBuilder('match')
-      .where('match.status IN (:...phases)', {
-        phases: [OPEN_COLUMN, REVEALED_COLUMN],
+      .where('match.phase IN (:...phases)', {
+        phases: [Phase.Open, Phase.Revealed],
       })
       .orderBy('match.id', 'DESC')
       .getOne();
@@ -52,22 +52,22 @@ export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
         throw new Error('Could not lock the house match');
       }
       const current: Array<{ id: number }> = await queryRunner.query(
-        'SELECT id FROM matches WHERE status IN (?, ?) ORDER BY id DESC LIMIT 1',
-        [OPEN_COLUMN, REVEALED_COLUMN],
+        'SELECT id FROM house_matches WHERE phase IN (?, ?) ORDER BY id DESC LIMIT 1',
+        [Phase.Open, Phase.Revealed],
       );
       if (current.length > 0) {
         existingId = current[0].id;
       } else {
         const columns = toMatchColumns(match);
         const raw = await queryRunner.query(
-          `INSERT INTO matches (hero_info, turns, start_time, turn_number, status, winner, loser, type)
+          `INSERT INTO house_matches (hero_info, turns, start_time, turn_number, phase, winner, loser, type)
            VALUES (?, ?, ?, ?, ?, ?, ?, 0)`,
           [
             columns.heroInfo,
             columns.turns,
             columns.openedAt,
             columns.turnNumber,
-            columns.status,
+            columns.phase,
             columns.winner,
             columns.loser,
           ],
@@ -103,15 +103,15 @@ export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
   async save(match: HouseMatch): Promise<void> {
     const columns = toMatchColumns(match);
     await this.dataSource.query(
-      `UPDATE matches
-       SET hero_info = ?, turns = ?, start_time = ?, turn_number = ?, status = ?, winner = ?, loser = ?
+      `UPDATE house_matches
+       SET hero_info = ?, turns = ?, start_time = ?, turn_number = ?, phase = ?, winner = ?, loser = ?
        WHERE id = ?`,
       [
         columns.heroInfo,
         columns.turns,
         columns.openedAt,
         columns.turnNumber,
-        columns.status,
+        columns.phase,
         columns.winner,
         columns.loser,
         match.id,
@@ -147,13 +147,13 @@ export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
       const query = `
         WITH win_table AS (
           SELECT COUNT(id) AS lose_num, loser, winner
-          FROM matches
+          FROM house_matches
           WHERE loser = ?
           GROUP BY winner
         ),
         lose_table AS (
           SELECT COUNT(id) AS win_num, loser, winner
-          FROM matches
+          FROM house_matches
           WHERE winner = ?
           GROUP BY loser
         ),
@@ -176,10 +176,10 @@ export class TypeOrmHouseMatchRepository implements HouseMatchRepository {
 
     const query = `
       WITH win_table AS (
-        SELECT COUNT(id) AS win, winner FROM matches GROUP BY winner ORDER BY win
+        SELECT COUNT(id) AS win, winner FROM house_matches GROUP BY winner ORDER BY win
       ),
       lose_table AS (
-        SELECT COUNT(id) AS lose, loser FROM matches GROUP BY loser ORDER BY lose
+        SELECT COUNT(id) AS lose, loser FROM house_matches GROUP BY loser ORDER BY lose
       )
       SELECT
         id,

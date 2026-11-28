@@ -10,7 +10,7 @@ import { SharedRedisModule } from '../../shared/infrastructure/redis/redis.modul
 import { ACCOUNT_REPOSITORY } from './domain/repositories/account.repository';
 import { CLOCK, SystemClock } from './domain/clock';
 import { GRANTED_DAY } from './domain/granted-day';
-import { UserOrmEntity } from './infrastructure/persistence/typeorm/user.orm-entity';
+import { AccountOrmEntity } from './infrastructure/persistence/typeorm/account.orm-entity';
 import { TypeOrmUserRepository } from './infrastructure/persistence/typeorm/user.repository';
 import { PasswordHasher } from './infrastructure/auth/password-hasher';
 import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
@@ -29,7 +29,7 @@ import { AuthController } from './presentation/http/auth.controller';
     CqrsModule,
     JwtModule.register({}),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([UserOrmEntity]),
+    TypeOrmModule.forFeature([AccountOrmEntity]),
     ConfigModule,
     LedgerModule,
     SharedRedisModule,

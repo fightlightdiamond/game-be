@@ -6,14 +6,14 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserHeroOrmEntity } from '../../modules/ranking/infrastructure/persistence/typeorm/user-hero.orm-entity';
+import { OwnedHeroOrmEntity } from '../../modules/ranking/infrastructure/persistence/typeorm/owned-hero.orm-entity';
 
 @ValidatorConstraint({ name: 'UserHeroExists', async: true })
 @Injectable()
 export class UserHeroExistsRule implements ValidatorConstraintInterface {
   constructor(
-    @InjectRepository(UserHeroOrmEntity)
-    private userHeroRepository: Repository<UserHeroOrmEntity>,
+    @InjectRepository(OwnedHeroOrmEntity)
+    private userHeroRepository: Repository<OwnedHeroOrmEntity>,
   ) {}
 
   async validate(value: number) {

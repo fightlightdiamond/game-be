@@ -4,13 +4,13 @@ import { Repository } from 'typeorm';
 import { Account } from '../../../domain/account';
 import { Address } from '../../../domain/address';
 import { AccountRepository } from '../../../domain/repositories/account.repository';
-import { UserOrmEntity } from './user.orm-entity';
+import { AccountOrmEntity } from './account.orm-entity';
 
 @Injectable()
 export class TypeOrmUserRepository implements AccountRepository {
   constructor(
-    @InjectRepository(UserOrmEntity)
-    private readonly orm: Repository<UserOrmEntity>,
+    @InjectRepository(AccountOrmEntity)
+    private readonly orm: Repository<AccountOrmEntity>,
   ) {}
 
   async findById(id: number): Promise<Account | null> {
@@ -28,7 +28,7 @@ export class TypeOrmUserRepository implements AccountRepository {
     return this.toDomain(saved);
   }
 
-  private async toDomain(row: UserOrmEntity): Promise<Account> {
+  private async toDomain(row: AccountOrmEntity): Promise<Account> {
     return new Account(
       row.id,
       row.email,
@@ -39,8 +39,8 @@ export class TypeOrmUserRepository implements AccountRepository {
     );
   }
 
-  private toOrm(account: Account): UserOrmEntity {
-    const row = new UserOrmEntity();
+  private toOrm(account: Account): AccountOrmEntity {
+    const row = new AccountOrmEntity();
     if (account.id) {
       row.id = account.id;
     }
@@ -53,7 +53,7 @@ export class TypeOrmUserRepository implements AccountRepository {
 
   private async addressOf(accountId: number): Promise<Address | null> {
     const rows = await this.orm.manager.query(
-      'SELECT street, city, country FROM addresses WHERE userId = ? LIMIT 1',
+      'SELECT street, city, country FROM addresses WHERE account_id = ? LIMIT 1',
       [accountId],
     );
     const row = Array.isArray(rows) ? rows[0] : undefined;

@@ -1,6 +1,6 @@
 import { HouseFighter } from '../../../domain/house-fighter';
 import { HouseMatch, StoredResult } from '../../../domain/house-match';
-import { columnToPhase, phaseToColumn } from './phase-column';
+import { Phase } from '../../../domain/phase';
 
 export type MatchRow = {
   id: number;
@@ -8,7 +8,7 @@ export type MatchRow = {
   turns: unknown;
   start_time: string | null;
   turn_number: number;
-  status: number;
+  phase: string;
   winner: number;
   loser: number;
 };
@@ -18,7 +18,7 @@ export type MatchColumns = {
   turns: string;
   openedAt: string;
   turnNumber: number;
-  status: number;
+  phase: Phase;
   winner: number;
   loser: number;
 };
@@ -29,7 +29,7 @@ export function toMatchColumns(match: HouseMatch): MatchColumns {
     turns: JSON.stringify(match.storedTurns),
     openedAt: match.openedAt,
     turnNumber: match.storedTurnNumber,
-    status: phaseToColumn(match.currentPhase),
+    phase: match.currentPhase,
     winner: match.storedWinnerId,
     loser: match.storedLoserId,
   };
@@ -44,11 +44,18 @@ export function rowToMatch(row: MatchRow): HouseMatch {
   };
   return HouseMatch.reconstitute(
     row.id,
-    columnToPhase(Number(row.status)),
+    asPhase(row.phase),
     asFighters(parseJson(row.hero_info)),
     stored,
     row.start_time ?? '',
   );
+}
+
+function asPhase(value: string): Phase {
+  if (value === Phase.Revealed || value === Phase.Settled) {
+    return value;
+  }
+  return Phase.Open;
 }
 
 function parseJson(value: unknown): unknown {

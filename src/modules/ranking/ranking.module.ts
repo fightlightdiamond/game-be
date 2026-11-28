@@ -7,9 +7,9 @@ import { HeroCatalogModule } from '../hero-catalog/hero-catalog.module';
 import { IdentityModule } from '../identity/identity.module';
 import { LedgerModule } from '../ledger/ledger.module';
 
-import { UserHeroOrmEntity } from './infrastructure/persistence/typeorm/user-hero.orm-entity';
+import { OwnedHeroOrmEntity } from './infrastructure/persistence/typeorm/owned-hero.orm-entity';
 import { EloMatchOrmEntity } from './infrastructure/persistence/typeorm/elo-match.orm-entity';
-import { UserGemOrmEntity } from './infrastructure/persistence/typeorm/user-gem.orm-entity';
+import { GemOrmEntity } from './infrastructure/persistence/typeorm/gem.orm-entity';
 
 import { TypeOrmUserHeroRepository } from './infrastructure/persistence/typeorm/user-hero.repository';
 import { TypeOrmEloMatchRepository } from './infrastructure/persistence/typeorm/elo-match.repository';
@@ -39,9 +39,9 @@ import { GemController } from './presentation/http/gem.controller';
   imports: [
     CqrsModule,
     TypeOrmModule.forFeature([
-      UserHeroOrmEntity,
+      OwnedHeroOrmEntity,
       EloMatchOrmEntity,
-      UserGemOrmEntity,
+      GemOrmEntity,
     ]),
     CombatModule,
     HeroCatalogModule,

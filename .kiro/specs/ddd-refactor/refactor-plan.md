@@ -2,14 +2,13 @@
 
 Bring `src/modules` onto the model in [strategic-design.md](./strategic-design.md), the rules in [concepts.md](./concepts.md), and the words in [ubiquitous-language.md](./ubiquitous-language.md).
 
-Each step finishes before the next one starts. A step is finished when its domain types use the words in the ubiquitous language, its tests cover the rules named below, and the MySQL schema is unchanged.
+Each step finishes before the next one starts. A step is finished when its domain types use the words in the ubiquitous language and its tests cover the rules named below.
 
 ## Held fixed
 
-- Column names stay. Mappers translate `bets.balance` to `amount`, `users.balance` to `Balance`, and `matches.status` numbers to `Open`, `Revealed`, and `Settled`.
+- `accounts.balance` is the Balance. `stakes.amount` is the stake. `house_matches.phase` stores `Open`, `Revealed`, and `Settled`.
 - A domain type does not import `@nestjs/*`, `bcrypt`, `bull`, or `typeorm`.
 - House betting does not import roster or account. It calls a ledger port. Gems wake up on `RewardsPaid`.
-- `available_balance` and `user_settings` are not built. The ledger mapper does not write `available_balance`.
 - HTTP paths may stay. The controller translates them into the verbs below. The domain method is not named after the old path.
 
 ## 1. Combat
@@ -29,7 +28,7 @@ Take money off the account.
 
 - New ledger module. `debit` and `credit` are one conditional update on `users.balance` by `AccountId`. An insufficient debit changes no row.
 - Delete `Wallet`, `DeductBalanceCommand`, and `CreditBalanceCommand` from the account aggregate. Callers depend on the ledger port.
-- The ledger mapper writes `balance` only. It does not write name, email, avatar, or `available_balance`.
+- The ledger writes `accounts.balance` only. It does not write name, email, or avatar.
 
 Done when two concurrent debits cannot drive the balance negative, and a ledger save does not null a profile column.
 

@@ -8,5 +8,5 @@ export class PlaceBetDto {
   hero_id: number;
 
   @IsNumber()
-  balance: number;
+  amount: number;
 }

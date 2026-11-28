@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StakeRepository } from '../../../domain/repositories/stake.repository';
 import { Stake } from '../../../domain/stake';
-import { BetOrmEntity } from './bet.orm-entity';
+import { StakeOrmEntity } from './stake.orm-entity';
 
 @Injectable()
 export class TypeOrmStakeRepository implements StakeRepository {
   constructor(
-    @InjectRepository(BetOrmEntity)
-    private readonly orm: Repository<BetOrmEntity>,
+    @InjectRepository(StakeOrmEntity)
+    private readonly orm: Repository<StakeOrmEntity>,
   ) {}
 
   async findByAccountAndMatch(
@@ -17,17 +17,17 @@ export class TypeOrmStakeRepository implements StakeRepository {
     matchId: number,
   ): Promise<Stake | null> {
     const row = await this.orm.findOne({
-      where: { match_id: matchId, user_id: accountId },
+      where: { house_match_id: matchId, account_id: accountId },
     });
     if (!row) {
       return null;
     }
     return new Stake(
       row.id,
-      row.user_id,
-      row.match_id,
+      row.account_id,
+      row.house_match_id,
       row.hero_id,
-      Number(row.balance),
+      Number(row.amount),
     );
   }
 }

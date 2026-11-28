@@ -1,14 +1,14 @@
 import { InsufficientBalanceException } from '../../../../ledger/domain/insufficient-balance.exception';
 import { HouseMatch } from '../../../domain/house-match';
 import { StakeRefusedException } from '../../../domain/exceptions/stake-refused.exception';
+import { Phase } from '../../../domain/phase';
 import { toMatchColumns } from './house-match.mapper';
 import { placeStakeIn, settleIn, Sql } from './house-match.statements';
-import { OPEN_COLUMN, REVEALED_COLUMN } from './phase-column';
 
-type UserRow = { id: number; balance: number; email: string };
+type AccountRow = { id: number; balance: number; email: string };
 type MatchRecord = {
   id: number;
-  status: number;
+  phase: string;
   winner: number;
   loser: number;
   hero_info: string;
@@ -16,17 +16,17 @@ type MatchRecord = {
   start_time: string;
   turn_number: number;
 };
-type BetRow = {
-  user_id: number;
-  match_id: number;
+type StakeRow = {
+  account_id: number;
+  house_match_id: number;
   hero_id: number;
-  balance: number;
+  amount: number;
 };
 
 class Table {
-  users: UserRow[] = [{ id: 3, balance: 100, email: 'a@b.c' }];
+  accounts: AccountRow[] = [{ id: 3, balance: 100, email: 'a@b.c' }];
   matches: MatchRecord[] = [];
-  bets: BetRow[] = [];
+  stakes: StakeRow[] = [];
   credits = 0;
 
   query: Sql = (sql, params = []) => Promise.resolve(this.read(sql, params));
@@ -36,38 +36,39 @@ class Table {
       const id = Number(params[0]);
       return this.matches.filter((match) => match.id === id);
     }
-    if (sql.startsWith('SELECT id FROM bets')) {
+    if (sql.startsWith('SELECT id FROM stakes')) {
       const [accountId, matchId] = params.map(Number);
-      return this.bets.filter(
-        (bet) => bet.user_id === accountId && bet.match_id === matchId,
+      return this.stakes.filter(
+        (stake) =>
+          stake.account_id === accountId && stake.house_match_id === matchId,
       );
     }
     if (sql.includes('balance = balance -')) {
       const [amount, accountId, guard] = params.map(Number);
-      const user = this.users.find((row) => row.id === accountId);
-      if (!user || user.balance < amount || amount !== guard) {
+      const account = this.accounts.find((row) => row.id === accountId);
+      if (!account || account.balance < amount || amount !== guard) {
         return { affectedRows: 0 };
       }
-      user.balance -= amount;
+      account.balance -= amount;
       return { affectedRows: 1 };
     }
-    if (sql.startsWith('INSERT INTO bets')) {
+    if (sql.startsWith('INSERT INTO stakes')) {
       const [accountId, matchId, heroId, amount] = params.map(Number);
-      this.bets.push({
-        user_id: accountId,
-        match_id: matchId,
+      this.stakes.push({
+        account_id: accountId,
+        house_match_id: matchId,
         hero_id: heroId,
-        balance: amount,
+        amount,
       });
-      return { insertId: this.bets.length };
+      return { insertId: this.stakes.length };
     }
-    if (sql.startsWith('UPDATE matches SET status')) {
-      const [next, id, current] = params.map(Number);
-      const match = this.matches.find((row) => row.id === id);
-      if (!match || match.status !== current) {
+    if (sql.startsWith('UPDATE house_matches SET phase')) {
+      const [next, id, current] = params;
+      const match = this.matches.find((row) => row.id === Number(id));
+      if (!match || match.phase !== current) {
         return { affectedRows: 0 };
       }
-      match.status = next;
+      match.phase = String(next);
       return { affectedRows: 1 };
     }
     if (sql.startsWith('SELECT winner')) {
@@ -76,17 +77,17 @@ class Table {
         .filter((match) => match.id === id)
         .map((match) => ({ winner: match.winner }));
     }
-    if (sql.startsWith('SELECT user_id')) {
+    if (sql.startsWith('SELECT account_id')) {
       const matchId = Number(params[0]);
-      return this.bets.filter((bet) => bet.match_id === matchId);
+      return this.stakes.filter((stake) => stake.house_match_id === matchId);
     }
     if (sql.includes('balance = balance +')) {
       const [amount, accountId] = params.map(Number);
-      const user = this.users.find((row) => row.id === accountId);
-      if (!user) {
+      const account = this.accounts.find((row) => row.id === accountId);
+      if (!account) {
         return { affectedRows: 0 };
       }
-      user.balance += amount;
+      account.balance += amount;
       this.credits += 1;
       return { affectedRows: 1 };
     }
@@ -106,7 +107,7 @@ function openRow(): MatchRecord {
   const columns = toMatchColumns(match);
   return {
     id: 7,
-    status: columns.status,
+    phase: columns.phase,
     winner: columns.winner,
     loser: columns.loser,
     hero_info: columns.heroInfo,
@@ -129,7 +130,7 @@ describe('house match persistence', () => {
       ),
     );
 
-    expect(columns.status).toBe(OPEN_COLUMN);
+    expect(columns.phase).toBe(Phase.Open);
     expect(columns.winner).toBe(9);
     expect(JSON.parse(columns.turns)).toEqual([{ turnNumber: 1 }]);
   });
@@ -137,35 +138,40 @@ describe('house match persistence', () => {
   it('refuses a stake during Revealed and leaves the balance unchanged', async () => {
     const table = new Table();
     const row = openRow();
-    row.status = REVEALED_COLUMN;
+    row.phase = Phase.Revealed;
     table.matches.push(row);
 
     await expect(placeStakeIn(table.query, 7, 3, 9, 10)).rejects.toBeInstanceOf(
       StakeRefusedException,
     );
-    expect(table.users[0].balance).toBe(100);
-    expect(table.users[0].email).toBe('a@b.c');
-    expect(table.bets).toHaveLength(0);
+    expect(table.accounts[0].balance).toBe(100);
+    expect(table.accounts[0].email).toBe('a@b.c');
+    expect(table.stakes).toHaveLength(0);
   });
 
   it('rolls the debit back in the statement order when the balance is too small', async () => {
     const table = new Table();
-    table.users[0].balance = 5;
+    table.accounts[0].balance = 5;
     table.matches.push(openRow());
 
     await expect(placeStakeIn(table.query, 7, 3, 9, 10)).rejects.toBeInstanceOf(
       InsufficientBalanceException,
     );
-    expect(table.bets).toHaveLength(0);
-    expect(table.users[0].balance).toBe(5);
+    expect(table.stakes).toHaveLength(0);
+    expect(table.accounts[0].balance).toBe(5);
   });
 
   it('credits a winning stake once when settle is replayed', async () => {
     const table = new Table();
     const row = openRow();
-    row.status = REVEALED_COLUMN;
+    row.phase = Phase.Revealed;
     table.matches.push(row);
-    table.bets.push({ user_id: 3, match_id: 7, hero_id: 9, balance: 10 });
+    table.stakes.push({
+      account_id: 3,
+      house_match_id: 7,
+      hero_id: 9,
+      amount: 10,
+    });
 
     const first = await settleIn(table.query, 7);
     const second = await settleIn(table.query, 7);
@@ -175,7 +181,7 @@ describe('house match persistence', () => {
     ]);
     expect(second).toBeNull();
     expect(table.credits).toBe(1);
-    expect(table.users[0].balance).toBe(120);
-    expect(table.matches[0].status).toBe(3);
+    expect(table.accounts[0].balance).toBe(120);
+    expect(table.matches[0].phase).toBe(Phase.Settled);
   });
 });

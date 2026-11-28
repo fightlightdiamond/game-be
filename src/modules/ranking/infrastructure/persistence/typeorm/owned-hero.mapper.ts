@@ -1,12 +1,12 @@
 import { OwnedHero } from '../../../domain/owned-hero';
-import { UserHeroOrmEntity } from './user-hero.orm-entity';
+import { OwnedHeroOrmEntity } from './owned-hero.orm-entity';
 
-export function toOwnedColumns(hero: OwnedHero): UserHeroOrmEntity {
-  const row = new UserHeroOrmEntity();
+export function toOwnedColumns(hero: OwnedHero): OwnedHeroOrmEntity {
+  const row = new OwnedHeroOrmEntity();
   if (hero.id) {
     row.id = hero.id;
   }
-  row.user_id = hero.accountId;
+  row.account_id = hero.accountId;
   row.hero_id = hero.heroId;
   row.level = hero.level;
   row.atk_point = hero.atkPoint;
@@ -23,10 +23,10 @@ export function toOwnedColumns(hero: OwnedHero): UserHeroOrmEntity {
   return row;
 }
 
-export function rowToOwned(row: UserHeroOrmEntity): OwnedHero {
+export function rowToOwned(row: OwnedHeroOrmEntity): OwnedHero {
   return OwnedHero.reconstitute(
     row.id,
-    row.user_id,
+    row.account_id,
     row.hero_id,
     row.level,
     row.atk_point,

@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { RoleEnum } from '../../../domain/enums/role.enum';
 
-@Entity('users')
-export class UserOrmEntity {
+@Entity('accounts')
+export class AccountOrmEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -43,9 +43,6 @@ export class UserOrmEntity {
 
   @Column({ type: 'decimal', precision: 50, scale: 0, default: 0 })
   balance: number;
-
-  @Column({ type: 'decimal', precision: 50, scale: 0, default: 0 })
-  available_balance: number;
 
   @CreateDateColumn()
   createdAt: Date;
