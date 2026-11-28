@@ -6,6 +6,7 @@ import { BullModule } from '@nestjs/bull';
 import { CombatModule } from '../combat/combat.module';
 import { IdentityModule } from '../identity/identity.module';
 import { HeroCatalogModule } from '../hero-catalog/hero-catalog.module';
+import { LedgerModule } from '../ledger/ledger.module';
 
 import { BettingMatchOrmEntity } from './infrastructure/persistence/typeorm/betting-match.orm-entity';
 import { BetOrmEntity } from './infrastructure/persistence/typeorm/bet.orm-entity';
@@ -39,6 +40,7 @@ import { MatchController } from './presentation/http/match.controller';
     CombatModule,
     IdentityModule,
     HeroCatalogModule,
+    LedgerModule,
   ],
   controllers: [BetController, MatchController],
   providers: [

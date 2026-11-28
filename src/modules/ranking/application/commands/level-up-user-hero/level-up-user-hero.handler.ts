@@ -1,10 +1,10 @@
-import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import {
   USER_HERO_REPOSITORY,
   IUserHeroRepository,
 } from '../../../domain/repositories/user-hero.repository.interface';
-import { DeductBalanceCommand } from '../../../../identity/application/commands/deduct-balance/deduct-balance.command';
+import { LEDGER, Ledger } from '../../../../ledger/domain/ledger';
 import { UserHero } from '../../../domain/aggregates/user-hero.aggregate';
 import { LevelUpUserHeroCommand } from './level-up-user-hero.command';
 
@@ -15,7 +15,8 @@ export class LevelUpUserHeroHandler
   constructor(
     @Inject(USER_HERO_REPOSITORY)
     private readonly userHeroRepo: IUserHeroRepository,
-    private readonly commandBus: CommandBus,
+    @Inject(LEDGER)
+    private readonly ledger: Ledger,
   ) {}
 
   async execute(command: LevelUpUserHeroCommand): Promise<UserHero> {
@@ -28,10 +29,7 @@ export class LevelUpUserHeroHandler
     // 2. Calculate cost: 2^(level + 1)
     const cost = Math.pow(2, userHero.level + 1);
 
-    // 3. Deduct balance — if it throws, do NOT increment level
-    await this.commandBus.execute(
-      new DeductBalanceCommand(command.userId, cost),
-    );
+    await this.ledger.debit(command.userId, cost);
 
     // 4. Level up
     userHero.levelUp();

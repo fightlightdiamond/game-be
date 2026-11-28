@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../../domain/aggregates/user.aggregate';
 import { IUserRepository } from '../../../domain/repositories/user.repository.interface';
-import { Wallet } from '../../../domain/value-objects/wallet.vo';
 import { UserOrmEntity } from './user.orm-entity';
 
 @Injectable()
@@ -30,14 +29,7 @@ export class TypeOrmUserRepository implements IUserRepository {
   }
 
   private toDomain(row: UserOrmEntity): User {
-    return new User(
-      row.id,
-      row.email,
-      row.password,
-      row.role,
-      row.confirmed,
-      new Wallet(Number(row.balance)),
-    );
+    return new User(row.id, row.email, row.password, row.role, row.confirmed);
   }
 
   private toOrm(user: User): UserOrmEntity {
@@ -47,8 +39,6 @@ export class TypeOrmUserRepository implements IUserRepository {
     row.password = user.getPasswordHash();
     row.role = user.role;
     row.confirmed = user.confirmedEmail;
-    row.balance = user.getBalance();
-    row.available_balance = user.getBalance();
     return row;
   }
 }

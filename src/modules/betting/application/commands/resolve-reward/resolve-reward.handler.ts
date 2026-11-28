@@ -1,9 +1,4 @@
-import {
-  CommandBus,
-  CommandHandler,
-  EventBus,
-  ICommandHandler,
-} from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import {
   BETTING_MATCH_REPOSITORY,
@@ -14,7 +9,7 @@ import {
   IBetRepository,
 } from '../../../domain/repositories/bet.repository.interface';
 import { RewardPolicy } from '../../../domain/services/reward-policy.service';
-import { CreditBalanceCommand } from '../../../../identity/application/commands/credit-balance/credit-balance.command';
+import { LEDGER, Ledger } from '../../../../ledger/domain/ledger';
 import { ResolveRewardCommand } from './resolve-reward.command';
 
 @CommandHandler(ResolveRewardCommand)
@@ -26,7 +21,8 @@ export class ResolveRewardHandler
     private readonly bettingMatchRepository: IBettingMatchRepository,
     @Inject(BET_REPOSITORY)
     private readonly betRepository: IBetRepository,
-    private readonly commandBus: CommandBus,
+    @Inject(LEDGER)
+    private readonly ledger: Ledger,
     @Inject(EventBus)
     private readonly eventBus: EventBus,
   ) {}
@@ -59,7 +55,7 @@ export class ResolveRewardHandler
 
     // 6. Credit each winner's balance
     for (const [userId, payout] of payouts.entries()) {
-      await this.commandBus.execute(new CreditBalanceCommand(userId, payout));
+      await this.ledger.credit(userId, payout);
 
       // TODO: dispatch AddGemCommand when Ranking BC is implemented
       // if (policy.shouldDropGem()) {

@@ -19,6 +19,7 @@ import { HeroCatalogModule } from './modules/hero-catalog/hero-catalog.module';
 import { CombatModule } from './modules/combat/combat.module';
 import { BettingModule } from './modules/betting/betting.module';
 import { RankingModule } from './modules/ranking/ranking.module';
+import { LedgerModule } from './modules/ledger/ledger.module';
 
 // Config
 import GraphqlConfig from './config/graphql.config';
@@ -64,6 +65,7 @@ import GraphqlConfig from './config/graphql.config';
     SocketModule,
     // Feature bounded contexts
     IdentityModule,
+    LedgerModule,
     HeroCatalogModule,
     CombatModule,
     BettingModule,

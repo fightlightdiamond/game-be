@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CombatModule } from '../combat/combat.module';
 import { IdentityModule } from '../identity/identity.module';
+import { LedgerModule } from '../ledger/ledger.module';
 
 import { UserHeroOrmEntity } from './infrastructure/persistence/typeorm/user-hero.orm-entity';
 import { EloMatchOrmEntity } from './infrastructure/persistence/typeorm/elo-match.orm-entity';
@@ -35,6 +36,7 @@ import { EloMatchController } from './presentation/http/elo-match.controller';
     ]),
     CombatModule,
     IdentityModule,
+    LedgerModule,
   ],
   controllers: [UserHeroController, EloMatchController],
   providers: [

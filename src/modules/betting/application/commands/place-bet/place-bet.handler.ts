@@ -1,9 +1,4 @@
-import {
-  CommandBus,
-  CommandHandler,
-  EventBus,
-  ICommandHandler,
-} from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { Inject, HttpException, HttpStatus } from '@nestjs/common';
 import {
   BETTING_MATCH_REPOSITORY,
@@ -13,15 +8,15 @@ import {
   BET_REPOSITORY,
   IBetRepository,
 } from '../../../domain/repositories/bet.repository.interface';
-import { DeductBalanceCommand } from '../../../../identity/application/commands/deduct-balance/deduct-balance.command';
-import { InsufficientFundsException } from '../../../../identity/domain/exceptions/insufficient-funds.exception';
+import { LEDGER, Ledger } from '../../../../ledger/domain/ledger';
 import { Bet } from '../../../domain/entities/bet.entity';
 import { PlaceBetCommand } from './place-bet.command';
 
 @CommandHandler(PlaceBetCommand)
 export class PlaceBetHandler implements ICommandHandler<PlaceBetCommand> {
   constructor(
-    private readonly commandBus: CommandBus,
+    @Inject(LEDGER)
+    private readonly ledger: Ledger,
     @Inject(BETTING_MATCH_REPOSITORY)
     private readonly bettingMatchRepository: IBettingMatchRepository,
     @Inject(BET_REPOSITORY)
@@ -39,17 +34,7 @@ export class PlaceBetHandler implements ICommandHandler<PlaceBetCommand> {
       );
     }
 
-    // Deduct balance first — if insufficient, abort without persisting
-    try {
-      await this.commandBus.execute(
-        new DeductBalanceCommand(command.userId, command.amount),
-      );
-    } catch (error) {
-      if (error instanceof InsufficientFundsException) {
-        throw error;
-      }
-      throw error; // re-throw any other error
-    }
+    await this.ledger.debit(command.userId, command.amount);
 
     // Place bet on aggregate (may throw BettingClosedException)
     const bet = match.placeBet(command.userId, command.heroId, command.amount);
