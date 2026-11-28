@@ -39,7 +39,7 @@ These slices have their own rules. They are not the core. House betting and rost
 | Domain | Business slice | Concepts | Rules |
 |---|---|---|---|
 | House betting | Stake on the winner of a hidden fight | `HouseMatch`, `Stake` | One stake per account per match, on one of the two catalog heroes. The window is open for 2 minutes, the reveal lasts 3 minutes, settlement is at 5 minutes, and the next match starts then. Stake only while the window is open. Payout = `amount × 2` for the winning catalog hero. Phases move `Open → Revealed → Settled`. The stored simulation stays complete while the public view hides it |
-| Roster and rank | Raise the one owned hero and rank it | `OwnedHero`, `Gem` | One owned hero per account, claimed from the catalog. Allocated points do not exceed level, and they set the five stats by the formulas in concepts.md. Level-up fee is `2^(currentLevel + 1)`, then level increases by 1. Elo starts at 1600. Challenge updates both Elo numbers with `kFactor` 20. A gem drops at 5% after a winning stake and can be leveled in storage. A gem does not change stats |
+| Roster and rank | Raise the one owned hero and rank it | `OwnedHero`, `Challenge`, `Gem` | One owned hero per account, claimed from the catalog. Allocated points do not exceed level, and they set the five stats by the formulas in concepts.md. Level-up fee is `2^(currentLevel + 1)`, then level increases by 1. Elo starts at 1600. Challenge updates both Elo numbers with `kFactor` 20. A gem drops at 5% after a winning stake and can be leveled in storage. A gem does not change stats |
 
 Gems are part of roster. A drop listens to `RewardsPaid`. It is not a rule of the match.
 
@@ -106,7 +106,7 @@ Rules:
 - Debit of `amount` and insert of the stake commit in one transaction. Debit is first inside that transaction. If the debit fails, the transaction rolls back and no stake remains.
 - Settlement credits `amount × 2` for each stake whose catalog hero is the winner. It does not create money outside that formula.
 - Reveal does not run the simulation again.
-- One match lifecycle is 5 minutes, owned by this context. `open` at 0:00, `reveal` at 2:00, `settle` at 5:00. The next match starts when the previous one settles. The legacy clock (reveal at 60 seconds, settle at 180 seconds, cron every 3 minutes) is not the business rule. The scheduler that waits those delays is an adapter inside this context.
+- One match lifecycle is 5 minutes, owned by this context. `open` at 0:00, `reveal` at 2:00, `settle` at 5:00. The next match starts when the previous one settles. `open` enqueues those two delays on this context's queue. A cron in this context only calls `open`, and `open` does not start a second match while one is `Open` or `Revealed`.
 
 Outside: Elo, level, gems, email, JWT.
 
@@ -153,7 +153,7 @@ A successful login is the moment the daily login grant runs. That grant is not a
 
 ### Notification — technical, no aggregate
 
-Socket, email, Redis. They subscribe to the published language and emit. They do not call `open`, `reveal`, or `settle`. The match clock is an adapter of house betting. Bull is the delay mechanism that adapter uses. It is not a context.
+Socket, email, Redis. They subscribe to the published language and emit. They do not call `open`, `reveal`, or `settle`. The match clock belongs to house betting. Bull is the delay mechanism that context uses. It is not a context.
 
 ## 5. Context map
 
@@ -182,11 +182,11 @@ flowchart LR
 
 ### Relationships
 
-**Catalog to house betting, and catalog to roster.** The catalog is upstream reference data, published as an Open Host Service. The published language is the catalog hero's stats. The consumer freezes a `Fighter`. It does not import a catalog class. This is not an anti-corruption layer. The upstream shape is small and explicit.
+**Catalog to house betting, and catalog to roster.** The catalog is upstream reference data, published as an Open Host Service. The published language is `PublishedHero`: id, name, element, position, and the stats a caller freezes. The catalog `Hero` class stays inside the catalog, including the HTTP read of a hero. House betting and roster do not import that class. They freeze a `Fighter` from `PublishedHero`. `claim` copies the catalog id and the five stored stats from the same publication. This is not an anti-corruption layer. The upstream shape is small and explicit.
 
 **Combat is the upstream supplier** of house betting and of challenge. The relationship is Customer-Supplier. The published service is `simulate(Fighter, Fighter) → CombatResult`. Callers pass fighters in and conform to the result. A trait change is an upstream change. Both customers adapt. Neither customer edits the fight rules. Combat does not depend on Nest, TypeORM, or Bull.
 
-**House betting and roster are customers of the ledger.** The ledger is the supplier and the upstream of the money truth. It offers `debit` and `credit`. Each customer translates `InsufficientFunds` into its own words: stake rejected or level-up rejected. That translation is a thin port. It is the same relationship for both customers. `placeStake` does not import an account exception.
+**House betting and roster are customers of the ledger.** The ledger is the supplier and the upstream of the money truth. It offers `debit` and `credit`. The balance SQL stays in the ledger. A stake transaction and settlement call those two operations on their own connection, so the money and the stake row commit together. Each customer translates `InsufficientFunds` into its own words: stake rejected or level-up rejected. That translation is a thin port. It is the same relationship for both customers. `placeStake` does not import an account exception.
 
 **Account publishes `AccountId`.** Other contexts conform to that identifier. None of them receives a `User` aggregate. This is not an event stream. The daily login grant is the one call from login into the ledger: create a zero balance when missing, then `credit(100)` if today's grant has not been taken.
 
@@ -213,26 +213,24 @@ Events that leave house betting:
 
 - House betting imports classes from roster or account.
 - A domain model imports `@nestjs/*`, `bcrypt`, `bull`, or `typeorm`.
-- The house-betting application injects a Bull queue. The scheduler is an infrastructure adapter.
+- House betting or roster imports the catalog `Hero` class. Callers use `PublishedHero`.
+- House betting writes `accounts.balance` with its own SQL.
 - The socket gateway sends a business command.
 
-## 6. Consequences for the current tactical design
+## 6. Consequences for the tactical design
 
-The following in `src/modules` break this map. Change the code. Do not change this map to match the drift.
+The modules follow this map.
 
-| Current choice | Why it breaks the map | Direction |
-|---|---|---|
-| `Wallet` sits on the Identity `User` aggregate | Account and ledger are different languages. A stake and a level-up both write the user row | Ledger port `debit` / `credit` by `AccountId`. Account has no `deductBalance` |
-| `HouseMatch` is the place for every kind of match | Challenge is not this language | House match only. `Challenge` stays in roster |
-| `winner` and `turns` getters both hide the public view and feed `toOrm()` | The save wipes the simulation. Settlement then reads winner `0` | Two views: internal and public |
-| `placeBet` checks stakes on an array the repository never loads | A second stake is not rejected | Unique `(accountId, matchId)`, and read it before the debit |
-| Debit commits, then the stake insert commits. Settlement sets `END`, then credits one by one | A failed insert loses money. A retried job cannot pay | One transaction. Settlement is idempotent |
-| A money write saves the whole account row | Every money write can clear a profile column | The ledger updates `accounts.balance` only |
-| Betting dispatches an Identity command and plans to dispatch `AddGem` | The customer depends on the supplier's module, and betting would import roster | Ledger port. `RewardsPaid` for gems |
-| `findByAccountId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
-| `CombatEngine` is `@Injectable` and calls `Math.random` | Combat is not replayable and it depends on Nest | A `RandomSource` port. The formulas are the original loop in [concepts.md](./concepts.md), not the port that dropped max health |
+- Ledger `debit` and `credit` write `accounts.balance` only. Account has no balance method. The balance SQL stays in the ledger, including when a stake transaction calls it.
+- `HouseMatch` and `Challenge` stay separate. Challenge uses `elo-matches`.
+- A house match keeps the stored result and a public view. `open` writes the stored winner.
+- One stake per account is a unique `(account_id, house_match_id)`, checked in the same transaction as the debit.
+- Gems listen to `RewardsPaid`. House betting does not import roster.
+- `claim` returns one `OwnedHero` and refuses a second. It copies published catalog stats and does not take the `Hero` class.
+- `CombatEngine` is plain TypeScript with a `RandomSource`. Callers freeze a `Fighter` from `PublishedHero`.
+- `open` enqueues reveal at 2 minutes and settle at 5 minutes on the house-betting queue. A cron only calls `open`.
 
-Gems stay inside roster and wake up on an event. Do not fold them into Ranking to keep a four-module diagram.
+Gems stay inside roster. Do not fold them into a separate rank context.
 
 ## 7. Implementation order
 

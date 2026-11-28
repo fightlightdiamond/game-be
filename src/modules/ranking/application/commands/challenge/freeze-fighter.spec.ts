@@ -1,19 +1,23 @@
-import { Hero } from '../../../../hero-catalog/domain/hero';
-import { HeroStats } from '../../../../hero-catalog/domain/value-objects/hero-stats.vo';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
 import { freezeOwned } from './freeze-fighter';
 
 describe('freezeOwned', () => {
   it('uses the catalog hero name and the stats the owned row does not store', () => {
-    const hero = new Hero(
-      4,
-      'Fenrir',
-      'fire',
-      'front',
-      '',
-      '',
-      null,
-      new HeroStats(10000, 1000, 200, 100, 20, 170, 0, 0, 12, 100, 0, 2, 3),
-    );
+    const hero: PublishedHero = {
+      id: 4,
+      name: 'Fenrir',
+      element: 'fire',
+      position: 'front',
+      hp: 10000,
+      atk: 1000,
+      def: 200,
+      spd: 100,
+      critRate: 20,
+      critDmg: 170,
+      dodge: 12,
+      effectResistance: 2,
+      intrinsicStatus: 3,
+    };
 
     const fighter = freezeOwned(
       80,

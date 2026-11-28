@@ -1,19 +1,23 @@
-import { Hero } from '../../../../hero-catalog/domain/hero';
-import { HeroStats } from '../../../../hero-catalog/domain/value-objects/hero-stats.vo';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
 import { freeze } from './freeze-fighter';
 
 describe('freeze', () => {
-  it('builds a Fighter from a catalog hero', () => {
-    const hero = new Hero(
-      9,
-      'Hell',
-      'dark',
-      'back',
-      '',
-      '',
-      null,
-      new HeroStats(10000, 1000, 200, 100, 20, 150, 0, 0, 10, 100, 0, 1, 0),
-    );
+  it('builds a Fighter from published catalog stats', () => {
+    const hero: PublishedHero = {
+      id: 9,
+      name: 'Hell',
+      element: 'dark',
+      position: 'back',
+      hp: 10000,
+      atk: 1000,
+      def: 200,
+      spd: 100,
+      critRate: 20,
+      critDmg: 150,
+      dodge: 10,
+      effectResistance: 1,
+      intrinsicStatus: 0,
+    };
 
     const fighter = freeze(hero);
 

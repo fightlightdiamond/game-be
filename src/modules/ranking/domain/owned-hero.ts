@@ -1,6 +1,13 @@
-import { Hero } from '../../hero-catalog/domain/hero';
 import { ExceedsLevelCapException } from './exceptions/exceeds-level-cap.exception';
 import { SecondClaimRefusedException } from './exceptions/second-claim-refused.exception';
+
+type CopiedStats = {
+  atk: number;
+  def: number;
+  hp: number;
+  spd: number;
+  critRate: number;
+};
 
 const STARTING_ELO = 1600;
 
@@ -25,7 +32,8 @@ export class OwnedHero {
 
   static claim(
     accountId: number,
-    hero: Hero,
+    catalogHeroId: number,
+    stats: CopiedStats,
     existing: OwnedHero | null,
   ): OwnedHero {
     if (existing) {
@@ -34,7 +42,7 @@ export class OwnedHero {
     return new OwnedHero(
       0,
       accountId,
-      hero.id,
+      catalogHeroId,
       0,
       0,
       0,
@@ -42,11 +50,11 @@ export class OwnedHero {
       0,
       0,
       STARTING_ELO,
-      hero.stats.atk,
-      hero.stats.def,
-      hero.stats.hp,
-      hero.stats.spd,
-      hero.stats.critRate,
+      stats.atk,
+      stats.def,
+      stats.hp,
+      stats.spd,
+      stats.critRate,
     );
   }
 

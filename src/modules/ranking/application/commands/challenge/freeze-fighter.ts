@@ -1,5 +1,5 @@
 import { Fighter } from '../../../../combat/domain/fighter';
-import { Hero } from '../../../../hero-catalog/domain/hero';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
 
 type OwnedStats = {
   hp: number;
@@ -16,7 +16,7 @@ type OwnedStats = {
 export function freezeOwned(
   ownedId: number,
   owned: OwnedStats,
-  hero: Hero,
+  hero: PublishedHero,
 ): Fighter {
   return new Fighter(
     ownedId,
@@ -29,9 +29,9 @@ export function freezeOwned(
     owned.def,
     owned.spd,
     owned.critRate,
-    hero.stats.critDmg,
-    hero.stats.dodge,
-    hero.stats.effectResistance,
-    hero.stats.intrinsicStatus,
+    hero.critDmg,
+    hero.dodge,
+    hero.effectResistance,
+    hero.intrinsicStatus,
   );
 }

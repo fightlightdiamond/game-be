@@ -1,8 +1,7 @@
-import { InsufficientBalanceException } from '../../../../ledger/domain/insufficient-balance.exception';
 import {
-  CREDIT_BALANCE_SQL,
-  DEBIT_BALANCE_SQL,
   affectedRows,
+  creditBalance,
+  debitBalance,
 } from '../../../../ledger/infrastructure/typeorm-ledger';
 import { RewardsPaid } from '../../../domain/events/rewards-paid.event';
 import {
@@ -44,10 +43,7 @@ export async function placeStakeIn(
     );
   }
 
-  const debited = await sql(DEBIT_BALANCE_SQL, [amount, accountId, amount]);
-  if (affectedRows(debited) === 0) {
-    throw new InsufficientBalanceException(accountId, amount);
-  }
+  await debitBalance(sql, accountId, amount);
 
   const inserted = await sql(
     'INSERT INTO stakes (account_id, house_match_id, hero_id, amount, result) VALUES (?, ?, ?, ?, ?)',
@@ -93,13 +89,7 @@ export async function settleIn(
   );
   const payouts = winningPayouts(stakes, winnerId);
   for (const payout of payouts) {
-    const credited = await sql(CREDIT_BALANCE_SQL, [
-      payout.payout,
-      payout.accountId,
-    ]);
-    if (affectedRows(credited) === 0) {
-      throw new Error(`No balance for account ${payout.accountId}`);
-    }
+    await creditBalance(sql, payout.accountId, payout.payout);
   }
   return new RewardsPaid(matchId, payouts);
 }

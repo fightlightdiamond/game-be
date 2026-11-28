@@ -7,6 +7,7 @@ import { HeroOrmEntity } from './infrastructure/persistence/typeorm/hero.orm-ent
 import { TypeOrmHeroRepository } from './infrastructure/persistence/typeorm/hero.repository';
 import { GetHeroHandler } from './application/queries/get-hero/get-hero.handler';
 import { GetHeroPairHandler } from './application/queries/get-hero-pair/get-hero-pair.handler';
+import { GetPublishedHeroHandler } from './application/queries/get-published-hero/get-published-hero.handler';
 import { ListHeroesHandler } from './application/queries/list-heroes/list-heroes.handler';
 import { HeroController } from './presentation/http/hero.controller';
 
@@ -16,6 +17,7 @@ import { HeroController } from './presentation/http/hero.controller';
   providers: [
     GetHeroHandler,
     GetHeroPairHandler,
+    GetPublishedHeroHandler,
     ListHeroesHandler,
     TypeOrmHeroRepository,
     {

@@ -56,6 +56,7 @@ These sentences are the language in use. A class model that cannot be read back 
 | Word | Kind | Say this | Do not say |
 |---|---|---|---|
 | `Hero` | Noun | A designed hero: name, base stats, trait name. Only this meaning, and only in the catalog | `HeroTemplate`. Do not call an owned hero or a fighter a `Hero` |
+| `PublishedHero` | Noun | The stats the catalog publishes to house betting and roster. Callers freeze a `Fighter` from it, or copy them on `claim` | The catalog `Hero` class outside the catalog |
 
 ## House betting
 

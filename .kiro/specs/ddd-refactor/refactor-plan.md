@@ -41,7 +41,7 @@ Rename the match the account stakes on, and make the clock and the money one tra
 - `placeStake` accepts one stake per account, only while `Open`, only on one of the two catalog heroes. The debit and the insert commit together. A unique `(accountId, matchId)` backs the rule.
 - `reveal` at 2:00 publishes the winner and the log. It does not simulate again.
 - `settle` at 5:00 credits `amount × 2` for each winning stake and marks `Settled` in the same transaction. A second settle pays nothing. `RewardsPaid` is published after that commit. This step does not drop a gem.
-- The next match starts when this one settles. The scheduler is an adapter in this module. The delays are 2 minutes and 5 minutes, not 60 seconds and 180 seconds.
+- The next match starts when this one settles. `open` enqueues reveal at 2 minutes and settle at 5 minutes. The delays are 2 minutes and 5 minutes, not 60 seconds and 180 seconds.
 - Events are `BettingOpened`, `FightRevealed`, `RewardsPaid`, and `StakePlaced`. Delete `FightingStarted` and `MatchEnded` as the domain events.
 
 Done when a stake during `Revealed` is refused, a saved open match still has its winner in the database, and replaying `settle` does not credit twice.
@@ -74,7 +74,7 @@ Wrap what is already technical.
 
 - `User` in the domain becomes `Account`: email, password, role, confirmation, address. No balance method.
 - A successful login runs the login grant: first login of a calendar day in `Asia/Ho_Chi_Minh` creates a zero balance when missing, then `credit(100)` once.
-- Notification emits `BettingOpened`, `FightRevealed`, and `RewardsPaid`. It does not open, reveal, or settle. The Bull queue stays behind the house-betting scheduler.
+- Notification emits `BettingOpened`, `FightRevealed`, and `RewardsPaid`. It does not open, reveal, or settle. The queue that waits those delays belongs to house betting.
 
 Done when a second login on the same day does not credit, and a socket handler does not call a house-betting command.
 

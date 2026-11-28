@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { Hero } from '../../../domain/hero';
+import { publishHero, PublishedHero } from '../../published-hero';
 import {
   HERO_REPOSITORY,
   IHeroRepository,
@@ -9,14 +9,15 @@ import { GetHeroPairQuery } from './get-hero-pair.query';
 
 @QueryHandler(GetHeroPairQuery)
 export class GetHeroPairHandler
-  implements IQueryHandler<GetHeroPairQuery, [Hero, Hero]>
+  implements IQueryHandler<GetHeroPairQuery, [PublishedHero, PublishedHero]>
 {
   constructor(
     @Inject(HERO_REPOSITORY)
     private readonly heroRepository: IHeroRepository,
   ) {}
 
-  async execute(): Promise<[Hero, Hero]> {
-    return this.heroRepository.getPair();
+  async execute(): Promise<[PublishedHero, PublishedHero]> {
+    const [left, right] = await this.heroRepository.getPair();
+    return [publishHero(left), publishHero(right)];
   }
 }

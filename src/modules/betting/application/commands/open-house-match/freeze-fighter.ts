@@ -1,21 +1,21 @@
 import { Fighter } from '../../../../combat/domain/fighter';
-import { Hero } from '../../../../hero-catalog/domain/hero';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
 
-export function freeze(hero: Hero): Fighter {
+export function freeze(hero: PublishedHero): Fighter {
   return new Fighter(
     hero.id,
     hero.name,
-    hero.stats.hp,
-    hero.stats.hp,
-    hero.stats.atk,
-    hero.stats.atk,
-    hero.stats.def,
-    hero.stats.def,
-    hero.stats.spd,
-    hero.stats.critRate,
-    hero.stats.critDmg,
-    hero.stats.dodge,
-    hero.stats.effectResistance,
-    hero.stats.intrinsicStatus,
+    hero.hp,
+    hero.hp,
+    hero.atk,
+    hero.atk,
+    hero.def,
+    hero.def,
+    hero.spd,
+    hero.critRate,
+    hero.critDmg,
+    hero.dodge,
+    hero.effectResistance,
+    hero.intrinsicStatus,
   );
 }

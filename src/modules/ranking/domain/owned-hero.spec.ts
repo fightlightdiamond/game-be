@@ -1,22 +1,18 @@
 import * as fc from 'fast-check';
-import { Hero } from '../../hero-catalog/domain/hero';
-import { HeroStats } from '../../hero-catalog/domain/value-objects/hero-stats.vo';
 import { toOwnedColumns } from '../infrastructure/persistence/typeorm/owned-hero.mapper';
 import { ExceedsLevelCapException } from './exceptions/exceeds-level-cap.exception';
 import { SecondClaimRefusedException } from './exceptions/second-claim-refused.exception';
 import { OwnedHero } from './owned-hero';
 
-function catalog(): Hero {
-  return new Hero(
-    7,
-    'Fenrir',
-    'fire',
-    'front',
-    '',
-    '',
-    null,
-    new HeroStats(11000, 900, 180, 210, 22, 150, 0, 0, 8, 100, 0, 1, 0),
-  );
+function catalog() {
+  return {
+    id: 7,
+    atk: 900,
+    def: 180,
+    hp: 11000,
+    spd: 210,
+    critRate: 22,
+  };
 }
 
 function makeOwned(level: number): OwnedHero {
@@ -41,7 +37,7 @@ function makeOwned(level: number): OwnedHero {
 
 describe('OwnedHero', () => {
   it('copies one catalog hero at level 0 and Elo 1600', () => {
-    const owned = OwnedHero.claim(4, catalog(), null);
+    const owned = OwnedHero.claim(4, catalog().id, catalog(), null);
 
     expect(owned.level).toBe(0);
     expect(owned.elo).toBe(1600);
@@ -52,15 +48,16 @@ describe('OwnedHero', () => {
   });
 
   it('refuses a second claim', () => {
-    const first = OwnedHero.claim(4, catalog(), null);
+    const source = catalog();
+    const first = OwnedHero.claim(4, source.id, source, null);
 
-    expect(() => OwnedHero.claim(4, catalog(), first)).toThrow(
+    expect(() => OwnedHero.claim(4, source.id, source, first)).toThrow(
       SecondClaimRefusedException,
     );
   });
 
   it('persists a level-up from 0 as level 1', () => {
-    const owned = OwnedHero.claim(4, catalog(), null);
+    const owned = OwnedHero.claim(4, catalog().id, catalog(), null);
     owned.levelUp();
 
     expect(toOwnedColumns(owned).level).toBe(1);

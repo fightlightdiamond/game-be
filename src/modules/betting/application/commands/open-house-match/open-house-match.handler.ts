@@ -8,8 +8,8 @@ import { Inject } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { CombatEngine } from '../../../../combat/domain/combat-engine';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
 import { GetHeroPairQuery } from '../../../../hero-catalog/application/queries/get-hero-pair/get-hero-pair.query';
-import { Hero } from '../../../../hero-catalog/domain/hero';
 import { NameQueueConstant } from '../../../../../shared/constants/name-queue.constant';
 import { HouseFighter } from '../../../domain/house-fighter';
 import { HouseMatch } from '../../../domain/house-match';
@@ -41,7 +41,7 @@ export class OpenHouseMatchHandler
   async execute(): Promise<HouseMatch> {
     const [heroA, heroB] = await this.queryBus.execute<
       GetHeroPairQuery,
-      [Hero, Hero]
+      [PublishedHero, PublishedHero]
     >(new GetHeroPairQuery());
     const result = this.combatEngine.simulate(freeze(heroA), freeze(heroB));
     const opened = HouseMatch.open(
@@ -74,7 +74,7 @@ export class OpenHouseMatchHandler
   }
 }
 
-function publicFighter(hero: Hero): HouseFighter {
+function publicFighter(hero: PublishedHero): HouseFighter {
   return {
     id: hero.id,
     name: hero.name,

@@ -53,6 +53,7 @@ Reference data. Not a domain. Publishes stats. The caller freezes a `Fighter`.
 | Name | Kind | Definition | Rules | Do not say |
 |---|---|---|---|---|
 | `Hero` | Reference data | A designed hero: name, base stats, trait name. This word means only this, and only inside the catalog | None | `HeroTemplate`, and do not use `Hero` for an owned hero or a fighter |
+| `PublishedHero` | Reference data | The stats that leave the catalog: id, name, element, position, and the numbers a caller freezes or copies on `claim` | None | The catalog `Hero` class outside this context |
 
 ## House betting
 

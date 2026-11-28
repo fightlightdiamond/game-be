@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
-import { GetHeroQuery } from '../../../../hero-catalog/application/queries/get-hero/get-hero.query';
-import { Hero } from '../../../../hero-catalog/domain/hero';
+import { PublishedHero } from '../../../../hero-catalog/application/published-hero';
+import { GetPublishedHeroQuery } from '../../../../hero-catalog/application/queries/get-published-hero/get-published-hero.query';
 import { CombatEngine } from '../../../../combat/domain/combat-engine';
 import { Challenge } from '../../../domain/challenge';
 import { nextElo } from '../../../domain/elo';
@@ -87,10 +87,11 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     return this.challenges.save(challenge);
   }
 
-  private async catalogHero(heroId: number): Promise<Hero> {
-    const hero = await this.queryBus.execute<GetHeroQuery, Hero | null>(
-      new GetHeroQuery(heroId),
-    );
+  private async catalogHero(heroId: number): Promise<PublishedHero> {
+    const hero = await this.queryBus.execute<
+      GetPublishedHeroQuery,
+      PublishedHero | null
+    >(new GetPublishedHeroQuery(heroId));
     if (!hero) {
       throw new HttpException(
         `Catalog hero ${heroId} not found`,
