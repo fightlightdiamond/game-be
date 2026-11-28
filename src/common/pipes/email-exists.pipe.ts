@@ -1,19 +1,21 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { UserRepository } from '../../app/user/user.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AccountOrmEntity } from '../../modules/identity/infrastructure/persistence/typeorm/account.orm-entity';
 
 @Injectable()
 export class EmailExistsPipe implements PipeTransform {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    @InjectRepository(AccountOrmEntity)
+    private accounts: Repository<AccountOrmEntity>,
+  ) {}
 
   async transform(value: string) {
     try {
-      await this.userRepository.findOneByOrFail({
-        email: value,
-      });
+      await this.accounts.findOneByOrFail({ email: value });
     } catch (e) {
       throw new BadRequestException('User not found');
     }
-
     return value;
   }
 }

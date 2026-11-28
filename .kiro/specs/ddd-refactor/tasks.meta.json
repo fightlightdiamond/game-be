@@ -1,0 +1,1062 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Install `@nestjs/cqrs` and `fast-check` dev dependency": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799168940
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799179573
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799417508
+      }
+    ],
+    "1.2 Scaffold `src/modules/` directory tree": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169016
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799179998
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799418122
+      }
+    ],
+    "1.3 Create `src/shared/` structure and migrate shared constants": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169090
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799180173
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799418490
+      }
+    ],
+    "2.1 Create Combat domain value objects: `HeroSnapshot`, `TurnLog`, `CombatResult`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169161
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799425959
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799507269
+      }
+    ],
+    "2.2 Create `UnknownHeroSkillException` domain exception": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169237
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799426344
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799507641
+      }
+    ],
+    "2.3 Create `SkillStrategy` interface and all 11 hero skill implementations": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169308
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799511078
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800023438
+      }
+    ],
+    "2.4 Create `SkillRegistry` service": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169376
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799511184
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800023709
+      }
+    ],
+    "2.5 Create stateless `CombatEngine` service": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169443
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800027891
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800118059
+      }
+    ],
+    "2.6 Create `CombatModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169505
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800121156
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800140781
+      }
+    ],
+    "3.1 Create Hero domain layer": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169569
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800149356
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800534877
+      }
+    ],
+    "3.2 Create HeroCatalog ORM entity and TypeORM repository": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169631
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800547900
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802674295
+      }
+    ],
+    "3.3 Create HeroCatalog query handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169691
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802997743
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803035566
+      }
+    ],
+    "3.4 Create HeroCatalog presentation layer": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169752
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802998980
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803036055
+      }
+    ],
+    "3.5 Create `HeroCatalogModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169815
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803040062
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820496295
+      }
+    ],
+    "4.1 Create Identity domain value objects and exceptions": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169879
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800149773
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800535441
+      }
+    ],
+    "4.2 Create `User` aggregate": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799169941
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800150008
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800535641
+      }
+    ],
+    "4.3 Create Identity repository interface": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170022
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800548341
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802626575
+      }
+    ],
+    "4.4 Create Identity domain service: `PasswordHasher`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170082
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800548994
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802626779
+      }
+    ],
+    "4.5 Create `UserOrmEntity` and `TypeOrmUserRepository`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170141
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800549381
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802627078
+      }
+    ],
+    "4.6 Create Identity command handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170202
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802998126
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803034984
+      }
+    ],
+    "4.7 Create Identity query handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170267
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802998572
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803035172
+      }
+    ],
+    "4.8 Migrate JWT infrastructure into Identity BC": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170334
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800549902
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802674838
+      }
+    ],
+    "4.9 Create Identity presentation layer": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170404
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795802999169
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803036368
+      }
+    ],
+    "4.10 Create `IdentityModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170497
+      },
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795803040260
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795819882168
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795819928436
+      }
+    ],
+    "5.1 Create Betting domain value objects and exceptions": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170572
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820520397
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820562759
+      }
+    ],
+    "5.2 Create Betting domain events": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170639
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820566184
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820904973
+      }
+    ],
+    "5.3 Create `Bet` entity and `BettingMatch` aggregate": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170706
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820911843
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820981949
+      }
+    ],
+    "5.4 Create `RewardPolicy` domain service": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170772
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820985725
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821042418
+      }
+    ],
+    "5.5 Create Betting repository interfaces": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170847
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820989269
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821042730
+      }
+    ],
+    "6.1 Create Betting command handlers (StartMatch, ResolveFighting, ResolveReward)": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170922
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821049331
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821512785
+      }
+    ],
+    "6.2 Create `PlaceBetHandler`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799170984
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821519636
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821578920
+      }
+    ],
+    "6.3 Create Betting query handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171048
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821052994
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821513086
+      }
+    ],
+    "7.1 Create Betting ORM entities and TypeORM repositories": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171110
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821583589
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821680366
+      }
+    ],
+    "7.2 Create Betting infrastructure jobs": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171179
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821684951
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824177891
+      }
+    ],
+    "7.3 Create Betting presentation layer": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171255
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821685294
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824272173
+      }
+    ],
+    "7.4 Create `BettingModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171330
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824276687
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824461526
+      }
+    ],
+    "8.1 Create Ranking domain value objects and exceptions": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171395
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821583980
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821680780
+      }
+    ],
+    "8.2 Create Ranking domain events and `EloMatch` entity": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171455
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821685701
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824471808
+      }
+    ],
+    "8.3 Create `UserHero` aggregate": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171527
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821686139
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824471982
+      }
+    ],
+    "8.4 Create Ranking repository interfaces": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171595
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824475910
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824510209
+      }
+    ],
+    "9.1 Create Ranking command handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171664
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824517483
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824951252
+      }
+    ],
+    "9.2 Create Ranking query handlers": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171735
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824517920
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824951711
+      }
+    ],
+    "9.3 Create Ranking ORM entities and TypeORM repositories": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171796
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824518356
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824951978
+      }
+    ],
+    "9.4 Create Ranking presentation layer": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171859
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824955606
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825008624
+      }
+    ],
+    "9.5 Create `RankingModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171921
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825012333
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825375029
+      }
+    ],
+    "10.1 Create SocketGateway in shared infrastructure": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799171992
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825380107
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825446870
+      }
+    ],
+    "10.2 Create `SocketModule` with Redis adapter": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172061
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825452578
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827451564
+      }
+    ],
+    "11.1 Create shared infrastructure modules: `DatabaseModule`, `RedisModule`, `QueueModule`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172137
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825380448
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825447249
+      }
+    ],
+    "11.2 Rewrite `AppModule` as an orchestration shell": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172200
+      },
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825452958
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827456030
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827510275
+      }
+    ],
+    "12. Checkpoint — build and test validation": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172264
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827515563
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827587948
+      }
+    ],
+    "13.1 Delete legacy `src/app/` directory": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172331
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827593814
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834082874
+      }
+    ],
+    "13.2 Delete `src/migrations/entities/` and `src/migrations/interfaces/`": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172400
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827594447
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834083162
+      }
+    ],
+    "13.3 Delete `src/core/` legacy utilities": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172468
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827594670
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834083279
+      }
+    ],
+    "13.4 Final build verification": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172539
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795834087362
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795837397528
+      }
+    ],
+    "14. Final checkpoint — full test suite": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799172607
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795837401916
+      },
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795837677021
+      }
+    ],
+    "1. Project setup: install dependencies and scaffold folder structure": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795799418574
+      }
+    ],
+    "2. Combat Shared Kernel": [
+      {
+        "executionId": "40dee107-5336-43ad-a0ce-5e1a2751be7b",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795800140858
+      }
+    ],
+    "4. Identity Bounded Context": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795819928536
+      }
+    ],
+    "3. HeroCatalog Bounded Context": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795820496394
+      }
+    ],
+    "5. Betting BC — Domain Layer": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821042815
+      }
+    ],
+    "6. Betting BC — Application Layer": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795821579068
+      }
+    ],
+    "7. Betting BC — Infrastructure and Presentation": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824461698
+      }
+    ],
+    "8. Ranking BC — Domain Layer": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795824510316
+      }
+    ],
+    "9. Ranking BC — Application, Infrastructure, and Presentation": [
+      {
+        "executionId": "bd97f89d-c9d7-465d-88b9-d956c69d0bbc",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795825375242
+      }
+    ],
+    "10. SocketGateway — shared infrastructure": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827451695
+      }
+    ],
+    "11. AppModule refactor": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795827510382
+      }
+    ],
+    "13. Cleanup: remove legacy code": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795837397669
+      }
+    ],
+    "2.7 Write property-based tests for `CombatEngine` (Properties 1–3)": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795838006423
+      }
+    ],
+    "4.11 Write property-based tests for `Wallet` (Properties 5–7)": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795838006728
+      }
+    ],
+    "5.6 Write property-based tests for `BettingMatch` state machine (Property 4) and `RewardPolicy` (Property 9)": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795838007482
+      }
+    ],
+    "8.5 Write property-based tests for `EloRating` (Property 8) and `UserHero` level cap (Property 10)": [
+      {
+        "executionId": "25731d2b-ff07-490f-b2be-5367d1d60a5c",
+        "chatSessionId": "sess_6be5815f-67ca-47f7-a598-39c86539c01b",
+        "timestamp": 1795838007966
+      }
+    ]
+  }
+}

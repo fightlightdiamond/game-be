@@ -1,116 +1,45 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { DataSource } from 'typeorm';
-import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RedisModule } from 'nestjs-redis';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { typeormConfigAsync } from './config/typeorm.config';
+
+// Shared infrastructure
+import { DatabaseModule } from './shared/infrastructure/database/database.module';
+import { QueueModule } from './shared/infrastructure/queue/queue.module';
+import { SharedRedisModule } from './shared/infrastructure/redis/redis.module';
+import { SocketModule } from './shared/infrastructure/socket/socket.module';
+
+// Feature modules
+import { IdentityModule } from './modules/identity/identity.module';
+import { HeroCatalogModule } from './modules/hero-catalog/hero-catalog.module';
+import { CombatModule } from './modules/combat/combat.module';
+import { HouseBettingModule } from './modules/betting/house-betting.module';
+import { RankingModule } from './modules/ranking/ranking.module';
+import { LedgerModule } from './modules/ledger/ledger.module';
+
+// Config
 import GraphqlConfig from './config/graphql.config';
-import { TypeormModule } from './core/typeorm/typeorm.module';
-import { UserRepository } from './app/user/user.repository';
-import { UserService } from './app/user/user.service';
-import { ConfirmEmailService } from './app/user/email/confirm-email.service';
-import { jwtConfigAsync } from './config/jwt.config';
-import { AuthTokenRepository } from './app/auth/auth-token/auth-token.repository';
-import { AuthService } from './app/auth/auth.service';
-import { JwtAuthGuard } from './app/auth/guards/jwt.strategy.guard';
-import { JwtGuard } from './app/auth/guards/jwt.guard';
-import { RolesGuard } from './app/auth/guards/roles.guard';
-import { AuthTokenService } from './app/auth/auth-token/auth-token.service';
-import { GqlAuthGuard } from './app/auth/guards/gql-auth.guard';
-import { AuthController } from './app/auth/auth.controller';
-import { AuthResolver } from './app/auth/auth.resolver';
-import { HeroRepository } from './app/hero/hero.repository';
-import { AddressRepository } from './app/user/address/address.repository';
-import { MatchController } from './app/match/match.controller';
-import { MatchRepository } from './app/match/match.repository';
-import { MatchService } from './app/match/match.service';
-import { HeroEntity } from './migrations/entities/hero.entity';
-import { BetController } from './app/bet/bet.controller';
-import { BetService } from './app/bet/bet.service';
-import { BetRepository } from './app/bet/bet.repository';
-import { UserHeroRepository } from './app/user-hero/user-hero.repository';
-import { UserHeroController } from './app/user-hero/user-hero.controller';
-import { UserHeroService } from './app/user-hero/user-hero.service';
-import { queueConfigAsync } from './config/queue.config';
-import { MatchEntity } from './migrations/entities/match.entity';
-import { BetEntity } from './migrations/entities/bet.entity';
-import { UserEntity } from './migrations/entities/user.entity';
-import { MatchExistsRule } from './common/rules/match-exists.rule';
-import { HeroExistsRule } from './common/rules/hero-exists.rule';
-import { UserExistsRule } from './common/rules/user-exists.rule';
-import { PreMatchCron } from './app/match/pre-match.cron';
-import { FightingService } from './app/match/fighting.service';
-import { BetConsumer } from './app/bet/bet.consumer';
-import { RewardService } from './app/reward/reward.service';
-import { StatisticMatchController } from './app/match/statistic-match.controller';
-import { ChartsService } from './app/charts/charts.service';
-import { ChartsController } from './app/charts/charts.controller';
-import { HeroController } from './app/hero/hero.controller';
-import { HeroService } from './app/hero/hero.service';
-import { MasterController } from './master/master.controller';
-import { MasterService } from './master/master.service';
-import { RoundController } from './app/round/round.controller';
-import { TreeController } from './app/tree/tree.controller';
-import { TreeRepository } from './app/tree/tree.repository';
-import { TreeEntity } from './migrations/entities/tree.entity';
-import { TreeService } from './app/tree/tree.service';
-import { RoundService } from './app/round/round.service';
-import { EloMatchService } from './app/elo-match/elo-match.service';
-import { redisConfigAsync } from './config/redis.config';
-import { EloMatchController } from './app/elo-match/elo-match.controller';
-import { UserHeroExistsRule } from './common/rules/user-hero-exists.rule';
-import { UserGemController } from './app/user-gem/user-gem.controller';
-import { UserGemService } from './app/user-gem/user-gem.service';
-import { GemIdsUniqueRule } from './common/rules/gem-ids-unique.rule';
-import { EloMatchRepository } from './app/elo-match/elo-match.repository';
-import { UserGemRepository } from './app/user-gem/user-gem.repository';
-import { UserGemEntity } from './migrations/entities/user-gem.entity';
-import { IsKeyValueValidate } from './core/validator/iskeyvalue-validator';
-import { EmailExistsRule } from './common/rules/email-exists.rule';
-import { AutoBetService } from './app/auto-bet/auto-bet.service';
-import { AutoBetController } from './app/auto-bet/auto-bet.controller';
-import { AutoBetRepository } from './app/auto-bet/auto-bet.repository';
-import { RedisController } from './redis/redis.controller';
 
 @Module({
   imports: [
+    // Global config
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
-    //Cron
+    // Scheduling
     ScheduleModule.forRoot(),
-    //Queue
-    BullModule.forRootAsync(queueConfigAsync),
-    BullModule.registerQueue({
-      name: 'socket.io',
-    }),
-    BullModule.registerQueue({
-      name: 'bet',
-    }),
-    // Cache
-    CacheModule.register(),
-    //Event
+    // Cache (used by GetCurrentHouseMatchQuery via Redis cache)
+    CacheModule.register({ isGlobal: true }),
+    // Event emitter (required for @nestjs/cqrs EventBus integration)
     EventEmitterModule.forRoot(),
-    // Mysql
-    TypeOrmModule.forRootAsync(typeormConfigAsync),
-    // Authentication
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync(jwtConfigAsync),
-    //Graph QL
+    // GraphQL (keep same config as before)
     GraphQLModule.forRoot<ApolloDriverConfig>(GraphqlConfig.getConfig()),
-    // Mail
+    // Mail (keep for email verification feature)
     MailerModule.forRoot({
       transport: {
         host: 'localhost',
@@ -122,110 +51,27 @@ import { RedisController } from './redis/redis.controller';
           pass: process.env.MAILDEV_INCOMING_PASS ?? 'MAILDEV_INCOMING_PASS',
         },
       },
-      defaults: {
-        from: '"nest-modules" <modules@nestjs.com>',
-      },
+      defaults: { from: '"nest-modules" <modules@nestjs.com>' },
       template: {
         dir: __dirname + '/templates',
         adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        },
+        options: { strict: true },
       },
     }),
-    TypeormModule.forCustomRepository([
-      AddressRepository,
-      AuthTokenRepository,
-      BetRepository,
-      UserRepository,
-      HeroRepository,
-      MatchRepository,
-      UserHeroRepository,
-      TreeRepository,
-      EloMatchRepository,
-      UserGemRepository,
-      AutoBetRepository,
-    ]),
-    TypeOrmModule.forFeature([
-      HeroEntity,
-      MatchEntity,
-      BetEntity,
-      UserEntity,
-      UserGemEntity,
-      TreeEntity,
-    ]),
-    //Redis
-    RedisModule.forRootAsync(redisConfigAsync),
+    // Shared infrastructure
+    DatabaseModule,
+    QueueModule,
+    SharedRedisModule,
+    SocketModule,
+    // Feature bounded contexts
+    IdentityModule,
+    LedgerModule,
+    HeroCatalogModule,
+    CombatModule,
+    HouseBettingModule,
+    RankingModule,
   ],
-  controllers: [
-    AppController,
-    AuthController,
-    BetController,
-    ChartsController,
-    MatchController,
-    StatisticMatchController,
-    UserHeroController,
-    HeroController,
-    TreeController,
-    MasterController,
-    RoundController,
-    EloMatchController,
-    UserGemController,
-    AutoBetController,
-    RedisController,
-  ],
-  providers: [
-    AppService,
-    ConfirmEmailService,
-    UserService,
-
-    // Auth
-    JwtService,
-    AuthService,
-    JwtAuthGuard,
-    // LocalStrategy,
-    JwtGuard,
-    RolesGuard,
-    AuthTokenService,
-    GqlAuthGuard,
-    AuthResolver,
-    MatchService,
-
-    BetService,
-    UserHeroService,
-
-    //Cron
-    PreMatchCron,
-
-    //Bet
-    FightingService,
-    RewardService,
-
-    //Consumer
-    BetConsumer,
-
-    //Validate
-    MatchExistsRule,
-    HeroExistsRule,
-    UserExistsRule,
-    GemIdsUniqueRule,
-    UserHeroExistsRule,
-    IsKeyValueValidate,
-    EmailExistsRule,
-    ChartsService,
-    HeroService,
-    TreeService,
-
-    MasterService,
-    RoundService,
-    EloMatchService,
-
-    UserGemService,
-
-    AutoBetService,
-  ],
-  exports: [MatchService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) {}
-}
+export class AppModule {}
