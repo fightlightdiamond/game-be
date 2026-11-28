@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-// eslint-disable-next-line import/no-unresolved
-import { RoleEnum } from '../../../domain/enums/role.enum';
+import { RoleEnum } from '../../domain/enums/role.enum';
 
 export const ROLES_KEY = 'roles';
 
