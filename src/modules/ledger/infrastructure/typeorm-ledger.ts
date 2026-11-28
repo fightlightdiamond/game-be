@@ -6,16 +6,17 @@ import {
   MissingBalanceException,
 } from '../domain/insufficient-balance.exception';
 
-const DEBIT_SQL =
+export const DEBIT_BALANCE_SQL =
   'UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?';
-const CREDIT_SQL = 'UPDATE users SET balance = balance + ? WHERE id = ?';
+export const CREDIT_BALANCE_SQL =
+  'UPDATE users SET balance = balance + ? WHERE id = ?';
 
 @Injectable()
 export class TypeOrmLedger implements Ledger {
   constructor(private readonly dataSource: DataSource) {}
 
   async debit(accountId: number, amount: number): Promise<void> {
-    const raw = await this.dataSource.query(DEBIT_SQL, [
+    const raw = await this.dataSource.query(DEBIT_BALANCE_SQL, [
       amount,
       accountId,
       amount,
@@ -26,14 +27,17 @@ export class TypeOrmLedger implements Ledger {
   }
 
   async credit(accountId: number, amount: number): Promise<void> {
-    const raw = await this.dataSource.query(CREDIT_SQL, [amount, accountId]);
+    const raw = await this.dataSource.query(CREDIT_BALANCE_SQL, [
+      amount,
+      accountId,
+    ]);
     if (affectedRows(raw) === 0) {
       throw new MissingBalanceException(accountId);
     }
   }
 }
 
-function affectedRows(raw: unknown): number {
+export function affectedRows(raw: unknown): number {
   if (raw && typeof raw === 'object' && 'affectedRows' in raw) {
     return Number((raw as { affectedRows: number }).affectedRows);
   }

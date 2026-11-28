@@ -1,9 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import {
-  BETTING_MATCH_REPOSITORY,
-  IBettingMatchRepository,
-} from '../../../domain/repositories/betting-match.repository.interface';
+  HOUSE_MATCH_REPOSITORY,
+  HouseMatchRepository,
+} from '../../../domain/repositories/house-match.repository';
 import { GetMatchStatisticsQuery } from './get-match-statistics.query';
 
 @QueryHandler(GetMatchStatisticsQuery)
@@ -12,8 +12,8 @@ export class GetMatchStatisticsHandler
     IQueryHandler<GetMatchStatisticsQuery, Array<Record<string, unknown>>>
 {
   constructor(
-    @Inject(BETTING_MATCH_REPOSITORY)
-    private readonly repo: IBettingMatchRepository,
+    @Inject(HOUSE_MATCH_REPOSITORY)
+    private readonly repo: HouseMatchRepository,
   ) {}
 
   async execute(

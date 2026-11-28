@@ -16,7 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { PlaceBetCommand } from '../../application/commands/place-bet/place-bet.command';
+import { PlaceStakeCommand } from '../../application/commands/place-stake/place-stake.command';
 import { GetBetByUserAndMatchQuery } from '../../application/queries/get-bet-by-user-and-match/get-bet-by-user-and-match.query';
 import { JwtGuard } from '../../../identity/infrastructure/auth/jwt.guard';
 import { PlaceBetDto } from './dto/place-bet.dto';
@@ -38,7 +38,7 @@ export class BetController {
   async placeBet(@Request() req, @Body() body: PlaceBetDto) {
     const userId: number = req.user.id;
     return this.commandBus.execute(
-      new PlaceBetCommand(userId, body.match_id, body.hero_id, body.balance),
+      new PlaceStakeCommand(userId, body.match_id, body.hero_id, body.balance),
     );
   }
 
