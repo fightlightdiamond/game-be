@@ -8,16 +8,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountOrmEntity } from '../../modules/identity/infrastructure/persistence/typeorm/account.orm-entity';
 
-@ValidatorConstraint({ name: 'UserExists', async: true })
+@ValidatorConstraint({ name: 'EmailExists', async: true })
 @Injectable()
 export class EmailExistsRule implements ValidatorConstraintInterface {
   constructor(
     @InjectRepository(AccountOrmEntity)
-    private usersRepository: Repository<AccountOrmEntity>,
+    private accounts: Repository<AccountOrmEntity>,
   ) {}
 
   async validate(value: string) {
-    return !(await this.usersRepository.findOneBy({ email: value }));
+    return !(await this.accounts.findOneBy({ email: value }));
   }
 
   defaultMessage(args: ValidationArguments) {

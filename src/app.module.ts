@@ -17,7 +17,7 @@ import { SocketModule } from './shared/infrastructure/socket/socket.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { HeroCatalogModule } from './modules/hero-catalog/hero-catalog.module';
 import { CombatModule } from './modules/combat/combat.module';
-import { BettingModule } from './modules/betting/betting.module';
+import { HouseBettingModule } from './modules/betting/house-betting.module';
 import { RankingModule } from './modules/ranking/ranking.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
 
@@ -33,7 +33,7 @@ import GraphqlConfig from './config/graphql.config';
     }),
     // Scheduling
     ScheduleModule.forRoot(),
-    // Cache (used by GetCurrentMatchQuery via Redis cache)
+    // Cache (used by GetCurrentHouseMatchQuery via Redis cache)
     CacheModule.register({ isGlobal: true }),
     // Event emitter (required for @nestjs/cqrs EventBus integration)
     EventEmitterModule.forRoot(),
@@ -68,7 +68,7 @@ import GraphqlConfig from './config/graphql.config';
     LedgerModule,
     HeroCatalogModule,
     CombatModule,
-    BettingModule,
+    HouseBettingModule,
     RankingModule,
   ],
   controllers: [],

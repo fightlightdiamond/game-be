@@ -1,7 +1,7 @@
 export class AllocatePointsCommand {
   constructor(
-    public readonly userHeroId: number,
-    public readonly userId: number,
+    public readonly ownedHeroId: number,
+    public readonly accountId: number,
     public readonly atkPoint: number,
     public readonly defPoint: number,
     public readonly hpPoint: number,

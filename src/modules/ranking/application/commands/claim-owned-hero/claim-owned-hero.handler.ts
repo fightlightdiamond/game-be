@@ -4,9 +4,9 @@ import { GetHeroQuery } from '../../../../hero-catalog/application/queries/get-h
 import { Hero } from '../../../../hero-catalog/domain/hero';
 import { OwnedHero } from '../../../domain/owned-hero';
 import {
-  IUserHeroRepository,
-  USER_HERO_REPOSITORY,
-} from '../../../domain/repositories/user-hero.repository.interface';
+  OwnedHeroRepository,
+  OWNED_HERO_REPOSITORY,
+} from '../../../domain/repositories/owned-hero.repository';
 import { ClaimOwnedHeroCommand } from './claim-owned-hero.command';
 
 @CommandHandler(ClaimOwnedHeroCommand)
@@ -14,13 +14,13 @@ export class ClaimOwnedHeroHandler
   implements ICommandHandler<ClaimOwnedHeroCommand>
 {
   constructor(
-    @Inject(USER_HERO_REPOSITORY)
-    private readonly heroes: IUserHeroRepository,
+    @Inject(OWNED_HERO_REPOSITORY)
+    private readonly heroes: OwnedHeroRepository,
     private readonly queryBus: QueryBus,
   ) {}
 
   async execute(command: ClaimOwnedHeroCommand): Promise<OwnedHero> {
-    const existing = await this.heroes.findByUserId(command.accountId);
+    const existing = await this.heroes.findByAccountId(command.accountId);
     const hero = await this.queryBus.execute<GetHeroQuery, Hero | null>(
       new GetHeroQuery(command.heroId),
     );

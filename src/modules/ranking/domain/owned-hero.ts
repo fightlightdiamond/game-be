@@ -106,10 +106,6 @@ export class OwnedHero {
     );
   }
 
-  get userId(): number {
-    return this.accountId;
-  }
-
   get level(): number {
     return this.levelValue;
   }

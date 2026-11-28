@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import {
-  USER_HERO_REPOSITORY,
-  IUserHeroRepository,
-} from '../../../domain/repositories/user-hero.repository.interface';
+  OWNED_HERO_REPOSITORY,
+  OwnedHeroRepository,
+} from '../../../domain/repositories/owned-hero.repository';
 import { OwnedHero } from '../../../domain/owned-hero';
 import { AllocatePointsCommand } from './allocate-points.command';
 
@@ -12,22 +12,21 @@ export class AllocatePointsHandler
   implements ICommandHandler<AllocatePointsCommand>
 {
   constructor(
-    @Inject(USER_HERO_REPOSITORY)
-    private readonly userHeroRepo: IUserHeroRepository,
+    @Inject(OWNED_HERO_REPOSITORY)
+    private readonly ownedHeroes: OwnedHeroRepository,
   ) {}
 
   async execute(command: AllocatePointsCommand): Promise<OwnedHero> {
-    // 1. Load UserHero by id and verify userId matches
-    const userHero = await this.userHeroRepo.findById(command.userHeroId);
-    if (!userHero) {
-      throw new HttpException('UserHero not found', HttpStatus.NOT_FOUND);
+    const hero = await this.ownedHeroes.findById(command.ownedHeroId);
+    if (!hero) {
+      throw new HttpException('Owned hero not found', HttpStatus.NOT_FOUND);
     }
-    if (userHero.userId !== command.userId) {
+    if (hero.accountId !== command.accountId) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
     // 2. Allocate points — may throw ExceedsLevelCapException
-    userHero.allocatePoints(
+    hero.allocatePoints(
       command.atkPoint,
       command.defPoint,
       command.hpPoint,
@@ -35,7 +34,6 @@ export class AllocatePointsHandler
       command.critRatePoint,
     );
 
-    // 3. Save and return
-    return this.userHeroRepo.save(userHero);
+    return this.ownedHeroes.save(hero);
   }
 }

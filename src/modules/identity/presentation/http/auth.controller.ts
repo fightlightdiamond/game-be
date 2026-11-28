@@ -14,9 +14,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { RegisterUserCommand } from '../../application/commands/register-user/register-user.command';
+import { RegisterAccountCommand } from '../../application/commands/register-account/register-account.command';
 import { LoginCommand } from '../../application/commands/login/login.command';
-import { GetUserQuery } from '../../application/queries/get-user/get-user.query';
+import { GetAccountQuery } from '../../application/queries/get-account/get-account.query';
 import { JwtGuard } from '../../infrastructure/auth/jwt.guard';
 
 @ApiTags('auth')
@@ -31,7 +31,7 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'User registered successfully.' })
   async register(@Body() body: { email: string; password: string }) {
     return this.commandBus.execute(
-      new RegisterUserCommand(body.email, body.password),
+      new RegisterAccountCommand(body.email, body.password),
     );
   }
 
@@ -48,6 +48,6 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Profile successfully.' })
   @Get('profile')
   async getProfile(@Request() req) {
-    return this.queryBus.execute(new GetUserQuery(req.user.id));
+    return this.queryBus.execute(new GetAccountQuery(req.user.id));
   }
 }

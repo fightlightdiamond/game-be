@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CommandBus } from '@nestjs/cqrs';
 import { LoginCommand } from '../../application/commands/login/login.command';
-import { RegisterUserCommand } from '../../application/commands/register-user/register-user.command';
+import { RegisterAccountCommand } from '../../application/commands/register-account/register-account.command';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -28,7 +28,7 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') password: string,
   ): Promise<string> {
-    await this.commandBus.execute(new RegisterUserCommand(email, password));
+    await this.commandBus.execute(new RegisterAccountCommand(email, password));
     return 'registered';
   }
 }

@@ -229,7 +229,7 @@ The following in `src/modules` break this map. Change the code. Do not change th
 | Debit commits, then the stake insert commits. Settlement sets `END`, then credits one by one | A failed insert loses money. A retried job cannot pay | One transaction. Settlement is idempotent |
 | A money write saves the whole account row | Every money write can clear a profile column | The ledger updates `accounts.balance` only |
 | Betting dispatches an Identity command and plans to dispatch `AddGem` | The customer depends on the supplier's module, and betting would import roster | Ledger port. `RewardsPaid` for gems |
-| `findByUserId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
+| `findByAccountId(): OwnedHero \| null` | One account has one owned hero. Returning one matches the rule | Keep a single owned hero. `claim` refuses a second |
 | `CombatEngine` is `@Injectable` and calls `Math.random` | Combat is not replayable and it depends on Nest | A `RandomSource` port. The formulas are the original loop in [concepts.md](./concepts.md), not the port that dropped max health |
 
 Gems stay inside roster and wake up on an event. Do not fold them into Ranking to keep a four-module diagram.

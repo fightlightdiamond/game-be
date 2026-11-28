@@ -11,16 +11,16 @@ import { ACCOUNT_REPOSITORY } from './domain/repositories/account.repository';
 import { CLOCK, SystemClock } from './domain/clock';
 import { GRANTED_DAY } from './domain/granted-day';
 import { AccountOrmEntity } from './infrastructure/persistence/typeorm/account.orm-entity';
-import { TypeOrmUserRepository } from './infrastructure/persistence/typeorm/user.repository';
+import { TypeOrmAccountRepository } from './infrastructure/persistence/typeorm/account.repository';
 import { PasswordHasher } from './infrastructure/auth/password-hasher';
 import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
 import { OpenBalance } from './infrastructure/open-balance';
 import { RedisGrantedDay } from './infrastructure/redis-granted-day';
 
-import { RegisterUserHandler } from './application/commands/register-user/register-user.handler';
+import { RegisterAccountHandler } from './application/commands/register-account/register-account.handler';
 import { LoginHandler } from './application/commands/login/login.handler';
-import { GetUserHandler } from './application/queries/get-user/get-user.handler';
-import { GetUserByEmailHandler } from './application/queries/get-user-by-email/get-user-by-email.handler';
+import { GetAccountHandler } from './application/queries/get-account/get-account.handler';
+import { GetAccountByEmailHandler } from './application/queries/get-account-by-email/get-account-by-email.handler';
 
 import { AuthController } from './presentation/http/auth.controller';
 
@@ -36,15 +36,15 @@ import { AuthController } from './presentation/http/auth.controller';
   ],
   controllers: [AuthController],
   providers: [
-    RegisterUserHandler,
+    RegisterAccountHandler,
     LoginHandler,
-    GetUserHandler,
-    GetUserByEmailHandler,
+    GetAccountHandler,
+    GetAccountByEmailHandler,
     PasswordHasher,
     JwtStrategy,
     OpenBalance,
-    TypeOrmUserRepository,
-    { provide: ACCOUNT_REPOSITORY, useClass: TypeOrmUserRepository },
+    TypeOrmAccountRepository,
+    { provide: ACCOUNT_REPOSITORY, useClass: TypeOrmAccountRepository },
     { provide: CLOCK, useClass: SystemClock },
     { provide: GRANTED_DAY, useClass: RedisGrantedDay },
   ],

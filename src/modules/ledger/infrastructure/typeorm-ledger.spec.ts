@@ -13,7 +13,7 @@ type UserRow = {
  * Applies the statement the ledger sends. Each call finishes before the next
  * starts, which is the row lock MySQL takes for one UPDATE.
  */
-class UsersTable {
+class AccountsTable {
   calls: string[] = [];
   private tail: Promise<unknown> = Promise.resolve();
 
@@ -68,13 +68,13 @@ class UsersTable {
   }
 }
 
-function ledgerFor(table: UsersTable): TypeOrmLedger {
+function ledgerFor(table: AccountsTable): TypeOrmLedger {
   return new TypeOrmLedger({ query: table.query } as unknown as DataSource);
 }
 
 describe('TypeOrmLedger', () => {
   it('lets one of two concurrent debits through and leaves the balance non-negative', async () => {
-    const table = new UsersTable([
+    const table = new AccountsTable([
       {
         id: 1,
         balance: 100,
@@ -104,7 +104,7 @@ describe('TypeOrmLedger', () => {
   });
 
   it('writes balance only, so a credit leaves profile columns unchanged', async () => {
-    const table = new UsersTable([
+    const table = new AccountsTable([
       {
         id: 1,
         balance: 40,
@@ -130,7 +130,7 @@ describe('TypeOrmLedger', () => {
   });
 
   it('changes no row when the debit is greater than the balance', async () => {
-    const table = new UsersTable([
+    const table = new AccountsTable([
       {
         id: 1,
         balance: 10,

@@ -6,30 +6,29 @@ import { CombatEngine } from '../../../../combat/domain/combat-engine';
 import { Challenge } from '../../../domain/challenge';
 import { nextElo } from '../../../domain/elo';
 import {
-  ELO_MATCH_REPOSITORY,
-  IEloMatchRepository,
-} from '../../../domain/repositories/elo-match.repository.interface';
+  CHALLENGE_REPOSITORY,
+  ChallengeRepository,
+} from '../../../domain/repositories/challenge.repository';
 import {
-  USER_HERO_REPOSITORY,
-  IUserHeroRepository,
-} from '../../../domain/repositories/user-hero.repository.interface';
+  OWNED_HERO_REPOSITORY,
+  OwnedHeroRepository,
+} from '../../../domain/repositories/owned-hero.repository';
 import { ChallengeCommand } from './challenge.command';
 import { freezeOwned } from './freeze-fighter';
 
 @CommandHandler(ChallengeCommand)
 export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
   constructor(
-    @Inject(USER_HERO_REPOSITORY)
-    private readonly userHeroRepo: IUserHeroRepository,
-    @Inject(ELO_MATCH_REPOSITORY)
-    private readonly eloMatchRepo: IEloMatchRepository,
+    @Inject(OWNED_HERO_REPOSITORY)
+    private readonly ownedHeroes: OwnedHeroRepository,
+    @Inject(CHALLENGE_REPOSITORY)
+    private readonly challenges: ChallengeRepository,
     private readonly combatEngine: CombatEngine,
     private readonly queryBus: QueryBus,
   ) {}
 
   async execute(command: ChallengeCommand): Promise<Challenge> {
-    // 1. Load challenger's UserHero
-    const home = await this.userHeroRepo.findByUserId(command.userId);
+    const home = await this.ownedHeroes.findByAccountId(command.accountId);
     if (!home) {
       throw new HttpException(
         'Challenger hero not found',
@@ -37,8 +36,7 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       );
     }
 
-    // 2. Load competitor's UserHero
-    const away = await this.userHeroRepo.findById(command.competitorId);
+    const away = await this.ownedHeroes.findById(command.competitorId);
     if (!away) {
       throw new HttpException(
         'Competitor hero not found',
@@ -57,10 +55,9 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
     home.setElo(nextElo(home.elo, away.elo, homeOutcome));
     away.setElo(nextElo(away.elo, home.elo, awayOutcome));
 
-    await this.userHeroRepo.save(home);
-    await this.userHeroRepo.save(away);
+    await this.ownedHeroes.save(home);
+    await this.ownedHeroes.save(away);
 
-    // 9. Build heroInfo and plain turns, then persist EloMatch
     const heroInfo = [
       { id: home.id, heroId: home.heroId },
       { id: away.id, heroId: away.heroId },
@@ -84,10 +81,10 @@ export class ChallengeHandler implements ICommandHandler<ChallengeCommand> {
       result.turnNumber,
       result.winnerId,
       result.loserId,
-      command.userId,
+      command.accountId,
     );
 
-    return this.eloMatchRepo.save(challenge);
+    return this.challenges.save(challenge);
   }
 
   private async catalogHero(heroId: number): Promise<Hero> {

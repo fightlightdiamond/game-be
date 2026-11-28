@@ -7,12 +7,12 @@ import { AccountOrmEntity } from '../../modules/identity/infrastructure/persiste
 export class EmailExistsPipe implements PipeTransform {
   constructor(
     @InjectRepository(AccountOrmEntity)
-    private userRepository: Repository<AccountOrmEntity>,
+    private accounts: Repository<AccountOrmEntity>,
   ) {}
 
   async transform(value: string) {
     try {
-      await this.userRepository.findOneByOrFail({ email: value });
+      await this.accounts.findOneByOrFail({ email: value });
     } catch (e) {
       throw new BadRequestException('User not found');
     }
