@@ -36,8 +36,6 @@ These sentences are the language in use. A class model that cannot be read back 
 
 **Roster.** An account claims one catalog hero. It allocates points up to that hero's level, and it levels that hero up by paying the fee. It challenges another account's owned hero. Both Elo numbers change. A gem may drop after a winning stake is paid. The account may spend stored gems to level a gem up. A gem does not change stats.
 
-**Garden.** An account plants a tree and pays the plant cost. Later it harvests. Another account raids the tree. A raid is not a stake.
-
 **Money.** The ledger debits or credits the balance of an account id. It does not know why. The first login of the day in `Asia/Ho_Chi_Minh` credits 100 once.
 
 ## Combat
@@ -105,19 +103,6 @@ An event is a fact in the past tense. Notification may emit it. Notification doe
 | `drop` | Verb | After a winning stake is credited, a roll from 1 to 100 adds a level-1 gem when the roll is at most 5 | `grantGem`. Do not call this `settle` |
 | `levelUpGem` | Verb | Spend stored gems of one type and level for a chance at the next level | `attach` |
 
-## Garden
-
-| Word | Kind | Say this | Do not say |
-|---|---|---|---|
-| `Tree` | Noun | A planting of one account. An account may have more than one | `Plot` |
-| `Growing` | State | The tree is in the ground | status `0` |
-| `Raided` | State | Another account has ended the tree | status `1`, `robbed` |
-| `Harvested` | State | The owner has taken the tree | status `2`. Do not store a harvest as a raid |
-| `plant` | Verb | Start a tree when the balance is greater than 0. Debit 1% of the balance. That amount is `plantCost` | `startingValue`. Once a day |
-| `plantCost` | Noun | The amount debited at `plant` | `startingValue` |
-| `harvest` | Verb | The owner takes the tree and is credited `floor(minutesHeld / 10) × plantCost`. Ten minutes returns `plantCost`. There is no cap | |
-| `raid` | Verb | Another account ends the tree, is recorded as the raider, and the tree becomes `Raided`. No money moves | `rob`, `placeStake`, `simulate` |
-
 ## Ledger
 
 | Word | Kind | Say this | Do not say |
@@ -126,7 +111,7 @@ An event is a fact in the past tense. Notification may emit it. Notification doe
 | `debit` | Verb | Subtract an amount. Fails when the amount is greater than the balance | `deduct` as a second word. Do not load the account and write it back |
 | `credit` | Verb | Add an amount | `reward` |
 
-The ledger does not know a match, a day, a tree, or a login. The caller decides the amount: `amount × 2`, `plantCost`, the level-up fee, or 100.
+The ledger does not know a match, a day, or a login. The caller decides the amount: `amount × 2`, the level-up fee, or 100.
 
 ## Login grant
 
@@ -151,7 +136,7 @@ When the current code uses the word on the left, the language uses the words on 
 | Current word | Split into |
 |---|---|
 | `Hero` | `Hero` in the catalog, `OwnedHero` in roster, `Fighter` in combat |
-| `Match` | `HouseMatch`, `Challenge`, or `raid` |
+| `Match` | `HouseMatch` or `Challenge` |
 | `balance` | `Balance` on the ledger, `amount` on a stake |
 | `User` | `Account`, plus a `Balance` keyed by `AccountId` |
 | `Reward` | `settle`, then the event `RewardsPaid`, then `drop` |
@@ -162,7 +147,6 @@ When the current code uses the word on the left, the language uses the words on 
 Do not add a class for these. The sentences that were considered, and the reason they are out, are in [concepts.md](./concepts.md).
 
 - `available_balance`, `user_settings`, `auto_settings`
-- A raid that is a fight, and a plant limited to once a day
 - `attach` as a gem action
 - `Synthia` as a trait
 

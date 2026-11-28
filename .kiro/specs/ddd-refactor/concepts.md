@@ -92,20 +92,9 @@ Supporting domain. Customer of Combat for a challenge. Listens to `RewardsPaid`.
 | `allocatePoints` | Verb | Set the point split on an `OwnedHero` | Rejected when the sum exceeds level. Then attack is `1000 × (1 + 0.01 × atk points)`, defense is `round(200 × (1 + 0.023 × def points))`, health is `10000 × (1 + 0.0138 × hp points)`, speed is `200 × (1 + 0.01 × spd points)`, and crit rate is `20 + round(0.25 × crit rate points)` | |
 | `levelUp` | Verb | Pay the fee, then increase level by 1 | The fee is `2^(currentLevel + 1)` | The legacy write that persists `currentLevel + 2` |
 
-## Garden
-
-Supporting domain. A raid is not a fight, so garden is not a customer of Combat.
-
-| Name | Kind | Definition | Rules | Do not say |
-|---|---|---|---|---|
-| `Tree` | Concept | A planting of one account | States the player can see: `Growing`, `Raided`, `Harvested`. An account is not limited to one tree. The column comment that uses `0`, `1`, and `2` is legacy. Harvest is `Harvested`. The legacy write that stores harvest as `1` is a bug | `Plot` |
-| `plant` | Verb | Start a tree when the balance is greater than 0 | Debits 1% of the balance. That amount is `plantCost`. There is no once-a-day limit | `startingValue` |
-| `harvest` | Verb | The owner takes the tree | Credits `floor(minutesHeld / 10) × plantCost`. Ten minutes returns `plantCost`. There is no cap | |
-| `raid` | Verb | Another account ends the tree | Records the raider and sets the tree `Raided`. It does not take money and it does not call `simulate` | `rob` |
-
 ## Ledger
 
-Generic domain. Knows amounts. Does not know matches, days, trees, or logins.
+Generic domain. Knows amounts. Does not know matches, days, or logins.
 
 | Name | Kind | Definition | Rules | Do not say |
 |---|---|---|---|---|
@@ -113,7 +102,7 @@ Generic domain. Knows amounts. Does not know matches, days, trees, or logins.
 | `debit` | Verb | Subtract an amount | One conditional update. Do not load the user row and write it back | |
 | `credit` | Verb | Add an amount | Same write rule as `debit` | |
 
-Payout `× 2`, `plantCost`, the level-up fee, and the daily 100 are decided by the caller. The ledger receives the amount.
+Payout `× 2`, the level-up fee, and the daily 100 are decided by the caller. The ledger receives the amount.
 
 ## Login grant
 
@@ -146,16 +135,6 @@ Use this when replacing names in new code. Leave the physical column names until
 | `BetStatus`, `PENDING`, `BETTING`, `FIGHTING`, `END` | `Open`, `Revealed`, `Settled` |
 | `users.balance` | `Balance` |
 | `users` as a login row | `Account` |
-| `Tree`, `tree` | `Tree` |
-| `startingValue` | `plantCost` |
-| `rob` | `raid` |
 | `RewardService` doing settle and gem drop together | `settle`, then `RewardsPaid`, then `drop` |
 | `bet_percentage` | `AutoStake.stakeAmount` |
 | `available_balance`, `user_settings`, `auto_settings` | No concept. Do not copy `balance` into `available_balance` |
-
-## Not in this product
-
-These sentences were considered and rejected. They are not concepts.
-
-- A raid that fights for 1% of the opponent's money.
-- Planting limited to once a day.

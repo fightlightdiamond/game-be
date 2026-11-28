@@ -6,9 +6,9 @@ Each step finishes before the next one starts. A step is finished when its domai
 
 ## Held fixed
 
-- Column names stay. Mappers translate `bets.balance` to `amount`, `users.balance` to `Balance`, `matches.status` numbers to `Open`, `Revealed`, and `Settled`, and `startingValue` to `plantCost`.
+- Column names stay. Mappers translate `bets.balance` to `amount`, `users.balance` to `Balance`, and `matches.status` numbers to `Open`, `Revealed`, and `Settled`.
 - A domain type does not import `@nestjs/*`, `bcrypt`, `bull`, or `typeorm`.
-- House betting does not import roster, account, or garden. It calls a ledger port. Gems wake up on `RewardsPaid`.
+- House betting does not import roster or account. It calls a ledger port. Gems wake up on `RewardsPaid`.
 - `available_balance`, `user_settings`, and `auto_settings` are not built. The ledger mapper does not write `available_balance`.
 - HTTP paths may stay. The controller translates them into the verbs below. The domain method is not named after the old path.
 
@@ -69,14 +69,13 @@ One owned hero, the real stat formulas, and gems after the payout.
 
 Done when a second claim is refused, a level-up from level 0 persists level 1, and a gem drop does not run inside `settle`.
 
-## 6. Garden and auto-stake
+## 6. Auto-stake
 
-Both wait until the ledger and the house match exist.
+It waits until the ledger and the house match exist.
 
-- New garden module. `plant` debits 1% when the balance is greater than 0 and stores that amount as `plantCost`. `harvest` credits `floor(minutesHeld / 10) × plantCost` and stores `Harvested`. `raid` records the raider, stores `Raided`, and does not call `simulate` or move money.
 - `AutoStake` lives in house betting. One set per account, pairs written `lowerId|higherId` from catalog ids. `stakeAmount` is the absolute amount in the `bet_percentage` column. On `BettingOpened`, each enabled row for that pair places a stake. The pair is not built from winner and loser.
 
-Done when a harvest is not stored with the raid status, and an auto-stake for a hidden match still resolves the two catalog ids.
+Done when an auto-stake for a hidden match still resolves the two catalog ids.
 
 ## 7. Account and notification
 
@@ -90,4 +89,4 @@ Done when a second login on the same day does not credit, and a socket handler d
 
 ## Leave in place
 
-Do not add a `MatchType` that folds a challenge or a raid into `HouseMatch`. Do not delete a mapper's column until the step that owns that table has shipped.
+Do not add a `MatchType` that folds a challenge into `HouseMatch`. Do not delete a mapper's column until the step that owns that table has shipped.
