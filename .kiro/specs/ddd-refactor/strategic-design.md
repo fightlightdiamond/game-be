@@ -27,51 +27,58 @@ Described in the README, with no working model:
 
 ## 2. Domain and subdomains
 
-Invest by how much the subdomain differentiates the product, not by how many tables it has.
+A domain is one slice of the business, plus the concepts of that slice, plus the rules attached to those concepts. A rule is an invariant, a formula, or a legal state transition. A concept that receives no rule is data, not a domain.
 
-### Core Domain
+Identify a domain in this order: choose one business slice, name its concepts, attach rules to those concepts.
 
-**The house betting match** is the product. Pair templates, hide the result, open the window, take stakes, reveal the fight, settle. The model must enforce:
+Invest by how much the rules differentiate the product, not by how many tables the slice has.
 
-- One stake per account per match.
-- A stake is accepted only while the window is open.
-- The stake's money is a `Stake.amount`, not a balance.
-- Settlement pays `amount × 2` and only for stakes on the winning template.
-- The stored simulation is kept while the public view hides it.
+### Core domain
 
-**Combat** is part of the core and is a shared kernel, not a bounded context that knows about money. It holds the 11 traits, turn order by speed, crit, dodge, and the 20-turn cap. The house match and ranked challenge both use it. A trait change is a rule change for both, so the kernel does not import stakes, Elo, or accounts.
+**Combat** is the only core domain. Its concepts are `Fighter` (input data), `Trait`, and `CombatResult` (output data). Its rules are the 11 traits, turn order by speed, crit, dodge, and the 20-turn cap. House betting and ranked challenge both call this domain. A trait change is a rule change for both callers. Combat does not import stakes, Elo, or accounts.
 
-The garden does not use the kernel today. `TreeService.rob` only records the raider.
+The garden does not call Combat today. `TreeService.rob` only records the raider.
 
-### Supporting subdomains
+### Supporting domains
 
-A supporting subdomain is not automatically its own bounded context.
+These slices have their own rules. They are not the core. House betting and roster sit closest to it, because they attach money or Elo to a `CombatResult`.
 
-| Subdomain | Role | Where the model lives |
+| Domain | Business slice | Concepts | Rules |
+|---|---|---|---|
+| House betting | Stake on the winner of a hidden fight | `BettingMatch`, `Stake` | One stake per account per match. Stake only while the window is open. Payout = `amount × 2` for the winning template. Phases move `Scheduled → Betting → Revealing → Settled`. The stored simulation stays complete while the public view hides it |
+| Roster and rank | Raise an owned hero and rank it | `UserHero`, `Gem` | Allocated points do not exceed level. Level-up fee is `2^(currentLevel + 1)`, then level increases by 1. Challenge updates both Elo ratings. A gem moves between storage and attached |
+| Garden | Plant, harvest, raid | `Plot` | Plant debits 1% as `startingValue`. Harvest credits `floor(minutesHeld / 10) × startingValue`. Raid ends the plot and is not a house stake |
+
+Auto-stake is configuration data inside house betting (`RivalPair`, chosen template, enabled flag, stored number). It is not a domain. The act of placing the stake still uses the house-betting rules.
+
+Gems are part of roster. A drop listens to `RewardsPaid`. It is not a rule of the match.
+
+### Reference data
+
+`HeroTemplate` is a name, base stats, and a trait name. No invariant, formula, or state transition attaches to that row. It is source data for Combat. House betting and roster read it and freeze a `Fighter` when a simulation starts. It is not a domain and it has no aggregate.
+
+`Fighter` and `CombatResult` are also data. Combat reads the first and writes the second. The rules sit in `Trait` and the turn loop, not in the stored log.
+
+### Generic domain
+
+**Ledger** is a generic domain. The concept is `Balance`. The only rule is that a balance never goes negative. `debit` fails when the amount is greater than the balance. `credit` adds an amount. The `×2` payout, the 1% plant cost, and the level-up fee are rules of the domain that names the amount. The ledger only receives that amount.
+
+The write is one conditional update (`balance = balance ± amount`, and `balance >= amount` on debit).
+
+### Technical capabilities
+
+These have no business rule. Wrap a library.
+
+| Capability | Use | Holds no rule for |
 |---|---|---|
-| Hero catalog | Templates and base stats used to pair fights and challenges | Its own context. Read-mostly. No lifecycle |
-| Roster and rank | Owned heroes, point allocation, level, Elo, challenges | Its own context. Aggregate `UserHero`. One account has many owned heroes |
-| Gems | Inventory, attach, level-up | Inside the roster context. A drop is a reaction to settlement, not a rule of the match |
-| Garden | Plant, harvest, raid | Its own context. A raid is not a house stake |
-| Auto-stake | Configuration that places a stake for a hero pair | A policy inside the betting context, not a new context |
-
-### Generic subdomains
-
-Wrap a library. Do not invent a new model.
-
-| Subdomain | Use | Does not contain |
-|---|---|---|
-| Account | Passport, JWT, bcrypt | Balance, heroes, stakes |
-| Ledger | Integer `users.balance`, conditional update | The `×2` payout, the 1% plant cost, the level-up fee |
-| Notification | Socket.IO, Bull, email, Redis | The decision of when a match is settled |
-
-Money rules belong to the context that states them. The ledger only debits and credits, and it rejects a debit that would go negative.
+| Account | Passport, JWT, bcrypt, email confirmation, address | Balance, heroes, stakes |
+| Notification | Socket.IO, Bull, email, Redis | When a match is settled |
 
 ### Not classified yet
 
 `available_balance` is a column. No use case reads it to make a decision. It is not a term. See section 8.
 
-Destroyer and Fortune are not subdomains until their rules are closed. Do not add an "Events" context to hold README text.
+Destroyer and Fortune are not domains until their rules are closed. Do not add an "Events" context to hold README text.
 
 ## 3. Ubiquitous language
 
@@ -93,12 +100,12 @@ Today's `User` is both the account and the wallet. Other contexts accept `Accoun
 
 | Term | Meaning | Context |
 |---|---|---|
-| `HeroTemplate` | Catalog row: name, base stats, trait name | Catalog |
+| `HeroTemplate` | Reference data: name, base stats, trait name. No rule of its own | Read by house betting and roster |
 | `UserHero` | Owned hero: level, allocated points, Elo, computed stats | Roster |
-| `Fighter` | Stats frozen when a simulation starts. Immutable to the caller | Combat |
-| `Trait` | The rule for one hero name, applied each turn | Combat |
+| `Fighter` | Input data: stats frozen when a simulation starts. The caller does not mutate it | Combat |
+| `Trait` | The formula for one hero name, applied each turn | Combat |
 | `Turn` | One exchange. It can include a blow from each side | Combat |
-| `CombatResult` | Winner, loser, turn log, turn count. At most 20 | Combat |
+| `CombatResult` | Output data: winner, loser, turn log, turn count. At most 20 | Combat |
 
 Do not call all three hero concepts `Hero`.
 
@@ -177,9 +184,9 @@ The listener also builds `rival_pair` from `winner` and `loser`. After the resul
 
 Each context has one language. Aggregates named here are consistency boundaries, not class designs.
 
-### Combat — shared kernel of the core
+### Combat — core domain, shared by its callers
 
-The language contains fighters, turns, traits, and results.
+The language contains fighters, turns, traits, and results. Callers share this domain as a kernel. Sharing it does not make it a second-class context, and it does not make the callers part of the core.
 
 Inside: `Fighter`, `Trait` (11 hero names), `Turn`, `CombatResult`, a seedable random source.
 
@@ -189,7 +196,7 @@ Nothing is persisted. Nothing is published as a domain event. Two callers that p
 
 Used by the house match and by challenge. A future raid uses it only if raiding becomes a fight. It does not today.
 
-### House betting — core
+### House betting — supporting, closest to the core
 
 In this language, "match" means the house match.
 
@@ -209,13 +216,13 @@ Rules:
 
 Outside: Elo, level, gems, plots, email, JWT.
 
-### Hero catalog — supporting, upstream
+### Hero templates — reference data, upstream
 
-Inside: `HeroTemplate` and base stats.
+Inside: `HeroTemplate` rows (id, name, base stats, trait name).
 
-Outside: combat execution, stakes, ownership.
+Outside: combat rules, stakes, ownership. There is no aggregate and no domain rule.
 
-It publishes a `Fighter` (id, name, and the stats combat needs). It does not publish its own class. Random pairing is a service of this context.
+It publishes template stats. House betting and roster freeze those stats into a `Fighter` when a simulation starts. Random pairing reads two templates. It does not run combat.
 
 ### Roster and rank — supporting
 
@@ -277,8 +284,8 @@ flowchart LR
   identity[Account]
   notify[Notification]
 
-  catalog -->|"OHS, published Fighter"| arena
-  catalog -->|"OHS, published Fighter"| roster
+  catalog -->|"OHS, published template stats"| arena
+  catalog -->|"OHS, published template stats"| roster
   combat -->|"Shared Kernel"| arena
   combat -->|"Shared Kernel"| roster
   arena -->|"Customer of debit and credit"| ledger
@@ -294,9 +301,9 @@ flowchart LR
 
 ### Relationships
 
-**Catalog to house betting, and catalog to roster.** The catalog is upstream, as an Open Host Service. The published language is `Fighter`. Downstream conforms to that contract. It does not import the catalog aggregate. This is not an anti-corruption layer. The upstream model is small and explicit.
+**Catalog to house betting, and catalog to roster.** The catalog is upstream reference data, published as an Open Host Service. The published language is template stats. The consumer freezes a `Fighter`. It does not import a catalog class. This is not an anti-corruption layer. The upstream shape is small and explicit.
 
-**Combat is a shared kernel** of house betting and challenge. It has no business upstream. A trait change needs both consumers. The kernel does not depend on Nest, TypeORM, or Bull.
+**Combat is the core domain**, shared as a kernel by house betting and challenge. It has no upstream context: callers pass a `Fighter` in. A trait change needs both callers to accept it. The kernel does not depend on Nest, TypeORM, or Bull.
 
 **House betting, roster, and garden are customers of the ledger.** The ledger is the supplier and the upstream of the money truth. It offers `debit` and `credit`. Each customer translates `InsufficientFunds` into its own words: stake rejected, level-up rejected, or plant rejected. That translation is a thin port. It is the same relationship for all three customers. `placeStake` does not import an account exception.
 
@@ -351,14 +358,14 @@ Auto-stake stays inside house betting. Gems stay inside roster and wake up on an
 
 ## 7. Implementation order
 
-Go deep on the core first.
+Build the core domain first. Then the supporting domain that sits on its result.
 
-1. Combat kernel: plain TypeScript, seedable, property tests for the 20-turn cap and for input immutability.
+1. Combat: plain TypeScript, seedable random source, property tests for the 20-turn cap and for input immutability.
 2. House betting: phases, the hidden result stored separately from the public view, stakes, idempotent settlement, ledger port.
-3. Ledger: `debit` / `credit` that stay correct under two concurrent requests. Thin model.
-4. Catalog: read-only, publishes `Fighter`.
+3. Ledger: `debit` / `credit` that stay correct under two concurrent requests. One rule.
+4. Hero templates: read-only rows. Publish template stats. Callers freeze a `Fighter`.
 5. Roster: many heroes per account, Elo, listener for `RewardsPaid`.
-6. Garden, and the auto-stake policy inside house betting, after the ledger and the match stand. They do not block the core.
+6. Garden, and the auto-stake configuration inside house betting, after the ledger and the match stand.
 7. Account and socket: wrap what already runs. No new domain.
 
 Destroyer, Fortune, tower, and guild are not in this order.
@@ -387,3 +394,5 @@ The previous Vietnamese draft had these inconsistencies. This English text is th
 | `betPercentage` is a percent of balance | The listener assigns it to stake `balance` | Meaning left open in section 8 |
 | Garden's link to the ledger is an ACL, while betting and roster are customer/supplier | All three send an amount and translate one error | All three are customers of the ledger |
 | `RewardsPaid` may be published when credits are merely queued | A crash between publish and credit pays nobody or pays twice | Publish only after the settlement transaction commits |
+| House betting is the core, and Combat is only a kernel inside it | The differentiating rules are the 11 traits and the turn loop. Stakes attach money to a finished `CombatResult` | Combat is the only core domain. House betting is supporting |
+| The hero catalog is a supporting domain | A template row has no invariant, formula, or state transition | `HeroTemplate` is reference data. Roster remains a domain because `UserHero` has rules |
